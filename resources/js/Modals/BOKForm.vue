@@ -1,0 +1,91 @@
+<script setup>
+
+import axios from 'axios';
+import { useForm } from '@inertiajs/vue3';
+
+import InputError from '@/Components/InputError.vue';
+import InputLabel from '@/Components/InputLabel.vue';
+import SelectInput from '@/Components/SelectInput.vue';
+import TextareaInput from '@/Components/TextareaInput.vue';
+import SButton from '@/Components/SButton.vue';
+import PrimaryButton from '@/Components/PrimaryButton.vue';
+
+import { ref } from 'vue';
+import { AlertStore } from '@/Pinia/AlertStore';
+
+async function getSubjects() {
+    let subjects = await axios.get(route('boksubject.index'));
+    return subjects.data;
+}
+
+const subjects = await getSubjects();
+const useAlertStore = AlertStore();
+const form = ref({ subject_id: '', msg: '' })
+
+const errors = ref({});
+const disabled = ref(false);
+
+const emit = defineEmits([
+    'close'
+]);
+
+const submit = async () => {
+    disabled.value = true;
+    errors.value = {};
+
+    let response = await axios.post(route('bokrequest.store'), {...form.value});
+    response = response.data;
+    // console.log(response);
+
+    if (!response.success) {
+        if (response?.errors) {
+            errors.value = response.errors;
+            disabled.value = false;
+            return;
+        }
+    }
+
+    let alert_type = response.success ? 'success' : 'danger';
+    useAlertStore.pushAlert(alert_type, response.msg);
+
+    if (response.success) {
+        form.value.subject_id = '';
+        form.value.msg = '';
+    }
+
+    disabled.value = false;
+}
+
+</script>
+
+
+<template>
+    <h2 class="text-2xl font-bold text-gray-800 mb-4">Zgłoszenia do Biura Obsługi Klienta</h2>
+
+    <div class="modal-body">
+        <div class="flex flex-col">
+            <InputLabel value="Wybierz temat"></InputLabel>
+            <SelectInput v-model="form.subject_id" :options="subjects" :name_string="'subject'" :class="'mt-2'"></SelectInput>
+            <InputError class="mt-2" :message="errors.subject_id ? errors.subject_id[0] : ''" />
+            
+            <InputLabel value="Opisz problem" :class="'mt-4'"></InputLabel>
+            <TextareaInput v-model="form.msg" :class="'mt-2'"></TextareaInput>
+            <InputError class="mt-2" :message="errors.msg ? errors.msg[0] : ''" />
+        </div>
+    </div>
+
+    <div class="mt-6 text-right">
+        <SButton 
+            :disabled="disabled"
+            value="Zgłoś problem"
+            @click="submit()">
+        </SButton>
+        <PrimaryButton id="closeModal" @click="$emit('close')">
+            Zamknij
+        </PrimaryButton>
+    </div>
+</template>
+
+
+
+  

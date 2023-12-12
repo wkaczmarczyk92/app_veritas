@@ -1,0 +1,201 @@
+<?php
+
+namespace App\Http\Controllers;
+
+use Illuminate\Http\Request;
+use Inertia\Inertia;
+
+use App\Models\User;
+use App\Models\Level;
+use App\Models\UserPoint;
+use App\Models\UserProfile;
+use Illuminate\Support\Facades\DB;
+
+use Illuminate\Validation\ValidationException;
+use Illuminate\Validation\Rule;
+
+use App\Helpers\CURLRequest;
+
+use App\Models\ReadyToDepartureDate;
+use Exception;
+
+class UserController extends Controller
+{
+    /**
+     * Display a listing of the resource.
+     */
+    public function index(Request $request)
+    {
+        $order_by = $request->order_by ?? 'full_name';
+        $order = $request->order ?? 'asc';
+
+        $users = User::with(['user_profiles', 'user_profile_image'])
+            ->join('user_profiles', 'users.id', '=', 'user_profiles.user_id')
+            ->select('users.*', DB::raw("CONCAT(user_profiles.last_name, ' ', user_profiles.first_name) as full_name"))
+            ->whereHas('roles', function ($query) {
+                $query->where('name', 'user');
+            });
+
+
+        if ($request->search != '') {
+            $users->whereHas('user_profiles', function ($query) use ($request) {
+                $query->where('first_name', 'like', "%{$request->search}%")
+                    ->orWhere('last_name', 'like', "%{$request->search}%")
+                    ->orWhere('email', 'like', "%{$request->search}%")
+                    ->orWhere('phone_number', 'like', "%{$request->search}%")
+                    ->orWhere('recruiter_first_name', 'like', "%{$request->search}%")
+                    ->orWhere('recruiter_last_name', 'like', "%{$request->search}%")
+                    ->orWhereRaw("CONCAT(first_name, ' ', last_name) LIKE '%{$request->search}%'")
+                    ->orWhereRaw("CONCAT(last_name, ' ', first_name) LIKE '%{$request->search}%'")
+                    ->orWhereRaw("CONCAT(recruiter_first_name, ' ', recruiter_last_name) LIKE '%{$request->search}%'")
+                    ->orWhereRaw("CONCAT(recruiter_last_name, ' ', recruiter_first_name) LIKE '%{$request->search}%'");
+            });
+
+            $users->orWhere('pesel', 'like', "%{$request->search}%");
+        }
+
+        if ($request->current_points != '') {
+            $users->whereHas('user_profiles', function ($query) use ($request) {
+                $query->where('current_points', '>=', $request->current_points);
+            });
+        }
+
+        if ($request->total_days != '') {
+            $users->whereHas('user_profiles', function ($query) use ($request) {
+                $query->where('total_days', '>=', $request->total_days);
+            });
+        }
+
+        $users->orderBy($order_by, $order);
+        
+        $users = $users->paginate(10);
+
+        return Inertia::render('Admin/Users', [
+            'users' => $users,
+            'levels' => Level::all(),
+            'search_string' => $request->search ?? '',
+            'search_current_points' => $request->current_points ?? '',
+            'search_total_days' => $request->total_days ?? '',
+            'order_by' => $order_by,
+            'order' => $order
+        ]);
+    }
+
+    /**
+     * Display the specified resource.
+     */
+    public function show(string $id)
+    {
+        $user = User::with(['user_profiles', 'password_requests' => function ($query) {
+            $query->where('active', true);
+        }, 'ready_to_departure_dates', 'user_profile_image', 'user_points' => function ($query) {
+            $query->latest()
+                ->offset(0)
+                ->limit(10)
+                ->get();
+        }])->find($id);
+
+        $user_points_records_count =  UserPoint::where('user_id', $id)->count();
+
+        return Inertia::render('Admin/User', [
+            'user' => $user,
+            'levels' => Level::all(),
+            'user_points_records_count' => $user_points_records_count
+        ]);
+    }
+
+    /**
+     * Update the specified resource in storage.
+     */
+    public function update(Request $request)
+    {
+        $user_id = $request->id;
+
+        try {
+            $validate = $request->validate([
+                'pesel' => [
+                    'required',
+                    'numeric',
+                    'digits:11',
+                    Rule::unique('users')->ignore($request->id)
+                ],
+                'user_profiles.first_name' => 'required|string',
+                'user_profiles.last_name' => 'required|string',
+                'user_profiles.email' => [
+                    'required',
+                    'email'
+                ],
+                'user_profiles.phone_number' => [
+                    'required',
+                    'string'
+                ],
+                'ready_to_departure_dates.departure_date' => 'nullable|date|date_format:Y-m-d'
+
+            ]);
+        } catch (ValidationException $e) {
+            return response()->json(['success' => false, 'errors' => $e->errors()]);
+        }
+
+        $user = User::with(['user_profiles', 'ready_to_departure_dates'])->find($user_id);
+
+        $user->pesel = $request->pesel;
+        $user->user_profiles->first_name = $request->user_profiles['first_name'];
+        $user->user_profiles->last_name = $request->user_profiles['last_name'];
+        $user->user_profiles->email = $request->user_profiles['email'];
+        $user->user_profiles->phone_number = $request->user_profiles['phone_number'];
+
+        DB::beginTransaction();
+
+        try {
+            $user->save();
+            $user->user_profiles->save();
+
+            $departure_date = '';
+
+            if ($request->ready_to_departure_dates['departure_date'] != null) {
+                ReadyToDepartureDate::updateOrCreate([
+                    'user_id' => $user_id
+                ], [
+                    'departure_date' => $request->ready_to_departure_dates['departure_date']
+                ]);
+
+                $departure_date = $request->ready_to_departure_dates['departure_date'];
+
+            } else {
+                if ($user->ready_to_departure_dates != null) {
+                    $ready_to_departure = ReadyToDepartureDate::find($user->ready_to_departure_dates->id)->delete();
+                    $departure_date = null;
+                }
+            }     
+
+            // $arr = [
+            //     'section' => 'personal_data',
+            //     'form' => [
+            //         'crt_first_name' => $user->user_profiles->first_name,
+            //         'crt_last_name' => $user->user_profiles->last_name,
+            //         'crt_main_email' => $user->user_profiles->email,
+            //         'crt_main_phone_number' => $user->user_profiles->phone_number,
+            //         'crt_id_caretaker' => $user->user_profiles->crt_id_caretaker,
+            //         'crt_pesel' => $user->pesel
+            //     ],
+            //     'indexValue' => $user->user_profiles->crt_id_caretaker,
+            //     'caretakerHpId' => null
+            // ];
+
+            // $curl_request = new CURLRequest;
+            // $departure_response = $curl_request->caretaker_departure_date($departure_date, $user->user_profiles->crt_id_caretaker);
+            // $response = $curl_request->update_caretaker_data($arr);
+           
+            // if (!$response->success) {
+            //     throw new Exception('CRM Update failed.');
+            // }
+            
+            DB::commit();
+        } catch (\Throwable $e) {
+            DB::rollback();
+            return response()->json(['success' => false, 'msg' => 'Wystąpił błąd podczas połączenia. Spróbuj ponownie później.']);
+        }
+
+        return response()->json(['success' => true]);
+    }
+}
