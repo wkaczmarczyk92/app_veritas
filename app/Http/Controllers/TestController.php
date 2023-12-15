@@ -46,9 +46,119 @@ use PDO;
 // use CRMC
 
 use Illuminate\Support\Facades\Auth;
+use App\Services\CRM\RecruiterService;
+use App\Services\MailService;
+use App\Models\Offer;
 
 class TestController extends Controller
 {
+    protected RecruiterService $recruiter_service;
+    protected MailService $mail_service;
+
+    public function __construct(RecruiterService $recruiter_service, MailService $mail_service) {
+        $this->recruiter_service = $recruiter_service;
+        $this->mail_service = $mail_service;
+    }
+
+    public function email_offer() {
+        $users = User::with(['user_profiles', 'offers'])
+            ->whereHas('offers', function($query) {
+                $query->where('notification_send', false);
+            })->get();
+
+        $this->mail_service->offer_email($users, $this->recruiter_service);
+        $offer_ids = $users->pluck('offers.*.id')->flatten();
+        Offer::whereIn('id', $offer_ids)->update(['notification_send' => true]);
+    }
+
+    public function manual_update() {
+        set_time_limit(0);
+
+        $current_date = date('Y-m-d');
+        $year = date('Y', strtotime($current_date . " -1 month"));
+        $month = date('m', strtotime($current_date . " -1 month"));
+        // $year = '2023';
+        // $month = '07';
+
+        $curl_request = new CURLRequest;
+
+        // // możliwe że trzeba podzielić - po 5k użytkowników
+        $users = User::with(['user_profiles.levels.checkpoints', 'user_profiles.levels.multiplier', 'user_has_bonus'])
+            ->role('user')
+            ->get();
+
+        $pesels = [];
+
+        foreach ($users as $user) {
+            $pesels[] = $user->pesel;
+        }
+
+        $response = $curl_request->get_user_worked_days_in_previous_month($pesels, $year, $month);
+
+        DB::beginTransaction();
+
+        try {
+            foreach ($response as $pesel => $days) {
+                $user = User::with(['user_profiles.levels.checkpoints', 'user_profiles.levels.multiplier', 'user_has_bonus'])
+                    ->where('pesel', $pesel)
+                    ->first();
+
+                if ($user->user_profiles->level >= 4) {
+                    continue;
+                }
+
+                $point_checkpoint = PointCheckpoint::all();
+
+                $user->user_profiles->total_days += $days;
+                $user->user_profiles->total_points += $days;
+                $user->user_profiles->current_points += $days;
+
+                $current_user_level_id = $user->user_profiles->level;
+
+                foreach ($point_checkpoint as $checkpoint) {
+                    if ($checkpoint->checkpoint <= $user->user_profiles->total_points) {
+                        $user->user_profiles->level = $checkpoint->level_id;
+
+                        if ($current_user_level_id < $user->user_profiles->level) {
+                            $user_has_bonuse = UserHasBonus::create([
+                                'user_id' => $user->id,
+                                'level_id' => $user->user_profiles->level,
+                                'bonus_value' => LevelBonusValue::where('level_id', $user->user_profiles->level)->pluck('value')[0]
+                            ]);
+                        }
+                    }
+                }
+
+                $user_point = UserPoint::create([
+                    'user_id' => $user->id,
+                    'points' => $days,
+                    'days' => $days,
+                    'auto' => true,
+                    'type' => 1
+                ]);
+
+                $user->user_profiles->save();
+            }
+
+            DB::commit();
+        } catch (Exception $e) {
+            DB::rollback();
+            echo json_encode([
+                'success' => false,
+                'msg' => '',
+                'exception' => $e->getMessage(),
+                'line' => $e->getLine(),
+                'file' => $e->getFile()
+            ]);
+            return;
+        }
+
+        echo json_encode([
+            'success' => true,
+            'msg' => 'Udało się.',
+            'exception' => ''
+        ]);
+    }
 
     public function svg_test() {
         return Inertia::render('Test');
@@ -105,14 +215,14 @@ class TestController extends Controller
         //         $caretaker = CRMCaretaker::with('crm_assignments.crm_company', function($query) {
         //             $query->where('cmp_id_company_group', [1, 2]);
         //         })->get();
-    
+
         //         if ($caretaker) {
         //             $d[] = $caretaker;
         //         }
         //     } catch (Exception $e) {
         //         echo $e->getMessage();
         //     }
-            
+
         // }
 
         // var_dump($d);
@@ -289,8 +399,8 @@ class TestController extends Controller
         $cron->handle();
     }
 
-    public function mail_test() 
-    {   
+    public function mail_test()
+    {
         Mail::to('wojciech.kaczmarczyk11@gmail.com')->send(
             new TestMail()
         );
@@ -324,7 +434,7 @@ class TestController extends Controller
             } catch (Throwable $e) {
                 $exception = $e->getMessage();
             }
-            
+
             return response()->json([
                 'msg' => $response,
                 'exception' => $exception

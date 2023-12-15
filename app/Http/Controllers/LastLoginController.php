@@ -30,7 +30,12 @@ class LastLoginController extends Controller
         // ])
         // ->paginate(1);
 
-        $last_logins = DB::table('last_logins')
+        $last_logins = LastLogin::with(['user'])
+            ->whereHas('user', function($query) {
+                $query->whereHas('roles', function($query) {
+                    $query->where('id', 2);
+                });
+            })
             ->select(DB::raw('DATE(created_at) as date'), DB::raw('COUNT(*) as login_count'))
             ->groupBy('date')
             ->orderBy('date', 'desc')

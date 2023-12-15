@@ -20,11 +20,18 @@ use App\Models\LevelBonusValue;
 use Database\Seeders\LevelSeeder;
 use Illuminate\Support\Facades\Redirect;
 
+use App\Services\UserPointService;
+
 class UserPointController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     */
+    protected UserPointService $user_point_service;
+
+    public function __construct(UserPointService $user_point_service)
+    {
+        $this->user_point_service = $user_point_service;
+    }
+    
+
     public function index(Request $request)
     {
         DB::enableQueryLog();
@@ -131,36 +138,8 @@ class UserPointController extends Controller
             'user_profiles' => $user_profile
         ]);
     }
-
-    /**
-     * Display the specified resource.
-     */
-    public function show(string $id)
-    {
-        //
-    }
-
-    /**
-     * Show the form for editing the specified resource.
-     */
-    public function edit(string $id)
-    {
-        //
-    }
-
-    /**
-     * Update the specified resource in storage.
-     */
-    public function update(Request $request, string $id)
-    {
-        //
-    }
-
-    /**
-     * Remove the specified resource from storage.
-     */
-    public function destroy(string $id)
-    {
-        //
+    
+    public function last_insert_date() {
+        return response()->json(['last_insert_date' => $this->user_point_service->get_last_insert_date()]);
     }
 }

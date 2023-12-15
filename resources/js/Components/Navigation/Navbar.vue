@@ -166,7 +166,6 @@ const showingNavigationDropdown = ref(false);
                         </NavLink>
                         <NavLink :href="route('offer.index')" :active="route().current('offer.index')">
                             Zgłoszenia na oferty
-                            <span v-if="count_incomplete_payout_request" class="new-payout-request-info">{{ count_incomplete_payout_request }}</span>
                         </NavLink>
                         <NavLink :href="route('bokrequest.index')" :active="route().current('bokrequest.index')">
                             Zgłoszenia BOK

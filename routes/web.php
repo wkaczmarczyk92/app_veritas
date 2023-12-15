@@ -69,6 +69,10 @@ Route::middleware(['auth', 'role:user|admin|super-admin'])->group(function() {
 
     Route::get('/land.index', [LandController::class, 'index'])->name('land.index');
 
+
+
+    Route::get('/user.point.last.insert.date', [UserPointController::class, 'last_insert_date'])->name('user.point.last.insert.date');
+
 });
 
 Route::get('/test', [TestController::class, 'offers'])->name('test');

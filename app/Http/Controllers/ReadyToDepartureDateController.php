@@ -20,7 +20,7 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Validation\ValidationException;
 use App\Helpers\CURLRequest;
 use Exception;
-use App\Services\RecruiterService;
+use App\Services\CRM\RecruiterService;
 
 use App\Mail\RedyToDepartureDateEmail;
 use Illuminate\Support\Facades\Mail;
@@ -59,25 +59,25 @@ class ReadyToDepartureDateController extends Controller
             if ($crt_id_caretaker) {
                 $curl_request = new CURLRequest;
                 $departure_response = $curl_request->caretaker_departure_date($request->departure_date, $crt_id_caretaker);
-               
+
                 if (!$departure_response->success) {
                     throw new Exception('CRM Update failed.');
                 }
-    
+
                 $email_data = [
                     'date' => $request->departure_date,
                     'username' => $user->user_profiles->first_name . ' ' . $user->user_profiles->last_name,
                     'url' => "http://app.veritas.pl/uzytkownik/{$user->id}",
                     'url_crm' => "https://local.grupa-veritas.pl/#/opiekunki/{$user->user_profiles->crt_id_caretaker}"
                 ];
-    
+
                 // Mail::to('wojciech.kaczmarczyk11@gmail.com')->send(
                 //     new RedyToDepartureDateEmail($email_data)
                 // );
-    
+
                 $recruiter_service = new RecruiterService;
                 $recruiter = $recruiter_service->get($user->user_profiles->crt_id_user_recruiter);
-    
+
                 if (!empty($recruiter->usr_email) and filter_var($recruiter->usr_email, FILTER_VALIDATE_EMAIL)) {
                     Mail::to($recruiter->usr_email)->send(
                         new RedyToDepartureDateEmail($email_data)
@@ -135,7 +135,7 @@ class ReadyToDepartureDateController extends Controller
             if ($crt_id_caretaker) {
                 $curl_request = new CURLRequest;
                 $departure_response = $curl_request->caretaker_departure_date(null, $crt_id_caretaker);
-               
+
                 if (!$departure_response->success) {
                     throw new Exception('CRM Update failed.');
                 }

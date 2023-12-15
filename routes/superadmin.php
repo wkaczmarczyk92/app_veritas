@@ -32,4 +32,8 @@ Route::middleware(['auth', 'role:super-admin'])->group(function() {
     Route::post('/down', [TestController::class, 'down'])->name('artisan.down');
     Route::post('/up', [TestController::class, 'up'])->name('artisan.up');
 
+    // Route::get('/mmm', [TestController::class, 'manual_update'])->name('mmm');
+
+    Route::get('/email_test', [TestController::class, 'email_offer'])->name('email_test');
+
 });

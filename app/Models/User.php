@@ -103,6 +103,11 @@ class User extends Authenticatable
         return $this->hasMany(OneTimeSMSPassword::class);
     }
 
+    public function offers() : HasMany
+    {
+        return $this->hasMany(Offer::class);
+    }
+
     // public function family_recomenndations() : HasMany
     // {
     //     return $this->hasMany(FamilyRecommendation::class);

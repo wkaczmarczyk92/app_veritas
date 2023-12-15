@@ -2,109 +2,49 @@
 
 namespace App\Http\Controllers;
 
-use Illuminate\Http\Request;
 use Inertia\Inertia;
 
-use App\Models\User;
-
-
-use App\Models\Multiplier;
-use App\Models\Level;
-
-
-use App\Models\PointsSettingsPayout;
-use App\Models\CashSettingsPayout;
-
-use App\Models\PayoutRequest;
-use App\Models\BOKRequest;
-
-use App\Models\PointCheckpoint;
+use App\Services\UserService;
+use App\Services\PayoutRequestService;
+use App\Services\BOKRequestService;
+use App\Services\SettingsService;
+use App\Services\LevelService;
+use App\Services\OfferService;
 
 class AdminDashboardController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     */
-    public function index(Request $request)
+    protected UserService $user_service;
+    protected PayoutRequestService $payout_request_service;
+    protected BOKRequestService $bok_request_service;
+    protected SettingsService $settings_service;
+    protected LevelService $level_service;
+    protected OfferService $offer_service;
+
+    public function __construct(
+            UserService $user_service, 
+            PayoutRequestService $payout_request_service,
+            BOKRequestService $bok_request_service,
+            SettingsService $settings_service,
+            LevelService $level_service,
+            OfferService $offer_service)
     {
-        $users = User::with(['user_profiles', 'roles'])
-            ->whereHas('roles', function($query) {
-                $query->where('id', 2);
-            })
-            ->latest()
-            ->take(10)
-            ->get();
-
-        $latest_payout_requests = PayoutRequest::with('user_has_bonus.user.user_profiles')
-            ->whereHas('user_has_bonus', function($query) {
-                $query->where('completed', false)
-                    ->where('in_progress', true);
-            })
-            ->latest()
-            ->take(5)
-            ->get();
-
-        $latest_bok_request = BOKRequest::with(['user.user_profiles', 'subject'])
-            ->latest()
-            ->take(5)
-            ->get();
-
+        $this->user_service             = $user_service;
+        $this->payout_request_service   = $payout_request_service;
+        $this->bok_request_service      = $bok_request_service;
+        $this->settings_service         = $settings_service;
+        $this->level_service            = $level_service;
+        $this->offer_service            = $offer_service;
+    }
+    
+    public function index()
+    {
         return Inertia::render('Admin/Home', [
-            'users' => $users,
-            'levels' => Level::with(['multiplier', 'checkpoints', 'bonus_value'])->get(),
-            'payout_cash' => CashSettingsPayout::where('id', '=', 1)->pluck('payout_cash')[0],
-            'points_to_payout' => PointsSettingsPayout::where('id', '=', 1)->pluck('points_to_payout')[0],
-            'latest_payout_requests' => $latest_payout_requests,
-            'latest_bok_request' => $latest_bok_request,
-            // 'point_chekpoints' => PointCheckpoint::all()
+            'users'                     => $this->user_service->latest(),
+            'levels'                    => $this->level_service->get(),
+            'latest_payout_requests'    => $this->payout_request_service->latest_incomplete(),
+            'latest_bok_request'        => $this->bok_request_service->latest(),
+            'last_logins'               => $this->user_service->last_logins(),
+            'latest_offers'             => $this->offer_service->latest(),
         ]);
-    }
-
-    /**
-     * Show the form for creating a new resource.
-     */
-    public function create()
-    {
-        //
-    }
-
-    /**
-     * Store a newly created resource in storage.
-     */
-    public function store(Request $request)
-    {
-        //
-    }
-
-    /**
-     * Display the specified resource.
-     */
-    public function show(string $id)
-    {
-        //
-    }
-
-    /**
-     * Show the form for editing the specified resource.
-     */
-    public function edit(string $id)
-    {
-        //
-    }
-
-    /**
-     * Update the specified resource in storage.
-     */
-    public function update(Request $request, string $id)
-    {
-        //
-    }
-
-    /**
-     * Remove the specified resource from storage.
-     */
-    public function destroy(string $id)
-    {
-        //
     }
 }

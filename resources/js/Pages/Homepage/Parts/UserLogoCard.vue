@@ -44,6 +44,15 @@ const bg_arr = {
 };
 const background_color = ref(bg_arr[props.user.user_profiles.level]);
 
+const last_points_insert_date = ref('??')
+
+const get_last_insert_date = async () => {
+    let date = await date_of_last_update()
+    last_points_insert_date.value = date
+}
+
+get_last_insert_date()
+
 </script>
 
 
@@ -153,7 +162,8 @@ const background_color = ref(bg_arr[props.user.user_profiles.level]);
                         Bilans punktów
                     </span>
                 </p>
-                <p class="text-sm mt-4"><span class="text-red-600">*</span>Stan konta na - <span class="text-orange-400 font-bold">{{ date_of_last_update() }}</span>. Kolejna aktualizacja - <span class="text-orange-400 font-bold">{{ date_of_next_update() }}</span> (punkty naliczane są od <span class="text-orange-400 font-bold">2023-01-01</span>)</p>
+                <p class="text-sm mt-4"><span class="text-red-600">*</span>Stan konta na - 
+                    <span class="text-orange-400 font-bold">{{ last_points_insert_date }}</span>. Kolejna przewidywana aktualizacja - <span class="text-orange-400 font-bold">{{ date_of_next_update() }}</span> (punkty naliczane są od <span class="text-orange-400 font-bold">2023-01-01</span>)</p>
             </div>
         </div>
         
@@ -164,7 +174,6 @@ const background_color = ref(bg_arr[props.user.user_profiles.level]);
 <style>
     .svg-container::before {
         height: calc(v-bind(height + '%') - 1px);
-        /* background-color: var(v-bind(background_color)); */
         background-color: v-bind(background_color);
     }
 

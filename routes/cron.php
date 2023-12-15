@@ -6,8 +6,9 @@ use App\Console\Commands\CRONUpdateUserDays;
 use App\Console\Commands\CRONUpdateCaretakerRecruiter;
 use App\Console\Commands\CRONCaretakerProfileExists;
 use App\Console\Commands\CRONSendSMSWithPassword;
+use App\Console\Commands\CRONSendEmailWithOffers;
 
-// CRON-y 
+// CRON-y
 
 Route::middleware('cron_auth')->prefix('cron')->group(function() {
 
@@ -18,5 +19,7 @@ Route::middleware('cron_auth')->prefix('cron')->group(function() {
     Route::get('/update.caretaker.recruiter', [CRONUpdateCaretakerRecruiter::class, 'handle'])->name('update.caretaker.recruiter');
 
     Route::get('/sms.with.password', [CRONSendSMSWithPassword::class, 'handle'])->name('sms.with.password');
+
+    Route::get('/send.emails.with.offers', [CRONSendEmailWithOffers::class, 'handle'])->name('send.emails.with.offers');
 
 });

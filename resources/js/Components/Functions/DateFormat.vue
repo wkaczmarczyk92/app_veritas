@@ -1,5 +1,7 @@
 <script>
 
+import axios from 'axios';
+
 export function format(date) {
     if (date == '' || date == null || date == undefined) {
         return '';
@@ -29,17 +31,11 @@ export function format(date) {
     return `${year}-${month}-${day}`;
 }
 
-export function date_of_last_update() {
-    let date = new Date();
-    date.setMonth(date.getMonth() - 1);
-    let year = date.getFullYear();
-    let month = date.getMonth() + 1;
-    // let day = date.getDate();
-
-    month = month < 10 ? '0' + month : month;
-    // day = day < 10 ? '0' + day : day;
-
-    return `${year}-${month}-10`;
+export async function date_of_last_update() {
+    let response = await axios.get(route('user.point.last.insert.date'))
+    console.log(response)
+    response = response.data
+    return response.last_insert_date
 }
 
 export function date_of_next_update() {

@@ -15,18 +15,19 @@ use App\Http\Controllers\FamilyRecommendationController;
 use App\Http\Controllers\PayoutRequestController;
 use App\Http\Controllers\BOKRequestController;
 use App\Http\Controllers\CRMOfferDownloadController;
+use App\Http\Controllers\CaretakerRecommendationController;
 
 use App\Http\Controllers\OfferController;
 
 Route::middleware(['auth', 'role:user'])->group(function() {
     Route::get('/bok-subjects', [BOKSubjectController::class, 'index'])->name('boksubject.index');
     Route::post('/bok-request', [BOKRequestController::class, 'store'])->name('bokrequest.store');
-    
+
     Route::get('/', [HomePageController::class, 'index'])->name('/');
-    
+
     Route::post('/readytodeparturedate.store.or.update', [ReadyToDepartureDateController::class, 'storeOrUpdate'])->name('readytodeparturedate.store.or.update');
     Route::patch('/readytodeparturedate.destroy', [ReadyToDepartureDateController::class, 'destroy'])->name('readytodeparturedate.destroy');
-    
+
     Route::post('/contactform.store', [ContactFormController::class, 'store'])->name('contactform.store');
     Route::post('/caretakerrecommendation.store', [CaretakerRecommendationController::class, 'store'])->name('caretakerrecommendation.store');
 

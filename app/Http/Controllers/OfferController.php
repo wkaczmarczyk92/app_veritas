@@ -10,19 +10,24 @@ use Inertia\Inertia;
 
 use Exception;
 
-
-use App\Mail\OfferEmail;
-use App\Models\User;
-
-use Illuminate\Support\Facades\Mail;
+use App\Services\CRM\OfferService;
+use App\Services\CRM\RecruiterService;
 
 class OfferController extends Controller
 {
+    protected OfferService $offer_service;
+    protected RecruiterService $recruiter_service;
+
+    public function __construct(OfferService $offer_service, RecruiterService $recruiter_service) {
+        $this->offer_service = $offer_service;
+        $this->recruiter_service = $recruiter_service;
+    }
+
     public function index() {
         $offers = Offer::with('user.user_profiles')
             ->orderBy('created_at', 'desc')
             ->paginate(50);
-       
+
         return Inertia::render('Admin/Offers', [
             'offers' => $offers
         ]);
@@ -65,7 +70,7 @@ class OfferController extends Controller
                 $offer
             ],
             'caretaker_crm_url' => 'https://local.grupa-veritas.pl/#/opiekunki/' . $user->user_profiles->crt_id_caretaker,
-            'caretaker_app_url' => 'http://app.veritas.pl/uzytkownik/' . $user->id, 
+            'caretaker_app_url' => 'http://app.veritas.pl/uzytkownik/' . $user->id,
         ];
 
         // OfferEmail::$email = 'w.kaczmarczyk@grupa-veritas.pl';
