@@ -50,11 +50,11 @@ console.log(props.latest_offers)
 
     <AdminLayout>
         <template #header>
-            <h2 class="font-semibold text-xl text-gray-200 leading-tight">Pulpit</h2>
+            <h2 class="text-xl font-semibold leading-tight text-gray-200">Pulpit</h2>
         </template>
 
         <div class="py-12">
-            <div class="max-w-full mx-auto sm:px-6 lg:px-8 px-4">
+            <div class="max-w-full px-4 mx-auto sm:px-6 lg:px-8">
                 <Grid4>
                     <Card>
                         <CheckpointBox :levels="levels"></CheckpointBox>
@@ -62,15 +62,14 @@ console.log(props.latest_offers)
                     <Card>
                         <BonusesBox :levels="levels"></BonusesBox>
                     </Card>
-                    <Card class="border border-2 border-blue-500 bg-gray-300">
+                    <Card>
                         <LastLoginBox :last_logins="last_logins"></LastLoginBox>
                     </Card>
                 </Grid4>
 
                 <Grid3>
                     <Card>
-                        <LatestCreatedUsers
-                            :users="users">
+                        <LatestCreatedUsers :users="users">
                         </LatestCreatedUsers>
                     </Card>
                     <Card>
@@ -78,14 +77,12 @@ console.log(props.latest_offers)
                     </Card>
                     <div class="row-span-2">
                         <Card>
-                            <LatestPayoutRequests
-                                :latest_payout_requests="latest_payout_requests">
+                            <LatestPayoutRequests :latest_payout_requests="latest_payout_requests">
                             </LatestPayoutRequests>
                         </Card>
 
                         <Card class="mt-4">
-                            <LatestBOKRequests
-                                :latest_bok_request="latest_bok_request">
+                            <LatestBOKRequests :latest_bok_request="latest_bok_request">
                             </LatestBOKRequests>
                         </Card>
                     </div>
@@ -96,10 +93,10 @@ console.log(props.latest_offers)
 </template>
 
 <style scoped>
-    hr {
-        border-color: #0062c4;
-        border-style: dotted;
-        border-top: none;
-        border-width: 5px;
-    }
+hr {
+    border-color: #0062c4;
+    border-style: dotted;
+    border-top: none;
+    border-width: 5px;
+}
 </style>
