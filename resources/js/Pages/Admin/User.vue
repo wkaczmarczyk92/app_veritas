@@ -50,8 +50,8 @@ const toggle_user_edit = () => {
 
 const view = ref('user');
 
-const data_text = ref('<i class="fa-solid fa-list-check mr-2"></i> Pokaż zgłoszenia do BOK-u i Wnioski o wypłatę');
-const forms_text = ref('<i class="fa-solid fa-user-gear mr-2"></i> Pokaż dane użytkownika.');
+const data_text = ref('<i class="mr-2 fa-solid fa-list-check"></i> Pokaż zgłoszenia do BOK-u i Wnioski o wypłatę');
+const forms_text = ref('<i class="mr-2 fa-solid fa-user-gear"></i> Pokaż dane użytkownika.');
 
 const toggle_view = () => {
     view.value.view_data = !view.value.view_data;
@@ -65,111 +65,104 @@ watch(view, (new_value, old_value) => {
     edit_user.value = false;
 })
 
+const active_breadcrumb = ref('Dane użytkownika')
+
+const breadcrumbs = ref([
+    {
+        title: 'VeritasApp',
+        disabled: false,
+        href: route('dashboard')
+    },
+    {
+        title: 'Użytkownicy',
+        disabled: false,
+        href: route('users')
+    },
+    {
+        title: `${user.value.user_profiles.first_name} ${user.value.user_profiles.last_name}`,
+        disabled: false,
+        href: route('user', props.user.id)
+    },
+    {
+        title: active_breadcrumb.value,
+        disabled: true
+    }
+])
+
+const get_breadcrumbs = computed(() => {
+    console.log(breadcrumbs.value)
+    return breadcrumbs.value
+})
+
 </script>
 
 <template>
     <Head :title="`VeritasApp - ${user.user_profiles.first_name} ${user.user_profiles.last_name}`" />
-    <AdminLayout>        
-        <div class="py-12">
-            <div class="max-w-full mx-auto px-2 sm:px-6 lg:px-16">
-                <div class="flex flex-col justify-between mb-4 gap-4">
-                    <div class="font-bold text-gray-800 lg:text-4xl text-2xl sm:text-3xl username">
+    <AdminLayout>
+        <template #header>
+            <v-breadcrumbs :items="get_breadcrumbs">
+                <template v-slot:divider>
+                    <i class="fa-solid fa-chevron-right"></i>
+                </template>
+            </v-breadcrumbs>
+        </template>
+        <div class="tw-py-12">
+            <div class="tw-max-w-full tw-px-2 lg:tw-px-10">
+                <div class="tw-flex tw-flex-col tw-justify-between tw-gap-4 tw-mb-4">
+                    <div class="tw-text-2xl tw-font-bold tw-text-gray-800 lg:tw-text-4xl sm:tw-text-3xl username">
                         {{ `${user.user_profiles.first_name} ${user.user_profiles.last_name}` }}
                     </div>
-                    <div class="flex flex-col sm:flex-row gap-2 sm:justify-end">
+                    <div class="tw-flex tw-flex-col tw-gap-2 sm:tw-flex-row sm:tw-justify-end">
 
-                        <MButton 
-                            @click="view = 'password_change'" 
-                            add_class="mt-4 md:mt-0 fit-content shadow-xl"
-                            bg="bg-red-700"
-                            hover="hover:bg-red-600"
-                            icon="fa-sharp fa-solid fa-key"
-                            value="Zmiana hasła"
-                            >
+                        <MButton @click="view = 'password_change'; breadcrumbs[3].title = 'Zmiana hasła'"
+                            :add_class="`tw-mt-4 md:tw-mt-0 tw-fit-content tw-shadow-xl`" bg="tw-bg-red-700"
+                            hover="hover:tw-tw-bg-red-600" icon="fa-sharp fa-solid fa-key" value="Zmiana hasła">
                         </MButton>
-                        <MButton 
-                            @click="view = 'bokANDpayout'" 
-                            add_class="mt-4 md:mt-0 fit-content shadow-xl"
-                            bg="bg-amber-700"
-                            hover="hover:bg-amber-600"
-                            icon="fa-solid fa-list-check"
-                            value="Zgłoszenia do BOK-u i Wnioski o wypłatę"
-                            >
+                        <MButton
+                            @click="view = 'bokANDpayout'; breadcrumbs[3].title = 'Zgłoszenia do BOK-u i Wnioski o wypłatę'"
+                            :add_class="`tw-mt-4 md:tw-mt-0 tw-fit-content tw-shadow-xl`" bg="tw-bg-amber-700"
+                            hover="hover:tw-bg-amber-600" icon="fa-solid fa-list-check"
+                            value="Zgłoszenia do BOK-u i Wnioski o wypłatę">
                         </MButton>
 
-                        <MButton 
-                            @click="view = 'forms'" 
-                            add_class="mt-4 md:mt-0 fit-content shadow-xl"
-                            bg="bg-blue-700"
-                            hover="hover:bg-blue-600"    
-                            icon="fa-sharp fa-solid fa-comments"
-                            value="Formularze kontaktowe"
-                            >
+                        <MButton @click="view = 'forms'; breadcrumbs[3].title = 'Formularze kontaktowe'"
+                            :add_class="`tw-mt-4 md:tw-mt-0 tw-fit-content tw-shadow-xl`" bg="tw-bg-blue-700"
+                            hover="hover:tw-bg-blue-600" icon="fa-sharp fa-solid fa-comments" value="Formularze kontaktowe">
                         </MButton>
-                        <MButton 
-                            @click="view = 'family_recommendations'" 
-                            add_class="mt-4 md:mt-0 fit-content shadow-xl"
-                            bg="bg-emerald-700"
-                            hover="hover:bg-emerald-600"         
-                            icon="fa-sharp fa-regular fa-users"
-                            value="Polecenia rodzin"
-                            >
+                        <MButton @click="view = 'family_recommendations'; breadcrumbs[3].title = 'Polecenia rodzin'"
+                            :add_class="`tw-mt-4 md:tw-mt-0 tw-fit-content tw-shadow-xl`" bg="tw-bg-emerald-700"
+                            hover="hover:tw-bg-emerald-600" icon="fa-sharp fa-regular fa-users" value="Polecenia rodzin">
                         </MButton>
-                        <MButton 
-                            @click="view = 'caretaker_recommendations'" 
-                            add_class="mt-4 md:mt-0 fit-content shadow-xl"
-                            bg="bg-pink-700"
-                            hover="hover:bg-pink-600"  
-                            icon="fa-regular fa-user-group"
-                            value="Polecenia opiekunek"
-                            >
+                        <MButton @click="view = 'caretaker_recommendations'; breadcrumbs[3].title = 'Polecenia opiekunek'"
+                            :add_class="`tw-mt-4 md:tw-mt-0 tw-fit-content tw-shadow-xl`" bg="tw-bg-pink-700"
+                            hover="hover:tw-bg-pink-600" icon="fa-regular fa-user-group" value="Polecenia opiekunek">
                         </MButton>
-                        <MButton 
-                            @click="view = 'points_history'" 
-                            add_class="mt-4 md:mt-0 fit-content shadow-xl"
-                            bg="bg-violet-700"
-                            hover="hover:bg-violet-600"  
-                            icon="fa-solid fa-chart-simple"
-                            value="Historia punktów"     
-                            >                            
+                        <MButton @click="view = 'points_history'; breadcrumbs[3].title = 'Historia punktów'"
+                            :add_class="`tw-mt-4 md:tw-mt-0 tw-fit-content tw-shadow-xl`" bg="tw-bg-violet-700"
+                            hover="hover:tw-bg-violet-600" icon="fa-solid fa-chart-simple" value="Historia punktów">
                         </MButton>
-                        <MButton 
-                            @click="view = 'user'" 
-                            add_class="mt-4 md:mt-0 border-gray-800"
-                            bg="bg-gray-800"
-                            hover="hover:bg-gray-700"  
-                            icon="fa-solid fa-user-gear"
-                            value="Dane użytkownika"     
-                            >
+                        <MButton @click="view = 'user'; breadcrumbs[3].title = 'Dane użytkownika'"
+                            :add_class="`tw-mt-4 md:tw-mt-0 tw-border-gray-800`" bg="tw-bg-gray-800"
+                            hover="hover:tw-bg-gray-700" icon="fa-solid fa-user-gear" value="Dane użytkownika">
                         </MButton>
                     </div>
                 </div>
 
                 <Transition name="slide-fade" mode="out-in">
-                    <div v-if="view == 'user'" class="grid grid-cols-1 lg:grid-cols-2 gap-4 md:gap-6">
+                    <div v-if="view == 'user'" class="tw-grid tw-grid-cols-1 tw-gap-4 lg:tw-grid-cols-2 md:tw-gap-6">
                         <div>
                             <Transition name="slide-fade" mode="out-in">
-                                <UserData v-if="!edit_user"
-                                    :user="user"
-                                    @toggle-user="toggle_user_edit"
-                                ></UserData>
-                                <UserEdit v-else
-                                    v-model:user="user"
-                                    @toggle-user="toggle_user_edit"
-                                ></UserEdit>
+                                <UserData v-if="!edit_user" :user="user" @toggle-user="toggle_user_edit"></UserData>
+                                <UserEdit v-else v-model:user="user" @toggle-user="toggle_user_edit"></UserEdit>
                             </Transition>
 
-                            
-                            <UserProfileImage
-                                :user="user"
-                                @update-user-profile-image="user.user_profile_image = $event">
+
+                            <UserProfileImage :user="user" @update-user-profile-image="user.user_profile_image = $event">
                             </UserProfileImage>
                         </div>
-                        
 
-                        <UserPoints
-                            :user="user"
-                            :levels="levels">
+
+                        <UserPoints :user="user" :levels="levels">
                         </UserPoints>
 
                         <!-- <UserPointsHistory
@@ -178,69 +171,56 @@ watch(view, (new_value, old_value) => {
                             ></UserPointsHistory> -->
                     </div>
                     <div v-else-if="view == 'password_change'">
-                        <PasswordChange 
-                            :user="user"></PasswordChange>
+                        <PasswordChange :user="user"></PasswordChange>
                     </div>
 
                     <div v-else-if="view == 'bokANDpayout'">
-                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4 sm:gap-6">
-                        <!-- <div class="grid grid-cols-1 md:grid-cols-2 gap-4"> -->
+                        <div class="tw-grid tw-grid-cols-1 tw-gap-4 md:tw-grid-cols-2 sm:tw-gap-6">
+                            <!-- <div class="grid grid-cols-1 gap-4 md:grid-cols-2"> -->
                             <Suspense>
-                                <UserPayoutRequests #default
-                                    :user="user"
-                                    ></UserPayoutRequests>
+                                <UserPayoutRequests #default :user="user"></UserPayoutRequests>
                                 <template #fallback>
-                                    <Loader class="grow"></Loader>
+                                    <Loader class="tw-grow"></Loader>
                                 </template>
                             </Suspense>
                             <Suspense>
-                                <UserBOKRequests #default
-                                    :user="user"
-                                    ></UserBOKRequests>
+                                <UserBOKRequests #default :user="user"></UserBOKRequests>
                                 <template #fallback>
-                                    <Loader class="grow"></Loader>
+                                    <Loader class="tw-grow"></Loader>
                                 </template>
                             </Suspense>
                         </div>
                     </div>
                     <div v-else-if="view == 'forms'">
                         <Suspense>
-                            <UserContactForms #default
-                                :user="user"
-                                ></UserContactForms>
+                            <UserContactForms #default :user="user"></UserContactForms>
                             <template #fallback>
-                                <Loader class="grow"></Loader>
+                                <Loader class="tw-grow"></Loader>
                             </template>
                         </Suspense>
                     </div>
                     <div v-else-if="view == 'family_recommendations'">
                         <Suspense>
-                            <UserFamilyRecommendations #default
-                                :user="user"
-                                ></UserFamilyRecommendations>
+                            <UserFamilyRecommendations #default :user="user"></UserFamilyRecommendations>
                             <template #fallback>
-                                <Loader class="grow"></Loader>
+                                <Loader class="tw-grow"></Loader>
                             </template>
                         </Suspense>
                     </div>
                     <div v-else-if="view == 'points_history'">
-                        <UserPointsHistory #default
-                            v-model:user="user"
-                            :user_points_records_count="user_points_records_count"
-                        ></UserPointsHistory>
+                        <UserPointsHistory #default v-model:user="user"
+                            :user_points_records_count="user_points_records_count"></UserPointsHistory>
                     </div>
                     <div v-else-if="view == 'caretaker_recommendations'">
                         <Suspense>
-                            <UserCaretakerRecommendations #default
-                                :user="user"
-                                ></UserCaretakerRecommendations>
+                            <UserCaretakerRecommendations #default :user="user"></UserCaretakerRecommendations>
                             <template #fallback>
-                                <Loader class="grow"></Loader>
+                                <Loader class="tw-grow"></Loader>
                             </template>
                         </Suspense>
                     </div>
                 </Transition>
-                
+
 
             </div>
         </div>

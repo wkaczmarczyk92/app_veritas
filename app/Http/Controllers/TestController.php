@@ -55,14 +55,16 @@ class TestController extends Controller
     protected RecruiterService $recruiter_service;
     protected MailService $mail_service;
 
-    public function __construct(RecruiterService $recruiter_service, MailService $mail_service) {
+    public function __construct(RecruiterService $recruiter_service, MailService $mail_service)
+    {
         $this->recruiter_service = $recruiter_service;
         $this->mail_service = $mail_service;
     }
 
-    public function email_offer() {
+    public function email_offer()
+    {
         $users = User::with(['user_profiles', 'offers'])
-            ->whereHas('offers', function($query) {
+            ->whereHas('offers', function ($query) {
                 $query->where('notification_send', false);
             })->get();
 
@@ -71,7 +73,8 @@ class TestController extends Controller
         Offer::whereIn('id', $offer_ids)->update(['notification_send' => true]);
     }
 
-    public function manual_update() {
+    public function manual_update()
+    {
         set_time_limit(0);
 
         $current_date = date('Y-m-d');
@@ -160,12 +163,14 @@ class TestController extends Controller
         ]);
     }
 
-    public function svg_test() {
+    public function svg_test()
+    {
         return Inertia::render('Test');
     }
 
 
-    public function offers() {
+    public function offers()
+    {
         $user = Auth::user();
         $user->load('user_profiles', 'ready_to_departure_dates');
         // dd($user->ready_to_departure_dates->departure_date);
@@ -173,14 +178,14 @@ class TestController extends Controller
         // $user->load('user_profiles');
         // dd($user);
         // // pobieranie id jezyka opiekunki
-        $caretaker = CRMCaretaker::with(['data' => function($query) {
+        $caretaker = CRMCaretaker::with(['data' => function ($query) {
             $query->select('crt_id_data_caretaker', 'crt_id_language');
         }])
-        ->where('crt_id_caretaker', 21)
-        ->has('data')
-        ->orderBy('crt_id_caretaker')
-        // ->first()
-        ->get();
+            ->where('crt_id_caretaker', 21)
+            ->has('data')
+            ->orderBy('crt_id_caretaker')
+            // ->first()
+            ->get();
 
         dd($caretaker->first());
 
@@ -203,7 +208,8 @@ class TestController extends Controller
     }
 
 
-    public function mowgli() {
+    public function mowgli()
+    {
         $users = User::whereNotNull('pesel')->get();
 
         foreach ($users as $user) {
@@ -235,14 +241,15 @@ class TestController extends Controller
 
 
 
-    public function overdueCRON() {
+    public function overdueCRON()
+    {
         set_time_limit(0);
         return;
         $current_date = date('Y-m-d');
         // $year = date('Y', strtotime($current_date . " -1 month"));
         // $month = date('m', strtotime($current_date . " -1 month"));
         $year = '2023';
-        $month = '01';
+        $month = '08';
 
         $curl_request = new CURLRequest;
 
@@ -298,7 +305,8 @@ class TestController extends Controller
                     'points' => $days,
                     'days' => $days,
                     'auto' => true,
-                    'type' => 1
+                    'type' => 1,
+                    'comment' => 'punkty za sierpień'
                 ]);
 
                 $user->user_profiles->save();
@@ -324,7 +332,8 @@ class TestController extends Controller
         ]);
     }
 
-    public function createUser() {
+    public function createUser()
+    {
         $user = User::create([
             'email' => 'i.salamonowicz@grupa-veritas.pl',
             'password' => Hash::make('!;:>%eC*Zy_9WF4F'),
@@ -394,7 +403,8 @@ class TestController extends Controller
 
 
 
-    public function sms_test() {
+    public function sms_test()
+    {
         $cron = new CRONSendSMSWithPassword;
         $cron->handle();
     }
@@ -404,18 +414,20 @@ class TestController extends Controller
         Mail::to('wojciech.kaczmarczyk11@gmail.com')->send(
             new TestMail()
         );
-
     }
 
-    public function php_version() {
+    public function php_version()
+    {
         phpinfo();
     }
 
-    public function command() {
+    public function command()
+    {
         return Inertia::render('Command');
     }
 
-    public function callCommand(Request $request) {
+    public function callCommand(Request $request)
+    {
         if ($request->command_type == 'artisan') {
 
 
@@ -442,20 +454,19 @@ class TestController extends Controller
         }
     }
 
-    public function up() {
+    public function up()
+    {
         Artisan::call('up');
         return response()->json([
             'msg' => Artisan::output()
         ]);
     }
 
-    public function down() {
+    public function down()
+    {
         Artisan::call('down', ['--secret' => '1630542a-246b-4b66-afa1-dd72a4c43515']);
         return response()->json([
             'msg' => Artisan::output()
         ]);
     }
-
-
-
 }

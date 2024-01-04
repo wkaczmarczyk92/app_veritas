@@ -16,40 +16,40 @@ defineProps({
 </script>
 
 <template>
-    <div class="bg-gray-100 shadow-xl rounded p-10">
-        <div class="flex flex-row">
-            <h2 class="font-semibold text-xl leading-tight grow"><i
-                    class="fa-solid fa-chart-user text-green"></i> Zebrane punkty</h2>
-            <div class="grow text-right">Poziom - <span
-                    :class="levelColor(user.user_profiles.level)"><b>{{ level(levels,
-                        user.user_profiles.level).toUpperCase() }}</b></span></div>
+    <div class="tw-bg-gray-100 tw-shadow-xl tw-rounded tw-p-10">
+        <div class="tw-flex tw-flex-row">
+            <h2 class="tw-font-semibold tw-text-xl tw-leading-tight tw-grow"><i
+                    class="fa-solid fa-chart-user tw-text-green"></i> Zebrane punkty</h2>
+            <div class="tw-grow tw-text-right">Poziom - <span :class="levelColor(user.user_profiles.level)"><b>{{
+                level(levels,
+                    user.user_profiles.level).toUpperCase() }}</b></span></div>
         </div>
-        <div class="flex flex-row mt-6">
-            <div class="grow border-b border-dotted border-gray-500">Aktualna ilość punktów</div>
-            <div class="grow text-right border-b border-dotted border-gray-500">{{
+        <div class="tw-flex tw-flex-row tw-mt-6">
+            <div class="tw-grow tw-border-b tw-border-dotted tw-border-gray-500">Aktualna ilość punktów</div>
+            <div class="tw-grow tw-text-right tw-border-b tw-border-dotted tw-border-gray-500">{{
                 user.user_profiles.current_points ?? '-' }}</div>
         </div>
-        <div class="flex flex-row mt-3">
-            <div class="grow border-b border-dotted border-gray-500">Łączna ilość punktów</div>
-            <div class="grow text-right border-b border-dotted border-gray-500">{{
+        <div class="tw-flex tw-flex-row tw-mt-3">
+            <div class="tw-grow tw-border-b tw-border-dotted tw-border-gray-500">Łączna ilość punktów</div>
+            <div class="tw-grow tw-text-right tw-border-b tw-border-dotted tw-border-gray-500">{{
                 user.user_profiles.total_points ?? '-' }}</div>
         </div>
-        <div class="flex flex-row mt-3">
-            <div class="grow border-b border-dotted border-gray-500">Łączna ilość przepracowanych dni
+        <div class="tw-flex tw-flex-row tw-mt-3">
+            <div class="tw-grow tw-border-b tw-border-dotted tw-border-gray-500">Łączna ilość przepracowanych dni
             </div>
-            <div class="grow text-right border-b border-dotted border-gray-500">{{
+            <div class="tw-grow tw-text-right tw-border-b tw-border-dotted tw-border-gray-500">{{
                 user.user_profiles.total_days ?? '-' }}</div>
         </div>
 
-        <h2 class="font-semibold text-xl leading-tight mt-14"><i class="fa-solid fa-user-headset"></i>
+        <h2 class="tw-font-semibold tw-text-xl tw-leading-tight tw-mt-14"><i class="fa-solid fa-user-headset"></i>
             Dane rekrutera</h2>
-        <div class="flex flex-row mt-6">
-            <div class="grow">Imię</div>
-            <div class="grow text-right">{{ user.user_profiles.recruiter_first_name ?? '-' }}</div>
+        <div class="tw-flex tw-flex-row tw-mt-6">
+            <div class="tw-grow">Imię</div>
+            <div class="tw-grow tw-text-right">{{ user.user_profiles.recruiter_first_name ?? '-' }}</div>
         </div>
-        <div class="flex flex-row mt-1">
-            <div class="grow">Nazwisko</div>
-            <div class="grow text-right">{{ user.user_profiles.recruiter_last_name ?? '-' }}</div>
+        <div class="tw-flex tw-flex-row tw-mt-1">
+            <div class="tw-grow">Nazwisko</div>
+            <div class="tw-grow tw-text-right">{{ user.user_profiles.recruiter_last_name ?? '-' }}</div>
         </div>
     </div>
 </template>

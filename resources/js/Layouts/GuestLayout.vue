@@ -6,15 +6,15 @@ import AlertWrapper from '@/Components/Alerts/AlertWrapper.vue';
 
 <template>
     <AlertWrapper></AlertWrapper>
-    <div class="min-h-screen flex flex-col sm:justify-center items-center sm:items-start sm:pl-36 px-4 pt-6 sm:pt-0 bg-gray-800 login-bg">
-        
+    <div
+        class="tw-min-h-screen tw-flex tw-flex-col sm:tw-justify-center tw-items-center sm:tw-items-start sm:tw-pl-36 tw-px-4 tw-pt-6 sm:tw-pt-0 tw-bg-gray-800 login-bg">
+
 
         <div
-            class="w-full sm:max-w-md mt-6 px-6 py-4 bg-gray-100 shadow-xl overflow-hidden sm:rounded-lg"
-        >
-            <div class="flex flex-row justify-center mb-10 mt-4">
+            class="tw-w-full sm:tw-max-w-md tw-mt-6 tw-px-6 tw-py-4 tw-bg-gray-100 tw-shadow-xl tw-overflow-hidden sm:tw-rounded-lg">
+            <div class="tw-flex tw-flex-row tw-justify-center tw-mb-10 tw-mt-4">
                 <Link href="/">
-                    <ApplicationLogo class="w-auto h-24 fill-current text-gray-500" />
+                <ApplicationLogo class="tw-w-auto tw-h-24 tw-fill-current tw-text-gray-500" />
                 </Link>
             </div>
             <slot />

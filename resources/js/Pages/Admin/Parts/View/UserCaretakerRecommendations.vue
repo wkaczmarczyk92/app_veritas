@@ -62,77 +62,78 @@ const username = (form) => {
 
 
 <template>
-     <AlertDanger v-model="pagination_alert.show" v-if="pagination_alert.show" :position_fixed="true">{{ pagination_alert.msg }}</AlertDanger>
-     <div class="bg-gray-100 shadow-xl rounded p-10">
-        <h2 class="font-semibold text-2xl leading-tight text-center">
-            <i class="fa-regular fa-user-group text-pink-600"></i>
+    <AlertDanger v-model="pagination_alert.show" v-if="pagination_alert.show" :position_fixed="true">{{ pagination_alert.msg
+    }}</AlertDanger>
+    <div class="tw-bg-gray-100 tw-shadow-xl tw-rounded tw-p-10">
+        <h2 class="tw-font-semibold tw-text-2xl tw-leading-tight tw-text-center">
+            <i class="fa-regular fa-user-group tw-text-pink-600"></i>
             Polecenia opiekunek
         </h2>
-        <div v-if="forms.length <= 0" class="p-4 pt-0">
-            <AlertInfo class="mt-10">Brak poleconych opiekunek.</AlertInfo>
+        <div v-if="forms.length <= 0" class="tw-p-4 tw-pt-0">
+            <AlertInfo class="tw-mt-10">Brak poleconych opiekunek.</AlertInfo>
         </div>
-        <div v-else>            
+        <div v-else>
             <!-- <div> -->
-            <PaginationNoReload
-                :pagination="data"
-                class="mt-10"
-                @show-alert="show_pagination_alert"
-                @reload-request-by-url="reload_by_url"
-                @reload-request-by-page-number="reload_by_page_number"
-            ></PaginationNoReload>
-            <div class="overflow-x-auto table-container" :class="data.total > data.per_page ? '' : 'mt-10'">
-            <!-- <div class="overflow-x-auto table-container mt-10"> -->
-                <table class="text-center w-full border-collapse">
+            <PaginationNoReload :pagination="data" class="tw-mt-10" @show-alert="show_pagination_alert"
+                @reload-request-by-url="reload_by_url" @reload-request-by-page-number="reload_by_page_number">
+            </PaginationNoReload>
+            <div class="tw-overflow-x-auto table-container" :class="data.total > data.per_page ? '' : 'tw-mt-10'">
+                <!-- <div class="overflow-x-auto table-container mt-10"> -->
+                <table class="tw-text-center tw-w-full tw-border-collapse">
                     <thead>
-                        <tr class="table-tr text-xs">
+                        <tr class="table-tr tw-text-xs">
                             <th
-                                class="py-4 px-6 bg-grey-lightest font-bold uppercase text-grey-dark border-b border-grey-light">
+                                class="tw-py-4 tw-px-6 tw-bg-grey-lightest tw-font-bold tw-uppercase tw-text-grey-dark tw-border-b tw-border-grey-light">
                                 #ID
                             </th>
                             <th
-                                class="py-4 px-6 bg-grey-lightest font-bold uppercase text-grey-dark border-b border-grey-light text-left">
+                                class="tw-py-4 tw-px-6 tw-bg-grey-lightest tw-font-bold tw-uppercase tw-text-grey-dark tw-border-b tw-border-grey-light tw-text-left">
                                 Imię i nazwisko
                             </th>
                             <th
-                                class="py-4 px-6 bg-grey-lightest font-bold uppercase text-grey-dark border-b border-grey-light">
+                                class="tw-py-4 tw-px-6 tw-bg-grey-lightest tw-font-bold tw-uppercase tw-text-grey-dark tw-border-b tw-border-grey-light">
                                 E-mail
                             </th>
                             <th
-                                class="py-4 px-6 bg-grey-lightest font-bold uppercase text-grey-dark border-b border-grey-light">
+                                class="tw-py-4 tw-px-6 tw-bg-grey-lightest tw-font-bold tw-uppercase tw-text-grey-dark tw-border-b tw-border-grey-light">
                                 Nr telefonu
                             </th>
                             <th
-                                class="py-4 px-6 bg-grey-lightest font-bold uppercase text-grey-dark border-b border-grey-light">
+                                class="tw-py-4 tw-px-6 tw-bg-grey-lightest tw-font-bold tw-uppercase tw-text-grey-dark tw-border-b tw-border-grey-light">
                                 Przejdź do polecenia
                             </th>
                             <th
-                                class="py-4 px-6 bg-grey-lightest font-bold uppercase text-grey-dark border-b border-grey-light">
+                                class="tw-py-4 tw-px-6 tw-bg-grey-lightest tw-font-bold tw-uppercase tw-text-grey-dark tw-border-b tw-border-grey-light">
                                 Wypłacono bonus?
                             </th>
                             <th
-                                class="py-4 px-6 bg-grey-lightest font-bold uppercase text-grey-dark border-b border-grey-light">
+                                class="tw-py-4 tw-px-6 tw-bg-grey-lightest tw-font-bold tw-uppercase tw-text-grey-dark tw-border-b tw-border-grey-light">
                                 Data utworzenia
                             </th>
                         </tr>
                     </thead>
                     <tbody>
-                        <tr class="hover:bg-grey-lighter" v-for="(form, index) in forms">
-                            <td class="py-4 px-6 border-b border-grey-light">{{ form.id }}</td>
-                            <td class="py-4 px-6 border-b border-grey-light text-left" v-html="username(form)"></td>
-                            <td class="py-4 px-6 border-b border-grey-light">{{ form.caretaker_email ?? '-' }}</td>
-                            <td class="py-4 px-6 border-b border-grey-light">{{ form.caretaker_phone_number ?? '-' }}</td>
-                            <!-- <td class="py-4 px-6 border-b border-grey-light">{{ form.caretaker_phone_number }}</td> -->
-                            <td class="py-4 px-6 border-b border-grey-light">
+                        <tr class="hover:tw-bg-grey-lighter" v-for="(form, index) in forms">
+                            <td class="tw-py-4 tw-px-6 tw-border-b tw-border-grey-light">{{ form.id }}</td>
+                            <td class="tw-py-4 tw-px-6 tw-border-b tw-border-grey-light text-left" v-html="username(form)">
+                            </td>
+                            <td class="tw-py-4 tw-px-6 tw-border-b tw-border-grey-light">{{ form.caretaker_email ?? '-' }}
+                            </td>
+                            <td class="tw-py-4 tw-px-6 tw-border-b tw-border-grey-light">{{ form.caretaker_phone_number ??
+                                '-' }}</td>
+                            <!-- <td class="tw-py-4 tw-px-6 tw-border-b tw-border-grey-light">{{ form.caretaker_phone_number }}</td> -->
+                            <td class="tw-py-4 tw-px-6 tw-border-b tw-border-grey-light">
                                 <a class="edit-user" :href="`/polecenia-opiekunek/${form.id}`">
-                                    <i class="fa-solid fa-file-pen text-xl"></i>
+                                    <i class="fa-solid fa-file-pen tw-text-xl"></i>
                                 </a>
                             </td>
-                            <td class="py-4 px-6 border-b border-grey-light" v-html="icon.bonus_payout(form.bonus_payout_completed)"></td>
-                            <td class="py-4 px-6 border-b border-grey-light">{{ format(form.created_at) }}</td>
+                            <td class="tw-py-4 tw-px-6 tw-border-b tw-border-grey-light"
+                                v-html="icon.bonus_payout(form.bonus_payout_completed)"></td>
+                            <td class="tw-py-4 tw-px-6 tw-border-b tw-border-grey-light">{{ format(form.created_at) }}</td>
                         </tr>
                     </tbody>
                 </table>
-            </div>            
+            </div>
             <!-- <PaginationNoReload
                 :pagination="data[0]"
                 class="mt-10"

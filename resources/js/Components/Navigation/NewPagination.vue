@@ -41,8 +41,8 @@ const goto_page_ready = () => {
     return (goto_page.value > 0 &&
         goto_page.value <= props.pagination.last_page &&
         goto_page.value != props.pagination.current_page)
-            ? true
-            : false;
+        ? true
+        : false;
 }
 
 const createURL = (type = 'prev') => {
@@ -59,21 +59,32 @@ const createURL = (type = 'prev') => {
 
 </script>
 
+<style>
+#pagination-input {
+    min-width: 150px !important;
+}
+</style>
+
 <template>
-    <div class="flex flex-col md:flex-row mb-4" v-if="pagination.total > pagination.per_page">
-        <nav class="flex">
+    <div class="tw-flex tw-flex-col tw-justify-start tw-gap-2 tw-mb-4 tw-items"
+        v-if="pagination.total > pagination.per_page">
+        <nav class="tw-flex tw-gap-2">
             <PrevPage :url="createURL()"></PrevPage>
-            <DisplayCurrentPaginationPage
-                :current_page="pagination.current_page"
-                :last_page="pagination.last_page"
-            ></DisplayCurrentPaginationPage>
+            <DisplayCurrentPaginationPage :current_page="pagination.current_page" :last_page="pagination.last_page">
+            </DisplayCurrentPaginationPage>
             <NextPage :url="createURL('next')"></NextPage>
         </nav>
-        <div class="flex md:justify-center mt-3 md:mt-0">
-            <div class="flex">
-                <input v-model="goto_page" type="number" class="border-2 border-gray-400 py-2" placeholder="Numer strony">
-                <button type="submit" class="btn-bg text-white font-bold py-2 px-4 ml-2" @click="goto()">Przejdź</button>
+        <div class="tw-flex tw-flex-row tw-items-center tw-gap-2">
+            <div>
+                <v-text-field v-model="goto_page" label="numer strony" id="pagination-input" hide-details
+                    class="tw-shadow-lg"></v-text-field>
             </div>
+            <!-- <input v-model="goto_page" type="number" class="py-2 border-2 border-gray-400" placeholder="Numer strony"> -->
+            <v-btn variant="tonal" @click="goto()" class="tw-shadow-lg" color="#22c55e">
+                Przejdź
+            </v-btn>
         </div>
     </div>
 </template>
+
+

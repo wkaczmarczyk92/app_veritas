@@ -41,12 +41,6 @@ const download = async () => {
 </script>
 
 <template>
-    <MButton
-        @click="download"
-        icon="fa-solid fa-cloud-arrow-down"
-        :value="btn_value"
-        :disabled="disabled"
-        bg="bg-fuchsia-800"
-        hover="hover:bg-fuchsia-700"
-    ></MButton>
+    <MButton @click="download" icon="fa-solid fa-cloud-arrow-down" :value="btn_value" :disabled="disabled"
+        bg="tw-bg-fuchsia-800" hover="hover:tw-bg-fuchsia-700"></MButton>
 </template>

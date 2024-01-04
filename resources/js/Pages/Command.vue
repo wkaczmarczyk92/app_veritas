@@ -2,33 +2,42 @@
     <Head title="VeritasApp - konsola" />
     <AdminLayout>
         <template #header>
-            <h2 class="font-semibold text-xl text-gray-200 leading-tight">Konsola</h2>
+            <!-- <h2 class="text-xl font-semibold leading-tight text-gray-200">Użytkownicy</h2> -->
+            <v-breadcrumbs :items="breadcrumbs">
+                <template v-slot:divider>
+                    <i class="fa-solid fa-chevron-right"></i>
+                </template>
+            </v-breadcrumbs>
         </template>
 
-        <div class="py-12">
-            <div class="max-w-7xl mx-auto">
-                <div class="flex flex-col gap-4 bg-gray-200 px-6 py-4">
+        <div class="tw-py-12">
+            <div class="tw-max-w-7xl tw-mx-auto">
+                <div class="tw-flex tw-flex-col tw-gap-4 tw-bg-gray-200 tw-px-6 tw-py-4">
                     <label for="">Artisan:</label>
                     <input type="text" v-model="artisan_call">
-                    <button class="bg-green-700 hover:bg-green-800 w-fit px-4 text-gray-200" @click="artisanCall()">execute</button>
+                    <button class="tw-bg-green-700 hover:tw-bg-green-800 tw-w-fit tw-px-4 tw-text-gray-200"
+                        @click="artisanCall()">execute</button>
                     <p class="">
                         <span>output:</span>
                         {{ output.artisan }}
                     </p>
                 </div>
-                <div class="flex flex-col gap-4 bg-gray-200 px-6 py-4 mt-20">
+                <div class="tw-flex tw-flex-col tw-gap-4 tw-bg-gray-200 tw-px-6 tw-py-4 tw-mt-20">
                     <label for="">Przerwa(1630542a-246b-4b66-afa1-dd72a4c43515):</label>
-                    <button class="bg-green-700 hover:bg-green-800 w-fit px-4 text-gray-200" @click="down()">down</button>
-                    <button class="bg-green-700 hover:bg-green-800 w-fit px-4 text-gray-200" @click="up()">up</button>
+                    <button class="tw-bg-green-700 hover:tw-bg-green-800 tw-w-fit tw-px-4 tw-text-gray-200"
+                        @click="down()">down</button>
+                    <button class="tw-bg-green-700 hover:tw-bg-green-800 tw-w-fit tw-px-4 tw-text-gray-200"
+                        @click="up()">up</button>
                     <p>
                         <span>output:</span>
                         {{ output.maintenance }}
                     </p>
                 </div>
-                <div class="flex flex-col gap-4 mt-20 bg-gray-200 px-6 py-4">
+                <div class="tw-flex tw-flex-col tw-gap-4 tw-mt-20 tw-bg-gray-200 tw-px-6 tw-py-4">
                     <label for="">Call class data:</label>
                     <input type="text" v-model="class_call">
-                    <button class="bg-green-700 hover:bg-green-800 w-fit px-4 text-gray-200" @click="classCall()">execute</button>
+                    <button class="tw-bg-green-700 hover:tw-bg-green-800 tw-w-fit tw-px-4 tw-text-gray-200"
+                        @click="classCall()">execute</button>
                     <p>
                         <span>output:</span>
                         {{ output.callback }}
@@ -100,6 +109,17 @@ const classCall = async () => {
     }
 }
 
+const breadcrumbs = [
+    {
+        title: 'VeritasApp',
+        disabled: false,
+        href: route('dashboard')
+    },
+    {
+        title: 'Konsola',
+        disabled: true,
+    }
+]
 
 
 </script>

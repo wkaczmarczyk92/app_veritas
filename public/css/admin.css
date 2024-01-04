@@ -34,6 +34,11 @@
   color: var(--color-gold);
 }
 
+.table-tr {
+  background-color: var(--main-color);
+  color: #fff;
+}
+
 .active-navbar-item {
   border-color: var(--main-color);
 }

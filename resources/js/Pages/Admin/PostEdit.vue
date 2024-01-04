@@ -53,7 +53,7 @@ const submit = () => {
     post.value.end_at = format(post.value.end_at);
     axios.patch(route('post.update', {
         id: post.value.id
-    }), {...post.value}).then(response => {
+    }), { ...post.value }).then(response => {
         console.log(response);
 
         if (!response.data.success) {
@@ -76,6 +76,22 @@ const closeSuccess = () => {
 
 const success = ref(false);
 
+const breadcrumbs = [
+    {
+        title: 'VeritasApp',
+        disabled: false,
+        href: route('dashboard')
+    },
+    {
+        title: 'Wszystkie posty',
+        disabled: false,
+        href: route('post.index')
+    },
+    {
+        title: 'Edytuj post #' + props.post.id,
+        disabled: true,
+    }
+]
 
 </script>
 
@@ -84,84 +100,73 @@ const success = ref(false);
     <AdminLayout>
         <!-- <AlertSuccess :position_fixed="true" v-model="success" v-if="success">Post został zaktualizowany.</AlertSuccess> -->
         <template #header>
-            <h2 class="font-semibold text-xl text-gray-200 leading-tight">Edytuj post</h2>
+            <!-- <h2 class="text-xl font-semibold leading-tight text-gray-200">Użytkownicy</h2> -->
+            <v-breadcrumbs :items="breadcrumbs">
+                <template v-slot:divider>
+                    <i class="fa-solid fa-chevron-right"></i>
+                </template>
+            </v-breadcrumbs>
         </template>
-        <div class="py-12">
-            <div class="max-w-8xl sm:px-6 px-4 lg:px-8">
-                <div class="bg-gray-100 shadow-xl rounded sm:rounded-lg px-6 sm:px-20 pt-16 pb-8 sm:pb-12">
-                    <div class="flex flex-col sm:flex-row justify-between">
-                        <h2 class="text-3xl text-gray-800 font-bold">
-                            <i class="fa-regular fa-file-pen text-purple-600"></i>
+        <div class="tw-py-12">
+            <div class="tw-px-4 tw-max-w-8xl sm:tw-px-6 lg:tw-px-8">
+                <div
+                    class="tw-px-6 tw-pt-16 tw-pb-8 tw-bg-gray-100 tw-rounded tw-shadow-xl sm:tw-rounded-lg sm:tw-px-20 sm:tw-pb-12">
+                    <div class="tw-flex tw-flex-col tw-justify-between sm:tw-flex-row">
+                        <h2 class="tw-text-3xl tw-font-bold tw-text-gray-800">
+                            <i class="tw-text-purple-600 fa-regular fa-file-pen"></i>
                             Edytuj post
                         </h2>
-                        <div class="mt-2">
-                            <a :href="route('post.index')" class="text-blue-600 hover:text-blue-800 hover:cursor-pointer">
-                                <i class="fa-solid fa-arrow-left mr-1"></i>
+                        <div class="tw-mt-2">
+                            <a :href="route('post.index')"
+                                class="tw-text-blue-600 hover:tw-text-blue-800 hover:tw-cursor-pointer">
+                                <i class="tw-mr-1 fa-solid fa-arrow-left"></i>
                                 Wróć do wszystkich postów
                             </a>
                         </div>
                     </div>
-                    
-                    <hr class="my-4">
-                    <InputLabel value="Tytuł"></InputLabel>
-                    <TextInput
-                        type="text"
-                        class="mt-1 block w-full"
-                        v-model="post.title"
-                        placeholder="Tytuł..."
-                    />                        
-                    <InputError class="mt-2" :message="errors.title ? errors.title[0] : ''" />
 
-                    <div class="flex flex-col sm:flex-row gap-6 mt-6">
-                        <div class="grow">
-                            <InputLabel class="mb-2" value="Początek publikacji"></InputLabel>
-                            <VueDatePicker 
-                                v-model="post.start_at" 
-                                :format="format" 
-                                :enable-time-picker="false"
-                                auto-apply
-                            >
+                    <hr class="tw-my-4">
+                    <InputLabel value="Tytuł"></InputLabel>
+                    <TextInput type="text" class="tw-block tw-w-full tw-mt-1" v-model="post.title" placeholder="Tytuł..." />
+                    <InputError class="tw-mt-2" :message="errors.title ? errors.title[0] : ''" />
+
+                    <div class="tw-flex tw-flex-col tw-gap-6 tw-mt-6 sm:tw-flex-row">
+                        <div class="tw-grow">
+                            <InputLabel class="tw-mb-2" value="Początek publikacji"></InputLabel>
+                            <VueDatePicker v-model="post.start_at" :format="format" :enable-time-picker="false" auto-apply>
                             </VueDatePicker>
-                            <InputError class="mt-2" :message="errors.start_at ? errors.start_at[0] : ''" />
+                            <InputError class="tw-mt-2" :message="errors.start_at ? errors.start_at[0] : ''" />
                         </div>
-                        <div class="grow">
-                            <InputLabel class="mb-2" value="Koniec publikacji"></InputLabel>
-                            <VueDatePicker 
-                                v-model="post.end_at" 
-                                :format="format" 
-                                :enable-time-picker="false"
-                                auto-apply
-                            >
+                        <div class="tw-grow">
+                            <InputLabel class="tw-mb-2" value="Koniec publikacji"></InputLabel>
+                            <VueDatePicker v-model="post.end_at" :format="format" :enable-time-picker="false" auto-apply>
                             </VueDatePicker>
-                            <InputError class="mt-2" :message="errors.end_at ? errors.end_at[0] : ''" />
+                            <InputError class="tw-mt-2" :message="errors.end_at ? errors.end_at[0] : ''" />
                         </div>
                     </div>
 
-                    <InputLabel class="mb-2 mt-6" value="Typ posta"></InputLabel>
-                    <SelectInput
-                        v-model="post.label_id"
-                        :options="post_labels"
-                        name_string="name"
-                    ></SelectInput>
-                    <InputError class="mt-2" :message="errors.label_id ? errors.label_id[0] : ''" />
+                    <InputLabel class="tw-mt-6 tw-mb-2" value="Typ posta"></InputLabel>
+                    <SelectInput v-model="post.label_id" :options="post_labels" name_string="name"></SelectInput>
+                    <InputError class="tw-mt-2" :message="errors.label_id ? errors.label_id[0] : ''" />
 
-                    <InputLabel class="mb-2 mt-6" value="Treść posta"></InputLabel>
-                    
+                    <InputLabel class="tw-mt-6 tw-mb-2" value="Treść posta"></InputLabel>
+
                     <div>
-                        <QuillEditor theme="snow" toolbar="full" v-model:content="post.body" contentType="html"/>
+                        <QuillEditor theme="snow" toolbar="full" v-model:content="post.body" contentType="html" />
                         <InputError class="mt-2" :message="errors.body ? errors.body[0] : ''" />
                     </div>
 
-                    <div class="flex flex-row gap-2 my-2">
+                    <div class="tw-flex tw-flex-row tw-gap-2 tw-my-2">
                         <label>
                             <Checkbox @change="toggle_type($event)" v-model:checked="checked"></Checkbox>
-                            <span class="ml-2 text-sm text-gray-600">Szkic</span>
+                            <span class="tw-ml-2 tw-text-sm tw-text-gray-600">Szkic</span>
                         </label>
                     </div>
 
 
-                    <SButton icon="<i class='fa-sharp fa-solid fa-floppy-disk-circle-arrow-right mr-2'></i>" class="mt-6" value="Aktualizuj post" @click="submit"></SButton>
-                    
+                    <SButton icon="<i class='tw-mr-2 fa-sharp fa-solid fa-floppy-disk-circle-arrow-right'></i>"
+                        class="tw-mt-6" value="Aktualizuj post" @click="submit"></SButton>
+
                 </div>
             </div>
         </div>

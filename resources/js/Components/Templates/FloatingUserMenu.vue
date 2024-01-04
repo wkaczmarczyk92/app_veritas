@@ -11,40 +11,30 @@ defineEmits([
 </script>
 
 <template>
-    <teleport to='body' >
-        <div class="floating-icon-container z-30">
-            <div class="floating-icon flex flex-col md:flex-row gap-2">
-                <div class="text-right">
-                    <ExpandedButton
-                        icon="bok-icon-custom"
-                        value="Wyślij zgłoszenie"
-                        type="submit"
-                        add_class="expanded-button-xxx bok-icon bg-gradient-to-tr from-red-500 to-red-800 hover:from-red-600 hover:to-red-900 shadow-xl border border-solid border-red-400"
+    <teleport to='body'>
+        <div class="floating-icon-container tw-z-30">
+            <div class="floating-icon tw-flex tw-flex-col md:tw-flex-row tw-gap-2">
+                <div class="tw-text-right">
+                    <ExpandedButton icon="bok-icon-custom" value="Wyślij zgłoszenie" type="submit"
+                        add_class="expanded-button-xxx bok-icon tw-bg-gradient-to-tr tw-from-red-500 tw-to-red-800 hover:tw-from-red-600 hover:tw-to-red-900 tw-shadow-xl tw-border tw-border-solid tw-border-red-400"
                         @click="$emit('toggle', 'bok')">
                     </ExpandedButton>
                 </div>
-                <div class="text-right">
-                    <ExpandedButton
-                        icon="fa-solid fa-calendar-days"
-                        value="Zgłoś chęć wyjazdu"
-                        add_class="expanded-button-172 calendar-icon bg-gradient-to-tr from-green-500 to-green-800 hover:from-green-600 hover:to-green-900 shadow-xl border border-solid border-green-400"
+                <div class="tw-text-right">
+                    <ExpandedButton icon="fa-solid fa-calendar-days" value="Zgłoś chęć wyjazdu"
+                        add_class="expanded-button-172 calendar-icon tw-bg-gradient-to-tr tw-from-green-500 tw-to-green-800 hover:tw-from-green-600 hover:tw-to-green-900 tw-shadow-xl tw-border tw-border-solid tw-border-green-400"
                         @click="$emit('toggle', 'ready_to_departure')">
                     </ExpandedButton>
-                </div>                
-                <div class="text-right">
-                    <ExpandedButton
-                        icon="fa-solid fa-comments"
-                        value="Skontaktuj się"
-                        add_class="expanded-button-137 contact-icon bg-gradient-to-tr from-blue-500 to-blue-800 hover:from-blue-600 hover:to-blue-900 shadow-xl border border-solid border-blue-400"
+                </div>
+                <div class="tw-text-right">
+                    <ExpandedButton icon="fa-solid fa-comments" value="Skontaktuj się"
+                        add_class="expanded-button-137 contact-icon tw-bg-gradient-to-tr tw-from-blue-500 tw-to-blue-800 hover:tw-from-blue-600 hover:tw-to-blue-900 tw-shadow-xl tw-border tw-border-solid tw-border-blue-400"
                         @click="$emit('toggle', 'contact_form')">
                     </ExpandedButton>
                 </div>
-                <div class="text-right">
-                    <ExpandedButton
-                        icon="fa-sharp fa-regular fa-right-from-bracket"
-                        value="Wyloguj się"
-                        type="submit"
-                        add_class="expanded-button-116 contact-icon bg-gradient-to-tr from-gray-500 to-gray-800 hover:from-gray-600 hover:to-gray-900 shadow-xl border border-solid border-gray-400"
+                <div class="tw-text-right">
+                    <ExpandedButton icon="fa-sharp fa-regular fa-right-from-bracket" value="Wyloguj się" type="submit"
+                        add_class="expanded-button-116 contact-icon tw-bg-gradient-to-tr tw-from-gray-500 tw-to-gray-800 hover:tw-from-gray-600 hover:tw-to-gray-900 tw-shadow-xl tw-border tw-border-solid tw-border-gray-400"
                         @click="router.post(route('logout'))">
                     </ExpandedButton>
                 </div>

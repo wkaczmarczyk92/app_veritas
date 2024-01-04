@@ -24,31 +24,30 @@ const props = defineProps({
     },
     icon_color: {
         type: String,
-        default: 'text-gray-800'
+        default: 'tw-text-gray-800'
     },
     color: {
         type: String,
-        default: 'text-gray-800'
+        default: 'tw-text-gray-800'
     },
     mb: {
         type: String,
-        default: 'mb-3'
+        default: 'tw-mb-3'
     }
 })
 
 const header_class = ref({
-    h1: 'text-3xl sm:text-4xl font-bold',
-    h2: 'text-2xl sm:text-3xl font-bold',
-    h3: 'text-xl sm:text-2xl font-bold'
+    h1: 'tw-text-3xl sm:tw-text-4xl tw-font-bold',
+    h2: 'tw-text-2xl sm:tw-text-3xl tw-font-bold',
+    h3: 'tw-text-xl sm:tw-text-2xl tw-font-bold'
 });
 
 </script>
 
 <template>
-    <component 
-        :is="`h${h}`" 
-        :class="`${header_class[`h${h}`]} ${center ? 'text-center' : ''} ${add_class} ${color} ${mb}`">
-            <i v-if="icon" :class="`${icon} ${icon_color}`"></i>
-            {{ value }}
+    <component :is="`h${h}`"
+        :class="`${header_class[`h${h}`]} ${center ? 'tw-text-center' : ''} ${add_class} ${color} ${mb}`">
+        <i v-if="icon" :class="`${icon} ${icon_color}`"></i>
+        {{ value }}
     </component>
 </template>

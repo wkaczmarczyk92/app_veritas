@@ -43,6 +43,18 @@ const props = defineProps({
 
 console.log(props.latest_offers)
 
+const breadcrumbs = [
+    {
+        title: 'VeritasApp',
+        disabled: true
+    },
+    {
+        title: 'Pulpit',
+        disabled: false,
+        href: route('dashboard')
+    }
+]
+
 </script>
 
 <template>
@@ -50,41 +62,31 @@ console.log(props.latest_offers)
 
     <AdminLayout>
         <template #header>
-            <h2 class="text-xl font-semibold leading-tight text-gray-200">Pulpit</h2>
+            <v-breadcrumbs :items="breadcrumbs">
+                <template v-slot:divider>
+                    <i class="fa-solid fa-chevron-right"></i>
+                </template>
+            </v-breadcrumbs>
         </template>
 
-        <div class="py-12">
-            <div class="max-w-full px-4 mx-auto sm:px-6 lg:px-8">
+        <div class="tw-py-12">
+            <div class="tw-max-w-full tw-px-4 tw-mx-auto sm:tw-px-6 lg:tw-px-8">
                 <Grid4>
-                    <Card>
-                        <CheckpointBox :levels="levels"></CheckpointBox>
-                    </Card>
-                    <Card>
-                        <BonusesBox :levels="levels"></BonusesBox>
-                    </Card>
-                    <Card>
-                        <LastLoginBox :last_logins="last_logins"></LastLoginBox>
-                    </Card>
+                    <CheckpointBox :levels="levels"></CheckpointBox>
+                    <BonusesBox :levels="levels"></BonusesBox>
+                    <LastLoginBox :last_logins="last_logins"></LastLoginBox>
                 </Grid4>
 
                 <Grid3>
-                    <Card>
-                        <LatestCreatedUsers :users="users">
-                        </LatestCreatedUsers>
-                    </Card>
-                    <Card>
-                        <LatestOffers :offers="latest_offers"></LatestOffers>
-                    </Card>
-                    <div class="row-span-2">
-                        <Card>
-                            <LatestPayoutRequests :latest_payout_requests="latest_payout_requests">
-                            </LatestPayoutRequests>
-                        </Card>
+                    <LatestCreatedUsers :users="users">
+                    </LatestCreatedUsers>
+                    <LatestOffers :offers="latest_offers"></LatestOffers>
+                    <div class="tw-row-span-2">
+                        <LatestPayoutRequests :latest_payout_requests="latest_payout_requests">
+                        </LatestPayoutRequests>
 
-                        <Card class="mt-4">
-                            <LatestBOKRequests :latest_bok_request="latest_bok_request">
-                            </LatestBOKRequests>
-                        </Card>
+                        <LatestBOKRequests :latest_bok_request="latest_bok_request">
+                        </LatestBOKRequests>
                     </div>
                 </Grid3>
             </div>

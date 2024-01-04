@@ -9,7 +9,7 @@ const props = defineProps({
     },
     text_color: {
         type: String,
-        default: 'text-gray-700'
+        default: 'tw-text-gray-700'
     },
     for: {
         type: String,
@@ -24,8 +24,10 @@ const mergeClass = () => {
 </script>
 
 <template>
-    <label :for="for" class="block font-medium text-sm" :class="mergeClass()">
-        <span v-if="value">{{ value }}</span>
-        <span v-else><slot /></span>
+    <label :for="for" class="tw-block tw-font-medium tw-text-sm" :class=" mergeClass() ">
+        <span v-if=" value ">{{ value }}</span>
+        <span v-else>
+            <slot />
+        </span>
     </label>
 </template>

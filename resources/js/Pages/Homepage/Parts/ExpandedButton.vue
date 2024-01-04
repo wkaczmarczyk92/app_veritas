@@ -2,7 +2,7 @@
 
 defineProps({
     icon: {
-        type: [ Boolean, String ],
+        type: [Boolean, String],
         default: false,
     },
     value: {
@@ -22,15 +22,13 @@ defineProps({
 </script>
 
 <template>
-        <button 
-        :class="add_class"
-        class="expanded-button">
-            <span class="button-icon text-white" v-if="icon">
-                <i :class="icon"></i>
-            </span>
-            <img v-if="img != ''" :src="img" class="expanded-icon-img">
-            <span class="button-text text-white">
-                {{ value }}
-            </span>
-        </button>
+    <button :class="add_class" class="expanded-button">
+        <span class="button-icon tw-text-white" v-if="icon">
+            <i :class="icon"></i>
+        </span>
+        <img v-if="img != ''" :src="img" class="expanded-icon-img">
+        <span class="button-text tw-text-white">
+            {{ value }}
+        </span>
+    </button>
 </template>

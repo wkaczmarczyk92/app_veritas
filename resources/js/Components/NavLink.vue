@@ -14,13 +14,13 @@ const props = defineProps({
 
 const classes = computed(() =>
     props.active
-        ? 'relative inline-flex items-center px-1 pt-1 border-b-2 active-navbar-item text-sm font-medium leading-5 text-gray-200 focus:outline-none focus:border-indigo-700 transition duration-150 ease-in-out'
-        : 'relative inline-flex items-center px-1 pt-1 border-b-2 border-transparent text-sm font-medium leading-5 text-gray-300 hover:text-gray-400 hover:border-gray-300 focus:outline-none focus:text-gray-700 focus:border-gray-300 transition duration-150 ease-in-out'
+        ? 'tw-relative tw-inline-flex tw-items-center tw-px-1 tw-pt-1 tw-border-b-2 active-navbar-item tw-text-sm tw-font-medium tw-leading-5 tw-text-gray-200 focus:tw-outline-none focus:tw-border-indigo-700 tw-transition tw-duration-150 tw-ease-in-out'
+        : 'tw-relative tw-inline-flex tw-items-center tw-px-1 tw-pt-1 tw-border-b-2 tw-border-transparent tw-text-sm tw-font-medium tw-leading-5 tw-text-gray-300 hover:tw-text-gray-400 hover:tw-border-gray-300 focus:tw-outline-none focus:tw-text-gray-700 focus:tw-border-gray-300 tw-transition tw-duration-150 tw-ease-in-out'
 );
 </script>
 
 <template>
     <Link :href="href" :class="classes">
-        <slot />
+    <slot />
     </Link>
 </template>

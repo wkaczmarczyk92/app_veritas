@@ -18,8 +18,8 @@ setInterval(() => {
 </script>
 
 <template>
-    <div class="flex flex-col justify-center items-center mt-10">
-        <div class="animate-spin rounded-full h-20 w-20 border-t-4 border-b-4 border-gray-900"></div>
-        <div class="mt-4 text-xl">{{ text }}{{ dots }}</div>
+    <div class="tw-flex tw-flex-col tw-justify-center tw-items-center tw-mt-10">
+        <div class="tw-animate-spin tw-rounded-full tw-h-20 tw-w-20 tw-border-t-4 tw-border-b-4 tw-border-gray-900"></div>
+        <div class="tw-mt-4 tw-text-xl">{{ text }}{{ dots }}</div>
     </div>
 </template>

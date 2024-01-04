@@ -1,6 +1,6 @@
 <script setup>
 import UserLayout from '@/Layouts/UserLayout.vue';
-import { Head, router  } from '@inertiajs/vue3';
+import { Head, router } from '@inertiajs/vue3';
 import { ref, toRef } from 'vue';
 
 import FloatingUserMenu from '@/Components/Templates/FloatingUserMenu.vue';
@@ -35,7 +35,7 @@ const modal = ref({
     caretaker_recommendations: false
 });
 
-const caretaker_recommendations_modal= ref(false);
+const caretaker_recommendations_modal = ref(false);
 const props = defineProps({
     user: {
         type: [Array, Object],
@@ -73,65 +73,38 @@ const toggle_modal = (modal_name) => {
     <Head title="VeritasApp - strona główna" />
 
     <UserLayout>
-        <div class="py-12">
-            <div class="max-w-7xl mx-auto p-4 sm:px-6 lg:px-8 ">
+        <div class="tw-py-12">
+            <div class="tw-p-4 tw-mx-auto tw-max-w-7xl sm:tw-px-6 lg:tw-px-8 ">
 
-                <UserLogoCard
-                    :user="user"
-                    :levels="levels"
-                    @open="toggle_modal"
-                ></UserLogoCard>
+                <UserLogoCard :user="user" :levels="levels" @open="toggle_modal"></UserLogoCard>
 
-                <LevelTimeline
-                    :levels="levels"
-                    :user="user"
-                ></LevelTimeline>
+                <LevelTimeline :levels="levels" :user="user"></LevelTimeline>
 
                 <Suspense>
-                    <PayoutRequest 
-                        v-model:current_points="user.user_profiles.current_points"
-                        :user="user"
-                        :payout_active="payout_active"
-                    ></PayoutRequest>
+                    <PayoutRequest v-model:current_points="user.user_profiles.current_points" :user="user"
+                        :payout_active="payout_active"></PayoutRequest>
                 </Suspense>
 
                 <Suspense>
-                    <Offers
-                        v-model:user="user"   
-                        @open-modal="modal.ready_to_departure = true" 
-                    ></Offers>
+                    <Offers v-model:user="user" @open-modal="modal.ready_to_departure = true"></Offers>
                 </Suspense>
 
-                <MyPersonalData 
-                    :user="user"
-                    @open="toggle_modal"
-                ></MyPersonalData>
+                <MyPersonalData :user="user" @open="toggle_modal"></MyPersonalData>
 
-                <div class="grid lg:grid-cols-2 sm:gap-6 gap-10 mt-10">
-                    <CaretakerRecommendation
-                        :bonus="bonus"
-                        v-model:model_value="modal.caretaker_recommendations"
-                    ></CaretakerRecommendation>
+                <div class="tw-grid tw-gap-10 tw-mt-10 lg:tw-grid-cols-2 sm:tw-gap-6">
+                    <CaretakerRecommendation :bonus="bonus" v-model:model_value="modal.caretaker_recommendations">
+                    </CaretakerRecommendation>
 
-                    <FamilyRecommendation
-                        :bonus="bonus"
-                        v-model:model_value="modal.family_recommendations"
-                    ></FamilyRecommendation>
+                    <FamilyRecommendation :bonus="bonus" v-model:model_value="modal.family_recommendations">
+                    </FamilyRecommendation>
                 </div>
 
-                <Posts v-for="(post, index) in posts"
-                    class="mt-10"
-                    :title="post.title"
-                    :body="post.body"
-                    :label="post.post_labels.name"
-                    :post="post"
-                ></Posts> 
-                
+                <Posts v-for="(post, index) in posts" class="tw-mt-10" :title="post.title" :body="post.body"
+                    :label="post.post_labels.name" :post="post"></Posts>
+
                 <OnlineCourses></OnlineCourses>
-                
-                <ImportantInfo
-                    :recruiter="recruiter"
-                ></ImportantInfo>
+
+                <ImportantInfo :recruiter="recruiter"></ImportantInfo>
 
                 <FilesToDownload></FilesToDownload>
 
@@ -140,50 +113,25 @@ const toggle_modal = (modal_name) => {
 
     </UserLayout>
 
-    <FloatingUserMenu
-        @toggle="toggle_modal"
-    ></FloatingUserMenu>
+    <FloatingUserMenu @toggle="toggle_modal"></FloatingUserMenu>
 
-    <BOKModal
-        v-if="modal.bok"
-        v-model:model_value="modal.bok"   
-    ></BOKModal>
+    <BOKModal v-if="modal.bok" v-model:model_value="modal.bok"></BOKModal>
 
-    <ContactFormModal
-        v-if="modal.contact_form"
-        v-model:model_value="modal.contact_form"
-    ></ContactFormModal>
+    <ContactFormModal v-if="modal.contact_form" v-model:model_value="modal.contact_form"></ContactFormModal>
 
-    <ReadyToDepartureModal
-        v-if="modal.ready_to_departure"
-        v-model:model_value="modal.ready_to_departure"
+    <ReadyToDepartureModal v-if="modal.ready_to_departure" v-model:model_value="modal.ready_to_departure"
         :ready_to_departure_dates="user?.ready_to_departure_dates"
-        @update-ready-to-departure-date="user.ready_to_departure_dates = $event"
-    ></ReadyToDepartureModal>
+        @update-ready-to-departure-date="user.ready_to_departure_dates = $event"></ReadyToDepartureModal>
 
-    <PointsHistoryModal
-        v-if="modal.points_history"
-        v-model:model_value="modal.points_history"
-        :user="user"
-    ></PointsHistoryModal>
-        
-    <UserCaretakerRecommendationModal
-        v-if="modal.caretaker_recommendations"
-        v-model:model_value="modal.caretaker_recommendations"
-        :user="user"
-    ></UserCaretakerRecommendationModal>
+    <PointsHistoryModal v-if="modal.points_history" v-model:model_value="modal.points_history" :user="user">
+    </PointsHistoryModal>
 
-    <UserFamilyRecommendationsModal
-        v-if="modal.family_recommendations"
-        v-model:model_value="modal.family_recommendations"
-        :user="user"
-        @close="toggle_modal"
-    ></UserFamilyRecommendationsModal>
+    <UserCaretakerRecommendationModal v-if="modal.caretaker_recommendations"
+        v-model:model_value="modal.caretaker_recommendations" :user="user"></UserCaretakerRecommendationModal>
 
-    <ProfileImageModal
-        v-if="modal.profile_image"
-        v-model:model_value="modal.profile_image"
-        :user="user"
-        @update="user.user_profile_image = $event"
-    ></ProfileImageModal>
+    <UserFamilyRecommendationsModal v-if="modal.family_recommendations" v-model:model_value="modal.family_recommendations"
+        :user="user" @close="toggle_modal"></UserFamilyRecommendationsModal>
+
+    <ProfileImageModal v-if="modal.profile_image" v-model:model_value="modal.profile_image" :user="user"
+        @update="user.user_profile_image = $event"></ProfileImageModal>
 </template>

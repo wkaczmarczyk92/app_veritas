@@ -65,8 +65,8 @@ const new_password_form_init = () => {
             }
         },
         show_msg: false,
-        show_password_form: false 
-    }   
+        show_password_form: false
+    }
 }
 
 const new_password_form = ref(new_password_form_init())
@@ -163,33 +163,33 @@ const submit_new_pass = async () => {
 
         <Head title="Veritas App - zaloguj się" />
 
-        <div v-if="status" class="mb-4 font-medium text-sm text-green-600">
+        <div v-if="status" class="tw-mb-4 tw-font-medium tw-text-sm tw-text-green-600">
             {{ status }}
         </div>
 
         <form @submit.prevent="submit">
             <div>
                 <InputLabel for="login" value="Wpisz swój numer PESEL" />
-                <TextInput id="login" type="text" class="mt-1 block w-full" v-model="form.login" autofocus required
+                <TextInput id="login" type="text" class="tw-mt-1 tw-block tw-w-full" v-model="form.login" autofocus required
                     autocomplete="login" />
-                <InputError class="mt-2" :message="form.errors.login" />
+                <InputError class="tw-mt-2" :message="form.errors.login" />
             </div>
 
             <div class="mt-4">
                 <InputLabel for="password" value="Hasło" />
-                <TextInput id="password" type="password" class="mt-1 block w-full" v-model="form.password" required
+                <TextInput id="password" type="password" class="tw-mt-1 tw-block tw-w-full" v-model="form.password" required
                     autocomplete="current-password" />
-                <InputError class="mt-2" :message="form.errors.password" />
+                <InputError class="tw-mt-2" :message="form.errors.password" />
             </div>
 
-            <div class="flex flex-col gap-2 justify-end text-right place-items-end mt-4">
-                <p class="text-blue-600 hover:cursor-pointer hover:text-blue-600 hover:underline"
+            <div class="tw-flex tw-flex-col tw-gap-2 tw-justify-end tw-text-right tw-place-items-end tw-mt-4">
+                <p class="tw-text-blue-600 hover:tw-cursor-pointer hover:tw-text-blue-600 hover:tw-underline"
                     @click="modal_active = true">
                     Mam problem z zalogowaniem się
                 </p>
 
-                <MButton value="Zaloguj się" bg="bg-gray-800" hover="hover:bg-gray-700" add_class="w-fit text-right"
-                    :disabled="form.processing">
+                <MButton value="Zaloguj się" bg="tw-bg-gray-800" hover="hover:tw-bg-gray-700"
+                    add_class="tw-w-fit tw-text-right" :disabled="form.processing">
                 </MButton>
             </div>
 
@@ -198,80 +198,81 @@ const submit_new_pass = async () => {
     </GuestLayout>
     <teleport to='body' v-if="modal_active">
         <Modal>
-            <div class="w-100 px-2 md:px-10">
+            <div class="tw-w-100 tw-px-2 md:tw-px-10">
 
-                <h2 class="font-semibold text-lg md:text-xl leading-tight text-center mt-6">
-                    <i class="fa-sharp fa-solid fa-key text-red-600 mr-2"></i>
+                <h2 class="tw-font-semibold tw-text-lg md:tw-text-xl tw-leading-tight tw-text-center tw-mt-6">
+                    <i class="fa-sharp fa-solid fa-key tw-text-red-600 tw-mr-2"></i>
                     W jaki sposób otrzymam hasło?
                 </h2>
-                <div class="flex flex-row justify-center">
-                    <p class="text-justify my-10 text-sm">
+                <div class="tw-flex flex-row tw-justify-center">
+                    <p class="tw-text-justify tw-my-10 tw-text-sm">
                         W momencie, gdy uzyskasz od nas akceptację na swój pierwszy wyjazd, otrzymasz dostęp do naszej
                         platformy. Wszystkie niezbędne informacje do zalogowania zostaną przesłane na numer telefonu za
                         pośrednictwem wiadomości SMS w dniu rozpoczęcia zlecenia. W razie dodatkowych pytań lub problemów
-                        prosimy dzwonić pod numer <a href="tel:717588140" class="text-blue-600 hover:cursor-pointer hover:text-blue-600 hover:underline font-bold">71 758 81 40</a>.
+                        prosimy dzwonić pod numer <a href="tel:717588140"
+                            class="tw-text-blue-600 hover:tw-cursor-pointer hover:tw-text-blue-600 hover:tw-underline tw-font-bold">71
+                            758
+                            81 40</a>.
                     </p>
                 </div>
-                
-                
+
+
 
                 <Transition name="slide-fade" mode="out-in">
                     <div v-if="password_reset_view == null">
-                        <h3 class="font-semibold text-lg leading-tight text-left mt-6">
+                        <h3 class="tw-font-semibold tw-text-lg tw-leading-tight tw-text-left tw-mt-6">
                             Zapomniałeś/aś hasła?
                         </h3>
 
-                        <div class="flex flex-col mt-4">
+                        <div class="tw-flex tw-flex-col tw-mt-4">
                             <!-- <div class="text-blue-600 hover:cursor-pointer hover:text-blue-600 hover:underline" @click="pesel_error = ''; password_reset_view = 'by_phone'">Ustaw nowe hasło telefonicznie z konsultantem</div> -->
-                            <div class="text-blue-600 hover:cursor-pointer hover:text-blue-600 hover:underline" @click="pesel_error = ''; password_reset_view = 'by_sms'">Użyj jednorazowego hasła SMS do zmiany hasła</div>
+                            <div class="tw-text-blue-600 hover:tw-cursor-pointer hover:tw-text-blue-600 hover:tw-underline"
+                                @click="pesel_error = ''; password_reset_view = 'by_sms'">Użyj jednorazowego hasła SMS do
+                                zmiany hasła</div>
                         </div>
                     </div>
-                    <div v-else-if="password_reset_view != null" class="mt-10 bg-blue-100 p-6 rounded-xl shadow-xl">
+                    <div v-else-if="password_reset_view != null"
+                        class="tw-mt-10 tw-bg-blue-100 tw-p-6 tw-rounded-xl tw-shadow-xl">
                         <Transition name="slide-fade" mode="out-in">
-                            
-                            <div v-if="password_reset_view == 'by_phone'" class="px-2 md:px-10">
-                                <PasswordWithHelp
-                                    :form="new_password_form"
-                                    @new-password-request="new_password_request()"
-                                    @change-view="change_view()"
-                                ></PasswordWithHelp>
+
+                            <div v-if="password_reset_view == 'by_phone'" class="tw-px-2 md:tw-px-10">
+                                <PasswordWithHelp :form="new_password_form" @new-password-request="new_password_request()"
+                                    @change-view="change_view()"></PasswordWithHelp>
                             </div>
 
-                            <div v-else-if="password_reset_view == 'by_sms'" class="px-0 md:px-10">
-                                <h3 class="font-semibold text-md md:text-lg leading-tight text-left mt-6">
+                            <div v-else-if="password_reset_view == 'by_sms'" class="tw-px-0 md:tw-px-10">
+                                <h3 class="tw-font-semibold tw-text-md md:tw-text-lg tw-leading-tight tw-text-left tw-mt-6">
                                     Zmień hasło z jednorazowym kodem SMS
                                 </h3>
-                                <div class="text-left mb-10">
-                                    <span @click="change_view(null)" class="text-blue-600 hover:cursor-pointer hover:text-blue-600 hover:underline text-sm md:text-md">
+                                <div class="tw-text-left tw-mb-10">
+                                    <span @click="change_view(null)"
+                                        class="tw-text-blue-600 hover:tw-cursor-pointer hover:tw-text-blue-600 hover:tw-underline tw-text-sm md:tw-text-md">
                                         Wróć
-                                    </span>    
+                                    </span>
                                 </div>
-                                <div class="flex flex-col">
+                                <div class="tw-flex tw-flex-col">
                                     <Transition name="slide-fade" mode="out-in">
-                                        <div class="text-left" v-if="!new_password_form.show_msg && !new_password_form.show_password_form">
-                                            <SMSPasswordForm
-                                                :form="new_password_form"
-                                                @submit-sms-code="submit_sms_code()"
-                                                @use-code="use_code()"
-                                                @change-view="change_view()"
-                                                ></SMSPasswordForm>
+                                        <div class="tw-text-left"
+                                            v-if="!new_password_form.show_msg && !new_password_form.show_password_form">
+                                            <SMSPasswordForm :form="new_password_form" @submit-sms-code="submit_sms_code()"
+                                                @use-code="use_code()" @change-view="change_view()"></SMSPasswordForm>
                                         </div>
-                                        <div class="text-left" v-else-if="new_password_form.show_password_form">
-                                            <NewPasswordForm
-                                                :form="new_password_form"
-                                                @submit-new-password="submit_new_pass()"
-                                            ></NewPasswordForm>
+                                        <div class="tw-text-left" v-else-if="new_password_form.show_password_form">
+                                            <NewPasswordForm :form="new_password_form"
+                                                @submit-new-password="submit_new_pass()"></NewPasswordForm>
 
                                         </div>
-                                        <div class="text-left" v-else-if="new_password_form.show_msg">
-                                            <div class="bg-green-600 text-gray-100 font-xl p-6 rounded-xl shadow-lg">Hasło zostało zmienione. Możesz się już zalogować.</div>
+                                        <div class="tw-text-left" v-else-if="new_password_form.show_msg">
+                                            <div
+                                                class="tw-bg-green-600 tw-text-gray-100 tw-font-xl tw-p-6 tw-rounded-xl tw-shadow-lg">
+                                                Hasło
+                                                zostało zmienione. Możesz się już zalogować.</div>
                                         </div>
                                     </Transition>
-                                    
-                                    <div 
-                                        class="text-red-600 hover:underline hover:text-red-800 hover:cursor-pointer mt-6"
-                                        @click="pesel_error = ''; password_reset_view = 'by_phone'"
-                                        >Mam problem ze zmianą hasła przez kod SMS
+
+                                    <div class="tw-text-red-600 hover:tw-underline hover:tw-text-red-800 hover:tw-cursor-pointer tw-mt-6"
+                                        @click="pesel_error = ''; password_reset_view = 'by_phone'">Mam problem ze zmianą
+                                        hasła przez kod SMS
                                     </div>
 
                                 </div>
@@ -281,15 +282,14 @@ const submit_new_pass = async () => {
                 </Transition>
 
 
-                
+
             </div>
-            <div class="text-right mt-6">
-                <MButton value="Zamknij" bg="bg-gray-800" hover="hover:bg-gray-700" @click="modal_active = false">
+            <div class="tw-text-right mt-6">
+                <MButton value="Zamknij" bg="tw-bg-gray-800" hover="hover:tw-bg-gray-700" @click="modal_active = false">
                 </MButton>
             </div>
         </Modal>
     </teleport>
-    
 </template>
 
 <style>
@@ -298,17 +298,16 @@ const submit_new_pass = async () => {
   durations and timing functions.
 */
 .slide-fade-enter-active {
-  transition: all 0.3s ease-out;
+    transition: all 0.3s ease-out;
 }
 
 .slide-fade-leave-active {
-  transition: all 0.8s cubic-bezier(1, 0.5, 0.8, 1);
+    transition: all 0.8s cubic-bezier(1, 0.5, 0.8, 1);
 }
 
 .slide-fade-enter-from,
 .slide-fade-leave-to {
-  transform: translateX(20px);
-  opacity: 0;
+    transform: translateX(20px);
+    opacity: 0;
 }
-
 </style>

@@ -69,71 +69,73 @@ function isAuto(item) {
 
 
 <template>
-    <div id="modal" class="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 p-4">
-        <div class="bg-white rounded-lg w-full md:w-4/5 lg:w-1/2">
-            <div class="bg-gray-100 shadow-xl rounded p-6">
-                <h2 class="font-semibold text-xl leading-tight">
+    <div id="modal"
+        class="tw-fixed tw-inset-0 tw-flex tw-items-center tw-justify-center tw-bg-black tw-bg-opacity-50 tw-p-4">
+        <div class="tw-bg-white tw-rounded-lg tw-w-full md:tw-w-4/5 lg:tw-w-1/2">
+            <div class="tw-bg-gray-100 tw-shadow-xl tw-rounded tw-p-6">
+                <h2 class="tw-font-semibold tw-text-xl tw-leading-tight">
                     <i class="fa-solid fa-chart-simple text-orange"></i>
                     Historia punktów
                 </h2>
 
-                <div class="flex mt-8" v-if="points_record_count > per_page">
-                    <nav class="flex justify-between">
+                <div class="tw-flex tw-mt-8" v-if="points_record_count > per_page">
+                    <nav class="tw-flex tw-justify-between">
                         <a href="#"
-                            class="relative block py-2 px-3 leading-tight bg-white border border-gray-300 text-gray-800 mr-1 hover:bg-gray-200"
+                            class="tw-relative tw-block tw-py-2 tw-px-3 tw-leading-tight tw-bg-white tw-border tw-border-gray-300 tw-text-gray-800 tw-mr-1 hover:tw-bg-gray-200"
                             @click="current_page > 1 ? current_page-- : null">Wstecz</a>
                         <a href="#"
-                            class="relative block py-2 px-3 leading-tight bg-white border border-gray-300 text-gray-800 mr-1 disabled-paginatio-item">{{
+                            class="tw-relative tw-block tw-py-2 tw-px-3 tw-leading-tight tw-bg-white tw-border tw-border-gray-300 tw-text-gray-800 tw-mr-1 disabled-paginatio-item">{{
                                 current_page }} z {{ max_page }}</a>
                         <a href="#"
-                            class="relative block py-2 px-3 leading-tight bg-white border border-gray-300 text-gray-800 mr-1 hover:bg-gray-200"
+                            class="tw-relative tw-block tw-py-2 tw-px-3 tw-leading-tight tw-bg-white tw-border tw-border-gray-300 tw-text-gray-800 tw-mr-1 hover:tw-bg-gray-200"
                             @click="current_page < max_page ? current_page++ : null">Dalej</a>
                     </nav>
                 </div>
-                <div class="table-container overflow-x-auto" v-if="points.length">
-                    <table class="text-center w-full border-collapse mt-4">
+                <div class="table-container tw-overflow-x-auto" v-if="points.length">
+                    <table class="tw-text-center tw-w-full tw-border-collapse tw-mt-4">
                         <thead>
                             <tr class="table-tr">
                                 <th
-                                    class="py-4 px-6 bg-grey-lightest font-bold uppercase text-sm text-grey-dark border-b border-grey-light">
+                                    class="tw-py-4 tw-px-6 tw-bg-grey-lightest tw-font-bold tw-uppercase tw-text-sm tw-text-grey-dark tw-border-b tw-border-grey-light">
                                     #</th>
                                 <th
-                                    class="py-4 px-6 bg-grey-lightest font-bold uppercase text-sm text-grey-dark border-b border-grey-light">
+                                    class="tw-py-4 tw-px-6 tw-bg-grey-lightest tw-font-bold tw-uppercase tw-text-sm tw-text-grey-dark tw-border-b tw-border-grey-light">
                                     Punkty</th>
                                 <th
-                                    class="py-4 px-6 bg-grey-lightest font-bold uppercase text-sm text-grey-dark border-b border-grey-light">
+                                    class="tw-py-4 tw-px-6 tw-bg-grey-lightest tw-font-bold tw-uppercase tw-text-sm tw-text-grey-dark tw-border-b tw-border-grey-light">
                                     Dni</th>
                                 <th
-                                    class="py-4 px-6 bg-grey-lightest font-bold uppercase text-sm text-grey-dark border-b border-grey-light">
+                                    class="tw-py-4 tw-px-6 tw-bg-grey-lightest tw-font-bold tw-uppercase tw-text-sm tw-text-grey-dark tw-border-b tw-border-grey-light">
                                     Komentarz</th>
                                 <th
-                                    class="py-4 px-6 bg-grey-lightest font-bold uppercase text-sm text-grey-dark border-b border-grey-light">
+                                    class="tw-py-4 tw-px-6 tw-bg-grey-lightest tw-font-bold tw-uppercase tw-text-sm tw-text-grey-dark tw-border-b tw-border-grey-light">
                                     Data dodania</th>
                             </tr>
                         </thead>
                         <tbody>
-                            <tr class="hover:bg-grey-lighter" v-for="(item, index) in points">
-                                <td class="py-4 px-6 border-b border-grey-light">{{ index + 1 }}</td>
-                                <td class="py-4 px-6 border-b border-grey-light"
+                            <tr class="hover:tw-bg-grey-lighter" v-for="(item, index) in points">
+                                <td class="tw-py-4 tw-px-6 tw-border-b tw-border-grey-light">{{ index + 1 }}</td>
+                                <td class="tw-py-4 tw-px-6 tw-border-b tw-border-grey-light"
                                     v-html="displayPoints(item.points, parseInt(item.type))"></td>
-                                <td class="py-4 px-6 border-b border-grey-light">{{ item.days ?? '-' }}</td>
-                                <td class="py-4 px-6 border-b border-grey-light">{{ item.comment ?? '-' }}
+                                <td class="tw-py-4 tw-px-6 tw-border-b tw-border-grey-light">{{ item.days ?? '-' }}</td>
+                                <td class="tw-py-4 tw-px-6 tw-border-b tw-border-grey-light">{{ item.comment ?? '-' }}
                                 </td>
-                                <td class="py-4 px-6 border-b border-grey-light">{{ format(item.created_at) }}
+                                <td class="tw-py-4 tw-px-6 tw-border-b tw-border-grey-light">{{ format(item.created_at) }}
                                 </td>
                             </tr>
                         </tbody>
                     </table>
 
-                    <div class="flex items-center justify-center spinner-container"
-                        :class="spinner_visible ? '' : 'hidden'">
-                        <div class="w-10 h-10 border-b-8 border-white-900 rounded-full animate-spin"></div>
+                    <div class="tw-flex tw-items-center tw-justify-center tw-spinner-container"
+                        :class="spinner_visible ? '' : 'tw-hidden'">
+                        <div class="tw-w-10 tw-h-10 tw-border-b-8 tw-border-white-900 tw-rounded-full tw-animate-spin">
+                        </div>
                     </div>
                 </div>
-                <AlertInfo v-else>
+                <AlertInfo v-else class="tw-mt-8">
                     Brak historii do wyświetlenia.
                 </AlertInfo>
-                <div class="mt-6 text-right">
+                <div class="tw-mt-6 tw-text-right">
                     <PrimaryButton id="closeModal" @click="$emit('close')">
                         Zamknij
                     </PrimaryButton>
@@ -145,4 +147,3 @@ function isAuto(item) {
 
 
 
-  

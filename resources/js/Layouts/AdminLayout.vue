@@ -1,28 +1,31 @@
 <script setup>
-import { ref } from 'vue';
 import Navbar from '@/Components/Navigation/Navbar.vue'
-import { Head } from '@inertiajs/vue3'
 import AlertWrapper from '@/Components/Alerts/AlertWrapper.vue';
-
-
-// const showingNavigationDropdown = ref(false);
-
 
 </script>
 
 <template>
-    <div class="relative">
+    <div class="tw-relative">
         <AlertWrapper></AlertWrapper>
-        <div class="min-h-screen bg-gray-100">
+        <div class="tw-min-h-screen ">
 
             <Suspense>
-                <Navbar></Navbar>
+                <template #default>
+                    <Navbar #default></Navbar>
+                </template>
+                <template #fallback>
+                    <nav class="tw-bg-gray-800 tw-border-b tw-border-gray-100 tw-min-h-[100px]">
+                        <div class="tw-p-4 tw-mx-auto tw-max-w-8xl sm:tw-px-6 lg:tw-px-8">
+                        </div>
+                    </nav>
+                </template>
             </Suspense>
             <!-- Page Heading -->
-            <header class="bg-gray-600 shadow" v-if="$slots.header">
-                <div class="px-4 py-6 mx-auto max-w-8xl sm:px-6 lg:px-8">
+            <header class="" v-if="$slots.header">
+                <div class="tw-px-4 tw-py-1 tw-mx-auto tw-text-sm tw-text-gray-800 tw-max-w-8xl sm:tw-px-6 lg:tw-px-8">
                     <slot name="header" />
                 </div>
+                <v-divider :thickness="4" class="border-opacity-75" color="info"></v-divider>
             </header>
 
             <!-- Page Content -->

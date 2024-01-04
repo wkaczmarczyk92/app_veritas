@@ -14,10 +14,10 @@ defineProps({
 </script>
 
 <template>
-    <a 
-        :href="url === null ? '#' : url" 
-        class="shadow-md relative block py-2 px-3 bg-white border border-gray-300 text-gray-800 mr-1 hover:bg-gray-200" 
-        :class="url === null ? 'hover:cursor-not-allowed' : ''">
+    <a :href="url === null ? '#' : url" class="tw-relative tw-block"
+        :class="url === null ? 'hover:tw-cursor-not-allowed' : ''">
+        <v-btn variant="tonal" class="tw-shadow-lg" color="#3b82f6">
             {{ value }}
+        </v-btn>
     </a>
 </template>

@@ -2,38 +2,45 @@
     <Head title="VeritasApp - zgłoszenia na oferty" />
     <AdminLayout>
         <template #header>
-            <h2 class="font-semibold text-xl text-gray-200 leading-tight">Zgłoszenia na oferty</h2>
+            <!-- <h2 class="text-xl font-semibold leading-tight text-gray-200">Użytkownicy</h2> -->
+            <v-breadcrumbs :items="breadcrumbs">
+                <template v-slot:divider>
+                    <i class="fa-solid fa-chevron-right"></i>
+                </template>
+            </v-breadcrumbs>
         </template>
 
-        <div class="py-12">
-            <div class="max-w-8xl mx-auto sm:px-6 px-4 lg:px-8" v-if="offers.data.length > 0">
-                <NewPagination
-                    :pagination="offers"
-                ></NewPagination>
-                <div class="bg-gray-100 shadow-xl rounded">
+        <div class="tw-py-12">
+            <div class="tw-px-4 tw-mx-auto tw-max-w-8xl sm:tw-px-6 lg:tw-px-8" v-if="offers.data.length > 0">
+                <NewPagination :pagination="offers"></NewPagination>
+                <div class="tw-bg-gray-100 tw-rounded tw-shadow-xl">
                     <TableDefault :headers="headers">
-                        <tr class="hover:bg-grey-lighter" v-for="(offer, index) in offers.data">
-                            <td class="py-4 px-6 border-b border-grey-light">#{{ offer.crm_offer_id }}</td>
-                            <td class="py-4 px-6 border-b border-grey-light">{{ offer.user.user_profiles.first_name }} {{ offer.user.user_profiles.last_name }}</td>
-                            <td class="py-4 px-6 border-b border-grey-light">
+                        <tr class="hover:tw-bg-grey-lighter" v-for="(offer, index) in offers.data">
+                            <td class="tw-px-6 tw-py-4 tw-border-b tw-border-grey-light">#{{ offer.crm_offer_id }}</td>
+                            <td class="tw-px-6 tw-py-4 tw-border-b tw-border-grey-light">{{
+                                offer.user.user_profiles.first_name }} {{
+        offer.user.user_profiles.last_name }}</td>
+                            <td class="tw-px-6 tw-py-4 tw-border-b tw-border-grey-light">
                                 <a class="edit-user" :href="`/uzytkownik/${offer.user.id}`">
-                                    <i class="fa-solid fa-user-pen text-xl"></i>
+                                    <i class="tw-text-xl fa-solid fa-user-pen"></i>
                                 </a>
                             </td>
-                            <td class="py-4 px-6 border-b border-grey-light">
-                                <a class="edit-user" :href="`https://local.grupa-veritas.pl/#/rodziny/${offer.crm_family_id}`" target="_blank">
-                                    <i class="fa-solid fa-globe text-xl"></i>
+                            <td class="tw-px-6 tw-py-4 tw-border-b tw-border-grey-light">
+                                <a class="edit-user"
+                                    :href="`https://local.grupa-veritas.pl/#/rodziny/${offer.crm_family_id}`"
+                                    target="_blank">
+                                    <i class="tw-text-xl fa-solid fa-globe"></i>
                                 </a>
                             </td>
-                            <td class="py-4 px-6 border-b border-grey-light">{{ offer.hp_code }}</td>
-                            <td class="py-4 px-6 border-b border-grey-light">{{ offer.start_date }}</td>
-                            <td class="py-4 px-6 border-b border-grey-light">{{ format(offer.created_at) }}</td>
+                            <td class="tw-px-6 tw-py-4 tw-border-b tw-border-grey-light">{{ offer.hp_code }}</td>
+                            <td class="tw-px-6 tw-py-4 tw-border-b tw-border-grey-light">{{ offer.start_date }}</td>
+                            <td class="tw-px-6 tw-py-4 tw-border-b tw-border-grey-light">{{ format(offer.created_at) }}</td>
                         </tr>
 
                     </TableDefault>
                 </div>
             </div>
-            <div class="max-w-8xl mx-auto sm:px-6 px-4 lg:px-8" v-else>
+            <div class="tw-px-4 tw-mx-auto tw-max-w-8xl sm:tw-px-6 lg:tw-px-8" v-else>
                 <StaticInfoAlert>Brak ofert do wyświetlenia.</StaticInfoAlert>
             </div>
         </div>
@@ -67,7 +74,18 @@ const headers = [
     'kod HP',
     'data rozpoczęcia',
     'data utworzenia',
-    
+]
+
+const breadcrumbs = [
+    {
+        title: 'VeritasApp',
+        disabled: false,
+        href: route('dashboard')
+    },
+    {
+        title: 'Zgłoszenia na oferty',
+        disabled: true
+    }
 ]
 
 </script>

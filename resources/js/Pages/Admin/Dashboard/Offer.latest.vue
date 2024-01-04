@@ -1,34 +1,58 @@
 <template>
-    <Header
-        title="Ostatnie zgłoszenia na oferty"
-        route_name="offer.index"
-        route_title="Zobacz wszystkie"
-        icon="fa-sharp fa-regular fa-file-magnifying-glass"
-    ></Header>
-    
-    <TableDefault :headers="headers" class="text-xs" font_size="text-xs" v-if="offers.length > 0">
-        <tr class="hover:bg-grey-lighter" v-for="(offer, index) in offers">
-            <td class="py-2 px-4 border-b border-grey-light">#{{ offer.crm_offer_id }}</td>
-            <td class="py-2 px-4 border-b border-grey-light">{{ offer.user.user_profiles.first_name }} {{ offer.user.user_profiles.last_name }}</td>
-            <td class="py-2 px-4 border-b border-grey-light">
-                <a class="edit-user" :href="`/uzytkownik/${offer.user.id}`">
-                    <i class="fa-solid fa-user-pen text-xl"></i>
+    <v-card variant="tonal" :color="'white'" class="tw-shadow-2xl">
+        <template #title>
+            <div class="tw-flex tw-flex-row tw-items-center tw-justify-between tw-mb-4">
+                <div class="tw-text-lg tw-font-bold tw-text-gray-800">
+                    Ostatnie zgłoszenia na oferty
+                </div>
+                <a :href="route('offer.index')"
+                    class="tw-text-sm tw-text-blue-500 hover:tw-underline hover:tw-text-blue-700">
+                    Zobacz wszystkie
+                    <span>
+                        <i class="fa-sharp fa-regular fa-file-magnifying-glass"></i>
+                    </span>
                 </a>
-            </td>
-            <td class="py-2 px-4 border-b border-grey-light">
-                <a class="edit-user" :href="`https://local.grupa-veritas.pl/#/rodziny/${offer.crm_family_id}`" target="_blank">
-                    <i class="fa-solid fa-globe text-xl"></i>
-                </a>
-            </td>
-            <td class="py-2 px-4 border-b border-grey-light">{{ offer.hp_code }}</td>
-        </tr>
-    </TableDefault>
-    <AlertInfo
-        v-else
-        title=""
-        :show_icon="false">
-        Brak ofert do wyświetlenia.
-    </AlertInfo>
+            </div>
+
+        </template>
+        <v-card-text>
+            <div class="tw-overflow-x-auto" v-if="offers.length > 0">
+                <v-data-table :items="offers" height="auto" item-value="id">
+                    <template #headers>
+                        <tr class="tw-bg-gray-200">
+                            <th v-for="(header, index) in headers" :key="index">
+                                <span class="tw-font-bold">{{ header }}</span>
+                            </th>
+                        </tr>
+                    </template>
+                    <template v-slot:item="{ item }">
+                        <tr class="tw-text-xs">
+                            <td>#{{ item.crm_offer_id }}</td>
+                            <td>{{ item.user.user_profiles.first_name }} {{
+                                item.user.user_profiles.last_name }}</td>
+                            <td class="tw-text-lg tw-text-center">
+                                <a class="tw-edit-user" :href="`/uzytkownik/${item.user.id}`">
+                                    <i class="tw-text-blue-500 fa-solid fa-user-pen hover:tw-text-blue-700"></i>
+                                </a>
+                            </td>
+                            <td class="tw-text-lg tw-text-center">
+                                <a class="tw-edit-user"
+                                    :href="`https://local.grupa-veritas.pl/#/rodziny/${item.crm_family_id}`"
+                                    target="_blank">
+                                    <i class="fa-solid fa-globe tw-text-amber-500 hover:tw-text-amber-700"></i>
+                                </a>
+                            </td>
+                            <td>{{ item.hp_code }}</td>
+                        </tr>
+                    </template>
+                    <template #bottom></template>
+                </v-data-table>
+            </div>
+            <AlertInfo v-else title="" :show_icon="false">
+                Brak ofert do wyświetlenia.
+            </AlertInfo>
+        </v-card-text>
+    </v-card>
 </template>
 
 <script setup>

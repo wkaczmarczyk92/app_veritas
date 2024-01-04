@@ -27,23 +27,25 @@ console.log(form.value);
 </script>
 
 <template>
-    <h3 class="font-semibold text-md md:text-lg leading-tight text-left mt-6">
+    <h3 class="tw-font-semibold tw-text-md md:tw-text-lg tw-leading-tight tw-text-left tw-mt-6">
         Zmień hasło z konsultantem
     </h3>
-    <div class="text-left mb-10">
-        <span @click="$emit('change-view', null)" class="text-blue-600 hover:cursor-pointer hover:text-blue-600 hover:underline text-sm md:text-md">
+    <div class="tw-text-left tw-mb-10">
+        <span @click="$emit('change-view', null)"
+            class="tw-text-blue-600 hover:tw-cursor-pointer hover:tw-text-blue-600 hover:tw-underline tw-text-sm md:tw-text-md">
             Wróć
-        </span>    
+        </span>
     </div>
-    <div class="flex flex-col">
-        <div class="text-left">
+    <div class="tw-flex tw-flex-col">
+        <div class="tw-text-left">
             <InputLabel for="pesel" value="PESEL" />
 
-            <TextInput id="pesel" type="text" class="mt-1 block w-full" v-model="form.pesel" required @change="$emit('update:form', form)"/>
+            <TextInput id="pesel" type="text" class="tw-mt-1 tw-block tw-w-full" v-model="form.pesel" required
+                @change="$emit('update:form', form)" />
 
-            <InputError class="mt-2" :message="form.errors && form.errors.pesel ? form.errors.pesel : ''" />
+            <InputError class="tw-mt-2" :message="form.errors && form.errors.pesel ? form.errors.pesel : ''" />
 
-            <MButton add_class="mt-4" value="Chcę zmienić hasło" bg="bg-rose-600" hover="hover:bg-rose-700"
+            <MButton add_class="tw-mt-4" value="Chcę zmienić hasło" bg="tw-bg-rose-600" hover="hover:tw-bg-rose-700"
                 @click="$emit('new-password-request')" :disabled="form.btns.pesel.disabled"></MButton>
         </div>
     </div>

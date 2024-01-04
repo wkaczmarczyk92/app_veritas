@@ -33,7 +33,7 @@ const submit = async () => {
     disabled.value = true;
     errors.value = {};
 
-    let response = await axios.post(route('bokrequest.store'), {...form.value});
+    let response = await axios.post(route('bokrequest.store'), { ...form.value });
     response = response.data;
     // console.log(response);
 
@@ -60,25 +60,24 @@ const submit = async () => {
 
 
 <template>
-    <h2 class="text-2xl font-bold text-gray-800 mb-4">Zgłoszenia do Biura Obsługi Klienta</h2>
+    <h2 class="tw-text-2xl tw-font-bold tw-text-gray-800 tw-mb-4">Zgłoszenia do Biura Obsługi Klienta</h2>
 
     <div class="modal-body">
-        <div class="flex flex-col">
+        <div class="tw-flex tw-flex-col">
             <InputLabel value="Wybierz temat"></InputLabel>
-            <SelectInput v-model="form.subject_id" :options="subjects" :name_string="'subject'" :class="'mt-2'"></SelectInput>
-            <InputError class="mt-2" :message="errors.subject_id ? errors.subject_id[0] : ''" />
-            
-            <InputLabel value="Opisz problem" :class="'mt-4'"></InputLabel>
-            <TextareaInput v-model="form.msg" :class="'mt-2'"></TextareaInput>
-            <InputError class="mt-2" :message="errors.msg ? errors.msg[0] : ''" />
+            <SelectInput v-model="form.subject_id" :options="subjects" :name_string="'subject'"
+                :class="'tw-mt-2 tw-border-solid'">
+            </SelectInput>
+            <InputError class="tw-mt-2" :message="errors.subject_id ? errors.subject_id[0] : ''" />
+
+            <InputLabel value="Opisz problem" :class="'tw-mt-4'"></InputLabel>
+            <TextareaInput v-model="form.msg" :class="'tw-mt-2'"></TextareaInput>
+            <InputError class="tw-mt-2" :message="errors.msg ? errors.msg[0] : ''" />
         </div>
     </div>
 
-    <div class="mt-6 text-right">
-        <SButton 
-            :disabled="disabled"
-            value="Zgłoś problem"
-            @click="submit()">
+    <div class="tw-mt-6 tw-text-right">
+        <SButton :disabled="disabled" value="Zgłoś problem" @click="submit()">
         </SButton>
         <PrimaryButton id="closeModal" @click="$emit('close')">
             Zamknij
@@ -88,4 +87,3 @@ const submit = async () => {
 
 
 
-  

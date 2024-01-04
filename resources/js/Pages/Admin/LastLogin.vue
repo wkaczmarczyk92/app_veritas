@@ -13,6 +13,17 @@ const props = defineProps({
 });
 
 console.log(props.last_logins);
+const breadcrumbs = [
+    {
+        title: 'VeritasApp',
+        disabled: false,
+        href: route('dashboard')
+    },
+    {
+        title: 'Ostatnie logowania',
+        disabled: true,
+    }
+]
 
 </script>
 
@@ -20,35 +31,40 @@ console.log(props.last_logins);
     <Head :title="`VeritasApp - wszystkie posty`" />
     <AdminLayout>
         <template #header>
-            <h2 class="font-semibold text-xl text-gray-200 leading-tight">Ostatnie logowania</h2>
+            <!-- <h2 class="text-xl font-semibold leading-tight text-gray-200">Użytkownicy</h2> -->
+            <v-breadcrumbs :items="breadcrumbs">
+                <template v-slot:divider>
+                    <i class="fa-solid fa-chevron-right"></i>
+                </template>
+            </v-breadcrumbs>
         </template>
-        <div class="py-12">
-            <div class="sm:px-6 px-4 lg:px-8">
-                <div class="bg-gray-100 shadow-xl rounded sm:rounded-lg px-6 sm:px-20 pt-16 pb-8 sm:pb-12">
-                    <NewPagination
-                        :pagination="last_logins"
-                    ></NewPagination>
-                    <table class="text-center w-full border-collapse">
+        <div class="tw-py-12">
+            <div class="tw-px-4 sm:tw-px-6 lg:tw-px-8">
+                <div
+                    class="tw-px-6 tw-pt-16 tw-pb-8 tw-bg-gray-100 tw-rounded tw-shadow-xl sm:tw-rounded-lg sm:tw-px-20 sm:tw-pb-12">
+                    <NewPagination :pagination="last_logins"></NewPagination>
+                    <table class="tw-w-full tw-text-center tw-border-collapse">
                         <thead>
                             <tr class="table-tr">
                                 <th
-                                    class="py-4 px-2 bg-grey-lightest font-bold uppercase text-sm text-grey-dark border-b border-grey-light">
+                                    class="tw-px-2 tw-py-4 tw-text-sm tw-font-bold tw-uppercase tw-border-b tw-bg-grey-lightest tw-text-grey-dark tw-border-grey-light">
                                     Imię i nazwisko</th>
                                 <th
-                                    class="py-4 px-2 bg-grey-lightest font-bold uppercase text-sm text-grey-dark border-b border-grey-light">
+                                    class="tw-px-2 tw-py-4 tw-text-sm tw-font-bold tw-uppercase tw-border-b tw-bg-grey-lightest tw-text-grey-dark tw-border-grey-light">
                                     Data i godzina logowania</th>
                                 <!-- <th
-                                    class="py-4 px-2 bg-grey-lightest font-bold uppercase text-sm text-grey-dark border-b border-grey-light">
+                                    class="px-2 py-4 text-sm font-bold uppercase border-b bg-grey-lightest text-grey-dark border-grey-light">
                                     Przejdź do użytkownika</th> -->
                             </tr>
                         </thead>
                         <tbody>
-                            <tr class="hover:bg-grey-lighter" v-for="(item, index) in last_logins.data">
-                                <td class="py-4 px-6 border-b border-grey-light">{{ item.login_count ?? '-' }}</td>
-                                <td class="py-4 px-6 border-b border-grey-light">{{ item.date }}</td>
-                                <!-- <td class="py-4 px-6 border-b border-grey-light">
+                            <tr class="hover:tw-bg-grey-lighter" v-for="(item, index) in last_logins.data">
+                                <td class="tw-px-6 tw-py-4 tw-border-b tw-border-grey-light">{{ item.login_count ?? '-' }}
+                                </td>
+                                <td class="tw-px-6 tw-py-4 tw-border-b tw-border-grey-light">{{ item.date }}</td>
+                                <!-- <td class="px-6 py-4 border-b border-grey-light">
                                     <a class="edit-user" :href="`/uzytkownik/${item.user.id}`">
-                                        <i class="fa-solid fa-user-pen text-xl"></i>
+                                        <i class="text-xl fa-solid fa-user-pen"></i>
                                     </a>
                                 </td> -->
                             </tr>
@@ -56,9 +72,9 @@ console.log(props.last_logins);
                         </tbody>
                     </table>
 
-                                
-                
-                    
+
+
+
                 </div>
             </div>
         </div>
@@ -67,4 +83,4 @@ console.log(props.last_logins);
 </template>
 
 
-<!-- <section class="bg-gray-100 overflow-hidden shadow-xl rounded sm:rounded-lg mt-10"> -->
+<!-- <section class="mt-10 overflow-hidden bg-gray-100 rounded shadow-xl sm:rounded-lg"> -->

@@ -27,12 +27,10 @@ const close = () => emit('update:model_value', false);
     <teleport to='body'>
         <Modal>
             <Suspense>
-                <PointsHistory #default
-                    :user="user"
-                    @close="close">
+                <PointsHistory #default :user="user" @close="close">
                 </PointsHistory>
                 <template #fallback>
-                    <Loader class="grow"></Loader>
+                    <Loader class="tw-grow"></Loader>
                 </template>
             </Suspense>
         </Modal>

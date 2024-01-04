@@ -1,40 +1,25 @@
 <template>
-    <div class="bg-gray-100 shadow-xl rounded p-10">
-        <h2 class="font-semibold text-2xl leading-tight text-center mb-10">
-            <i class="fa-sharp fa-solid fa-key text-red-600 mr-2"></i>
+    <div class="tw-bg-gray-100 tw-shadow-xl tw-rounded tw-p-10">
+        <h2 class="tw-font-semibold tw-text-2xl tw-leading-tight tw-text-center tw-mb-10">
+            <i class="fa-sharp fa-solid fa-key tw-text-red-600 tw-mr-2"></i>
             Zmiana hasła
         </h2>
-        <div class="max-w-full sm:max-w-3xl ml-auto mr-auto mb-10" v-if="user.password_requests.length > 0">
-            <div class="flex flex-col justify-center">
+        <div class="tw-max-w-full sm:tw-max-w-3xl tw-ml-auto tw-mr-auto tw-mb-10" v-if="user.password_requests.length > 0">
+            <div class="tw-flex tw-flex-col tw-justify-center">
                 <InputLabel for="password" value="Hasło" />
 
-                <TextInput
-                    id="password"
-                    type="password"
-                    class="mt-1 block w-full"
-                    v-model="form.password"
-                    required
-                    autocomplete="current-password"
-                />
+                <TextInput id="password" type="password" class="tw-mt-1 tw-block tw-w-full" v-model="form.password" required
+                    autocomplete="current-password" />
                 <InputError class="mt-2" :message="password_error ? password_error : ''" />
             </div>
-            <div class="flex flex-col justify-center mt-4">
+            <div class="tw-flex tw-flex-col tw-justify-center tw-mt-4">
 
-                    <InputLabel for="password" value="Powtórz hasło" />
+                <InputLabel for="password" value="Powtórz hasło" />
 
-                    <TextInput
-                        id="password"
-                        type="password"
-                        class="mt-1 block w-full"
-                        v-model="form.password_confirmation"
-                        required
-                    />
+                <TextInput id="password" type="password" class="tw-mt-1 tw-block tw-w-full"
+                    v-model="form.password_confirmation" required />
             </div>
-            <MButton
-                value="Zmień hasło"
-                add_class="mt-4"
-                @click="update()"
-            ></MButton>
+            <MButton value="Zmień hasło" add_class="tw-mt-4" @click="update()"></MButton>
         </div>
         <StaticInfoAlert v-else>Brak możliwośći zmiany hasła.</StaticInfoAlert>
     </div>

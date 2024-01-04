@@ -31,27 +31,34 @@ const username_exists = () => {
 </script>
 
 <template>
-    <section class="bg-gray-100 overflow-hidden shadow-xl rounded-lg px-6 sm:px-20 pt-16 pb-8 sm:pb-12 mt-10 relative">
+    <section
+        class="tw-bg-gray-100 tw-overflow-hidden tw-shadow-xl tw-rounded-lg tw-px-6 sm:tw-px-20 tw-pt-16 tw-pb-8 sm:tw-pb-12 tw-mt-10 tw-relative">
         <!-- <img class="cbg-image" src="images/cbg.jpg" alt=""> -->
-        <h2 class="text-2xl sm:text-3xl text-gray-800 font-bold relative z-10">
+        <h2 class="tw-text-2xl sm:tw-text-3xl tw-text-gray-800 tw-font-bold tw-relative tw-z-10">
             Ważne informacje
         </h2>
-        <div class="flex flex-col mt-8 relative z-10">
-            <h2 class="text-md sm:text-xl">
-                <i class="fa-solid fa-phone-volume"></i> <span class="text-gray-800">Telefon alarmowy:</span> <a class="text-blue-700 hover:text-blue-900 font-bold phone_link flex sm:inline" href="tel:+48535228007">+48-535-228-007</a> <span class="text-gray800">– czynny w godzinach</span> <span class="text-blue-700 font-bold">17:00 - 8:00</span>
+        <div class="tw-flex tw-flex-col tw-mt-8 tw-relative tw-z-10">
+            <h2 class="tw-text-md sm:tw-text-xl">
+                <i class="fa-solid fa-phone-volume"></i> <span class="tw-text-gray-800">Telefon alarmowy:</span> <a
+                    class="tw-text-blue-700 hover:tw-text-blue-900 tw-font-bold phone_link tw-flex sm:tw-inline"
+                    href="tel:+717242989">+48 71 72 42 989</a> <span class="tw-text-gray-800">– czynny </span> <span
+                    class="tw-text-blue-700 tw-font-bold">24/h</span>
             </h2>
             <div v-if="username_exists()">
-                <h2 class="text-xl mt-8 text-gray-800">
-                    Dane koordynatora: 
+                <h2 class="tw-text-xl tw-mt-8 tw-text-gray-800">
+                    Dane koordynatora:
                 </h2>
-                <div class="text-lg ml-2 sm:ml-6 mt-2">
-                    <i class="fa-solid fa-user-tie"></i> <span class="text-gray-800">{{ recruiter.usr_first_name }} {{ recruiter.usr_last_name }}</span>
+                <div class="tw-text-lg tw-ml-2 sm:tw-ml-6 tw-mt-2">
+                    <i class="fa-solid fa-user-tie"></i> <span class="tw-text-gray-800">{{ recruiter.usr_first_name }} {{
+                        recruiter.usr_last_name }}</span>
                 </div>
-                <div class="text-lg ml-2 sm:ml-6 mt-1">
-                    <i class="fa-solid fa-envelope"></i> <a class="text-blue-700 hover:text-blue-900 phone_link" :href="`mailto:${recruiter.usr_email}`">{{ recruiter.usr_email }}</a>
+                <div class="tw-text-lg tw-ml-2 sm:tw-ml-6 tw-mt-1">
+                    <i class="fa-solid fa-envelope"></i> <a class="tw-text-blue-700 hover:tw-text-blue-900 phone_link"
+                        :href="`mailto:${recruiter.usr_email}`">{{ recruiter.usr_email }}</a>
                 </div>
-                <div class="text-lg ml-2 sm:ml-6 mt-1" v-if="recruiter.usr_phone">
-                    <i class="fa-regular fa-mobile"></i> <a class="text-blue-700 hover:text-blue-900 phone_link" :href="`tel:${recruiter.usr_phone}`">{{ display_phone_number(recruiter.usr_phone) }}</a>
+                <div class="tw-text-lg tw-ml-2 sm:tw-ml-6 tw-mt-1" v-if="recruiter.usr_phone">
+                    <i class="fa-regular fa-mobile"></i> <a class="tw-text-blue-700 hover:tw-text-blue-900 phone_link"
+                        :href="`tel:${recruiter.usr_phone}`">{{ display_phone_number(recruiter.usr_phone) }}</a>
                 </div>
             </div>
         </div>

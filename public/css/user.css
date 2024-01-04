@@ -356,8 +356,9 @@
 .bok-icon-custom {
   background: url("/images/attention.svg");
   background-repeat: no-repeat;
-  background-size: cover; /* stretch the background to cover the whole element */
-  /* 
+  background-size: cover;
+  /* stretch the background to cover the whole element */
+  /*
      still inline, but has block features
      meaning height and width can be set
   */
@@ -369,8 +370,9 @@
 .money-bag-icon-custom {
   background: url("/images/money-bag.svg");
   background-repeat: no-repeat;
-  background-size: cover; /* stretch the background to cover the whole element */
-  /* 
+  background-size: cover;
+  /* stretch the background to cover the whole element */
+  /*
      still inline, but has block features
      meaning height and width can be set
   */
@@ -507,7 +509,7 @@
   animation-name: pulse;
   animation-duration: 2s;
   animation-iteration-count: infinite;
-  border-width: 5px;
+  border-width: 5px !important;
 }
 .neon-after-btn:hover {
   background-color: rgb(59, 130, 246) !important;
@@ -519,7 +521,7 @@
 
 .neon-after-btn-green {
   filter: drop-shadow(0 0 15px rgb(74, 222, 128)) drop-shadow(0 0 50px rgb(74, 222, 128)) contrast(1) brightness(1);
-  border-width: 5px;
+  border-width: 5px !important;
 }
 .neon-after-btn-green:hover {
   cursor: default;
@@ -539,7 +541,7 @@
 
 .silver-neon {
   filter: drop-shadow(0 0 15px #C0C0C0) drop-shadow(0 0 50px #C0C0C0) contrast(1) brightness(1);
-  border-width: 5px;
+  border-width: 5px !important;
   color: #C0C0C0 !important;
   border-color: #C0C0C0 !important;
 }
@@ -550,7 +552,7 @@
 
 .brown-neon {
   filter: drop-shadow(0 0 15px #996633) drop-shadow(0 0 50px #996633) contrast(1) brightness(1);
-  border-width: 5px;
+  border-width: 5px !important;
   color: #996633 !important;
   border-color: #996633 !important;
 }
@@ -561,7 +563,7 @@
 
 .black-neon {
   filter: drop-shadow(0 0 15px #33cc33) drop-shadow(0 0 50px #33cc33) contrast(1) brightness(1);
-  border-width: 5px;
+  border-width: 5px !important;
   color: #33cc33 !important;
   border-color: #33cc33 !important;
 }

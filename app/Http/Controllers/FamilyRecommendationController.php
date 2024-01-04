@@ -98,7 +98,7 @@ class FamilyRecommendationController extends Controller
             DB::rollback();
             return response()->json(['succes' => false, 'msg' => $e->getMessage()]);
         }
-        
+
         return response()->json(['success' => true]);
     }
 

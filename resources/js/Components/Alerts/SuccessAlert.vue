@@ -11,7 +11,7 @@ defineProps({
 
 
 <template>
-    <div class="text-green-600" :class="class">
+    <div class="tw-text-green-600" :class="class">
         <slot></slot>
     </div>
 </template>

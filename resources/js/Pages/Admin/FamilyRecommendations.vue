@@ -34,6 +34,18 @@ const headers = [
     'Data utworzenia'
 ];
 
+const breadcrumbs = [
+    {
+        title: 'VeritasApp',
+        disabled: false,
+        href: route('dashboard')
+    },
+    {
+        title: 'Polecenia rodzin',
+        disabled: true
+    }
+]
+
 </script>
 
 
@@ -41,46 +53,49 @@ const headers = [
     <Head title="VeritasApp - polecenia rodzin" />
     <AdminLayout>
         <template #header>
-            <h2 class="font-semibold text-xl text-gray-200 leading-tight">Polecenia rodzin</h2>
+            <!-- <h2 class="text-xl font-semibold leading-tight text-gray-200">Użytkownicy</h2> -->
+            <v-breadcrumbs :items="breadcrumbs">
+                <template v-slot:divider>
+                    <i class="fa-solid fa-chevron-right"></i>
+                </template>
+            </v-breadcrumbs>
         </template>
 
         <div class="py-12">
-            <div class="max-w-full mx-auto sm:px-6 px-4 lg:px-8">
+            <div class="max-w-full px-4 mx-auto sm:px-6 lg:px-8">
                 <div v-if="data.data.length > 0">
-                    <NewPagination
-                        :pagination="data"
-                        page_name="/polecenia-rodzin"
-                    ></NewPagination>
-                    <div class="bg-gray-100 overflow-hidden shadow-xl mb-4">
+                    <NewPagination :pagination="data" page_name="/polecenia-rodzin"></NewPagination>
+                    <div class="mb-4 overflow-hidden bg-gray-100 shadow-xl">
                         <TableDefault :headers="headers">
                             <tr :class="item.rejected ? 'bg-red-200' : ''" v-for="(item, index) in data.data">
-                                <td class="py-4 px-6 border-b border-grey-light">{{ index + 1 + ((data.current_page - 1) * data.per_page) }}</td>
-                                <td class="py-4 px-6 border-b border-grey-light">{{ username(item) }}</td>
-                                <td class="py-4 px-6 border-b border-grey-light">
+                                <td class="px-6 py-4 border-b border-grey-light">{{ index + 1 + ((data.current_page - 1) *
+                                    data.per_page) }}</td>
+                                <td class="px-6 py-4 border-b border-grey-light">{{ username(item) }}</td>
+                                <td class="px-6 py-4 border-b border-grey-light">
                                     <a class="edit-user" :href="`/uzytkownik/${item.user.id}`">
                                         <i class="fa-solid fa-user-pen"></i>
                                     </a>
                                 </td>
-                                <td class="py-4 px-6 border-b border-grey-light">
+                                <td class="px-6 py-4 border-b border-grey-light">
                                     {{ item.rejected ? 'dane usunięto' : item.family_last_name }}
                                 </td>
-                                <td class="py-4 px-6 border-b border-grey-light">{{ item.rejected ? 'dane usunięto' : phone(item) }}</td>
-                                <td class="py-4 px-6 border-b border-grey-light">{{ item.rejected ? 'dane usunięto' : (item.info ?? '-') }}</td>
+                                <td class="px-6 py-4 border-b border-grey-light">{{ item.rejected ? 'dane usunięto' :
+                                    phone(item) }}</td>
+                                <td class="px-6 py-4 border-b border-grey-light">{{ item.rejected ? 'dane usunięto' :
+                                    (item.info ?? '-') }}</td>
 
-                                <td v-if="!item.rejected" class="py-4 px-6 border-b border-grey-light" v-html="icon.bonus_payout(item.bonus_payout_completed)">
+                                <td v-if="!item.rejected" class="px-6 py-4 border-b border-grey-light"
+                                    v-html="icon.bonus_payout(item.bonus_payout_completed)">
                                 </td>
-                                <td v-else class="py-4 px-6 border-b border-grey-light">dane usunięto
+                                <td v-else class="px-6 py-4 border-b border-grey-light">dane usunięto
                                 </td>
 
-                                <td class="py-4 px-6 border-b border-grey-light">{{ item.rejected_text ?? '-' }}</td>
-                                <td class="py-4 px-6 border-b border-grey-light">{{ format(item.created_at) }}</td>
+                                <td class="px-6 py-4 border-b border-grey-light">{{ item.rejected_text ?? '-' }}</td>
+                                <td class="px-6 py-4 border-b border-grey-light">{{ format(item.created_at) }}</td>
                             </tr>
                         </TableDefault>
                     </div>
-                    <NewPagination
-                        :pagination="data"
-                        page_name="/polecenia-rodzin"
-                    ></NewPagination>
+                    <NewPagination :pagination="data" page_name="/polecenia-rodzin"></NewPagination>
                 </div>
                 <div v-else>
                     <StaticInfoAlert>Brak poleceń rodzin.</StaticInfoAlert>

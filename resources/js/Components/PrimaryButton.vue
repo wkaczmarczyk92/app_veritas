@@ -6,20 +6,18 @@ defineProps({
     },
     bg: {
         type: String,
-        default: 'bg-gray-800'
+        default: 'tw-bg-gray-800'
     },
     hover: {
         type: String,
-        default: 'hover:bg-gray-700'
+        default: 'hover:tw-bg-gray-700'
     }
 })
 </script>
 
 <template>
-    <button :disabled="disabled"
-        :class="`${bg} ${hover}`"
-        class="inline-flex items-center px-4 py-2 border border-transparent rounded-md font-semibold text-xs text-white uppercase tracking-widest transition ease-in-out duration-150"
-    >
+    <button :disabled="disabled" :class="`${bg} ${hover}`"
+        class="tw-inline-flex tw-items-center tw-px-4 tw-py-2 tw-border tw-border-transparent tw-rounded-md tw-font-semibold tw-text-xs tw-text-white tw-uppercase tw-tracking-widest tw-transition tw-ease-in-out tw-duration-150">
         <slot />
     </button>
 </template>

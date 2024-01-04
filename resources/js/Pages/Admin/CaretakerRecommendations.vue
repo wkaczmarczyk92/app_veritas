@@ -84,7 +84,7 @@ async function set_as_complete() {
     }
 
     disabled.value = true;
-    
+
     await axios.patch(route('caretaker.recommendations.update.bonus.payout'), { items: for_action.value })
         .then(response => {
             if (!response.data.success) {
@@ -134,6 +134,17 @@ for (let i = 0; i < Object.keys(data.value.data).length; i++) {
     }
 }
 
+const breadcrumbs = [
+    {
+        title: 'VeritasApp',
+        disabled: false,
+        href: route('dashboard')
+    },
+    {
+        title: 'Polecenia opiekunek',
+        disabled: true,
+    }
+]
 
 </script>
 
@@ -143,144 +154,161 @@ for (let i = 0; i < Object.keys(data.value.data).length; i++) {
 
     <AdminLayout>
         <template #header>
-            <h2 class="font-semibold text-xl text-gray-200 leading-tight">Polecenia opiekunek</h2>
+            <!-- <h2 class="text-xl font-semibold leading-tight text-gray-200">Użytkownicy</h2> -->
+            <v-breadcrumbs :items="breadcrumbs">
+                <template v-slot:divider>
+                    <i class="fa-solid fa-chevron-right"></i>
+                </template>
+            </v-breadcrumbs>
         </template>
 
-        <div class="py-12">
-            <div class="max-w-full mx-auto sm:px-6 px-4 lg:px-8">
-                <div class="flex flex-col md:flex-row h-full mb-4">
-                    <div class="relative w-full md:w-1/3">
-                        <input v-model="search_string" @change="search()" class="shadow-md block w-full py-2 pl-10 pr-4 text-gray-900 placeholder-gray-400 border border-gray-300 rounded-full focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 focus:placeholder-gray-500" type="text" placeholder="Szukaj">
-                        <div class="absolute inset-y-0 left-0 flex items-center pl-3">
-                            <i class="fas fa-search text-gray-400"></i>
+        <div class="tw-py-12">
+            <div class="tw-max-w-full tw-px-4 tw-mx-auto sm:tw-px-6 tw-lg:px-8">
+                <div class="tw-flex tw-flex-col tw-h-full tw-mb-4 md:tw-flex-row">
+                    <div class="tw-relative tw-w-full md:tw-w-1/3">
+                        <input v-model="search_string" @change="search()"
+                            class="tw-block tw-w-full tw-py-2 tw-pl-10 tw-pr-4 tw-text-gray-900 tw-placeholder-gray-400 tw-border tw-border-gray-300 tw-rounded-full tw-shadow-md focus:tw-outline-none focus:tw-ring-2 focus:tw-ring-blue-500 focus:tw-border-blue-500 focus:tw-placeholder-gray-500"
+                            type="text" placeholder="Szukaj">
+                        <div class="tw-absolute tw-inset-y-0 tw-left-0 tw-flex tw-items-center tw-pl-3">
+                            <i class="tw-text-gray-400 fas fa-search"></i>
                         </div>
                     </div>
-                    <div v-if="search_string" class="font-pro h-full my-auto md:ml-3 mt-2 md:mt-0">
-                        <button @click="router.visit(route('caretaker.recommendations.index'), { method: 'get' })" class="flex items-center justify-center px-2 py-2 border border-red-500 rounded-full text-sm font-medium text-white bg-red-500 hover:bg-red-600 h-full hover:border-red-600">
-                            <i class="fas fa-times-circle mr-1 h-4 w-4 flex-shrink-0"></i>
+                    <div v-if="search_string" class="tw-h-full tw-my-auto tw-mt-2 tw-font-pro md:tw-ml-3 md:tw-mt-0">
+                        <button @click="router.visit(route('caretaker.recommendations.index'), { method: 'get' })"
+                            class="tw-flex items-center tw-justify-center tw-h-full tw-px-2 tw-py-2 tw-text-sm tw-font-medium tw-text-white tw-bg-red-500 tw-border tw-border-red-500 tw-rounded-full hover:tw-bg-red-600 hover:tw-border-red-600">
+                            <i class="tw-flex-shrink-0 tw-w-4 tw-h-4 tw-mr-1 fas fa-times-circle"></i>
                             <span>Usuń filtry</span>
                         </button>
                     </div>
                 </div>
                 <div v-if="data.data.length > 0">
-                    <NewPagination
-                        :pagination="data"
-                        page_name="/polecenia-opiekunek"
-                    ></NewPagination>
-                    <div class="bg-gray-100 overflow-hidden shadow-xl">
-                        <div class="overflow-x-auto">
-                            <div class="flex flex-row mt-6 text-gray-800 px-3 mb-3 pt-2">
-                                <div class="flex">
-                                    <i class="fa-regular fa-arrow-turn-down fa-flip-horizontal mr-2 mt-auto mb-auto"></i> 
-                                    <div class="flex items-center mr-3">
-                                        <input type="checkbox" id="for_all" v-model="select_all" class="h-4 w-4 rounded border-gray-400 text-gray-800 focus:ring-0">
+                    <NewPagination :pagination="data" page_name="/polecenia-opiekunek"></NewPagination>
+                    <div class="tw-overflow-hidden tw-bg-gray-100 tw-shadow-xl">
+                        <div class="tw-overflow-x-auto">
+                            <div class="tw-flex tw-flex-row tw-px-3 tw-pt-2 tw-mt-6 tw-mb-3 tw-text-gray-800">
+                                <div class="tw-flex">
+                                    <i
+                                        class="tw-mt-auto tw-mb-auto tw-mr-2 fa-regular fa-arrow-turn-down fa-flip-horizontal"></i>
+                                    <div class="tw-flex tw-items-center tw-mr-3">
+                                        <input type="checkbox" id="for_all" v-model="select_all"
+                                            class="tw-w-4 tw-h-4 tw-text-gray-800 tw-border-gray-400 tw-rounded focus:tw-ring-0">
                                     </div>
                                     <label for="for_all">Z zaznaczonymi:</label>
                                 </div>
-                                <div class="ml-4 underline text-green-600 hover:text-green-800 hover:cursor-pointer" @click="set_as_complete" :class="disabled ? 'pointer-events-none' : ''">
+                                <div class="tw-ml-4 tw-text-green-600 tw-underline hover:tw-text-green-800 hover:tw-cursor-pointer"
+                                    @click="set_as_complete" :class="disabled ? 'tw-pointer-events-none' : ''">
                                     oznacz jako Wypłacono bonus
                                 </div>
                             </div>
-                        <!-- <div class="overflow-x-auto"> -->
-                            <table class="text-center w-full border-collapse">
+                            <!-- <div class="overflow-x-auto"> -->
+                            <table class="tw-w-full tw-text-center tw-border-collapse">
                                 <thead>
-                                    <tr class="text-white text-xs">
-                                        <th
-                                            colspan="4"
-                                            class="py-4 px-2 font-bold uppercase text-grey-dark border-b border-grey-light bg-blue-700">
+                                    <tr class="tw-text-xs tw-text-white">
+                                        <th colspan="4"
+                                            class="tw-px-2 tw-py-4 tw-font-bold tw-uppercase tw-bg-blue-700 tw-border-b tw-text-grey-dark tw-border-grey-light">
                                             Osoba polecająca</th>
-                                        <th
-                                            colspan="3"
-                                            class="py-4 px-2 bg-teal-700 font-bold uppercase text-grey-dark border-b border-grey-light">
+                                        <th colspan="3"
+                                            class="tw-px-2 tw-py-4 tw-font-bold tw-uppercase tw-bg-teal-700 tw-border-b tw-text-grey-dark tw-border-grey-light">
                                             Osoba polecana</th>
-                                        <th
-                                            colspan="3"
-                                            class="py-4 px-2 bg-purple-800 font-bold uppercase text-grey-dark border-b border-grey-light">
+                                        <th colspan="3"
+                                            class="tw-px-2 tw-py-4 tw-font-bold tw-uppercase tw-bg-purple-700 tw-border-b tw-text-grey-dark tw-border-grey-light">
                                             Dodatkowe informacje</th>
                                     </tr>
-                                    <tr class="text-white text-xs">
+                                    <tr class="text-xs text-white">
                                         <th
-                                            class="py-4 px-2 bg-blue-500 font-bold uppercase text-grey-dark border-b border-grey-light">
-                                            </th>
+                                            class="tw-px-2 tw-py-4 tw-font-bold tw-uppercase tw-bg-blue-500 tw-border-b tw-text-grey-dark tw-border-grey-light">
+                                        </th>
                                         <th
-                                            class="py-4 px-2 bg-blue-500 font-bold uppercase text-grey-dark border-b border-grey-light">
+                                            class="tw-px-2 tw-py-4 tw-font-bold tw-uppercase tw-bg-blue-500 tw-border-b tw-text-grey-dark tw-border-grey-light">
                                             #</th>
                                         <th
-                                            class="py-4 px-2 bg-blue-300 font-bold uppercase text-grey-dark border-b bg-blue-500">
+                                            class="tw-px-2 tw-py-4 tw-font-bold tw-uppercase tw-bg-blue-500 tw-border-b tw-text-grey-dark tw-border-grey-light">
                                             Imię i nazwisko</th>
                                         <th
-                                            class="py-4 px-2 bg-blue-300 font-bold uppercase text-grey-dark border-b bg-blue-500">
+                                            class="tw-px-2 tw-py-4 tw-font-bold tw-uppercase tw-bg-blue-500 tw-border-b tw-text-grey-dark tw-border-grey-light">
                                             Przejdź do użytkownika</th>
                                         <th
-                                            class="py-4 px-2 bg-teal-500 font-bold uppercase text-grey-dark border-b border-grey-light">
+                                            class="tw-px-2 tw-py-4 tw-font-bold tw-uppercase tw-bg-teal-500 tw-border-b tw-text-grey-dark tw-border-grey-light">
                                             Imię i nazwisko</th>
                                         <th
-                                            class="py-4 px-2 bg-teal-500 font-bold uppercase text-grey-dark border-b border-grey-light">
+                                            class="tw-px-2 tw-py-4 tw-font-bold tw-uppercase tw-bg-teal-500 tw-border-b tw-text-grey-dark tw-border-grey-light">
                                             Nr telefonu</th>
                                         <th
-                                            class="py-4 px-2 bg-teal-500 font-bold uppercase text-grey-dark border-b border-grey-light">
+                                            class="tw-px-2 tw-py-4 tw-font-bold tw-uppercase tw-bg-teal-500 tw-border-b tw-text-grey-dark tw-border-grey-light">
                                             E-mail</th>
                                         <th
-                                            class="py-4 px-2 bg-purple-500 font-bold uppercase text-grey-dark border-b border-grey-light">
+                                            class="tw-px-2 tw-py-4 tw-font-bold tw-uppercase tw-bg-purple-500 tw-border-b tw-text-grey-dark tw-border-grey-light">
                                             Gotowe do wypłaty?</th>
                                         <th
-                                            class="py-4 px-2 bg-purple-500 font-bold uppercase text-grey-dark border-b border-grey-light">
+                                            class="tw-px-2 tw-py-4 tw-font-bold tw-uppercase tw-bg-purple-500 tw-border-b tw-text-grey-dark tw-border-grey-light">
                                             Edytuj</th>
                                         <th
-                                            class="py-4 px-2 bg-purple-500 font-bold uppercase text-grey-dark border-b border-grey-light">
+                                            class="tw-px-2 tw-py-4 tw-font-bold tw-uppercase tw-bg-purple-500 tw-border-b tw-text-grey-dark tw-border-grey-light">
                                             Data utworzenia</th>
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    <tr class="hover:bg-grey-lighter" v-for="(item, index) in data.data">
-                                        <td class="py-4 px-6 border-b border-grey-light">
-                                            <div class="flex items-center">
-                                                <div v-if="item.bonus_payout_completed" class="relative">
+                                    <tr class="hover:tw-bg-grey-lighter" v-for="(item, index) in data.data">
+                                        <td class="tw-px-6 tw-py-4 tw-border-b tw-border-grey-light">
+                                            <div class="tw-flex tw-items-center">
+                                                <div v-if="item.bonus_payout_completed" class="tw-absolute">
                                                     <Tooltip v-if="tooltips[index].bonus">Bonus został wypłacony</Tooltip>
-                                                    <i @mouseover="tooltips[index].bonus = true" @mouseleave="tooltips[index].bonus = false" class="fa-solid fa-square-check fa-lg text-green-600"></i>
+                                                    <i @mouseover="tooltips[index].bonus = true"
+                                                        @mouseleave="tooltips[index].bonus = false"
+                                                        class="tw-text-green-600 fa-solid fa-square-check fa-lg"></i>
                                                 </div>
                                                 <div v-else-if="item.ready_to_payout">
-                                                    <input type="checkbox" v-model="for_action" :value="item" class="h-4 w-4 rounded border-gray-400 text-gray-800 focus:ring-0">
+                                                    <input type="checkbox" v-model="for_action" :value="item"
+                                                        class="tw-w-4 tw-h-4 tw-text-gray-800 tw-border-gray-400 tw-rounded focus:tw-ring-0">
                                                 </div>
-                                                <div v-else-if="item.locked" class="relative">
-                                                    <Tooltip v-if="tooltips[index].locked" class="absolute">Dane uzupełnione. Oczekuje na odpowiedź z CRM.</Tooltip>
-                                                    <i @mouseover="tooltips[index].locked = true" @mouseleave="tooltips[index].locked = false"  class="fa-solid fa-lock-keyhole text-indigo-700 text-xl"></i>
+                                                <div v-else-if="item.locked" class="tw-relative">
+                                                    <Tooltip v-if="tooltips[index].locked" class="tw-absolute">Dane
+                                                        uzupełnione. Oczekuje na odpowiedź z CRM.</Tooltip>
+                                                    <i @mouseover="tooltips[index].locked = true"
+                                                        @mouseleave="tooltips[index].locked = false"
+                                                        class="tw-text-xl tw-text-indigo-700 fa-solid fa-lock-keyhole"></i>
                                                 </div>
-                                                <div v-else class="relative">
-                                                    <Tooltip v-if="tooltips[index].open" class="absolute">Dane czekają na uzupełnienie.</Tooltip>
-                                                    <i @mouseover="tooltips[index].open = true" @mouseleave="tooltips[index].open = false"  class="fa-solid fa-lock-open text-indigo-300 text-xl"></i>
+                                                <div v-else class="tw-relative">
+                                                    <Tooltip v-if="tooltips[index].open" class="tw-absolute">Dane czekają na
+                                                        uzupełnienie.</Tooltip>
+                                                    <i @mouseover="tooltips[index].open = true"
+                                                        @mouseleave="tooltips[index].open = false"
+                                                        class="tw-text-xl tw-text-indigo-300 fa-solid fa-lock-open"></i>
                                                 </div>
                                             </div>
                                         </td>
-                                        <!-- <td class="py-4 px-6 border-b border-grey-light">{{ index + 1 + ((data.current_page - 1) * data.per_page) }}</td> -->
-                                        <td class="py-4 px-6 border-b border-grey-light">{{ item.id }}</td>
-                                        <td class="py-4 px-6 border-b border-grey-light">{{ username(item) }}</td>
-                                        <td class="py-4 px-6 border-b border-grey-light">
+                                        <!-- <td class="tw-px-6 tw-py-4 tw-border-b tw-border-grey-light">{{ index + 1 + ((data.current_page - 1) * data.per_page) }}</td> -->
+                                        <td class="tw-px-6 tw-py-4 tw-border-b tw-border-grey-light">{{ item.id }}</td>
+                                        <td class="tw-px-6 tw-py-4 tw-border-b tw-border-grey-light">{{ username(item) }}
+                                        </td>
+                                        <td class="tw-px-6 tw-py-4 tw-border-b tw-border-grey-light">
                                             <a class="edit-user" :href="`/uzytkownik/${item.user.id}`">
-                                                <i class="fa-solid fa-user-pen text-xl"></i>
+                                                <i class="tw-text-xl fa-solid fa-user-pen"></i>
                                             </a>
                                         </td>
-                                        <td class="py-4 px-6 border-b border-grey-light">{{ caretaker_username(item) }}</td>
-                                        <td class="py-4 px-6 border-b border-grey-light">{{ phone(item) }}</td>
-                                        <td class="py-4 px-6 border-b border-grey-light">{{ item.caretaker_email ?? 'brak' }}</td>
-                                        <td class="py-4 px-6 border-b border-grey-light" :class="icon._rpt_class(item.bonus_payout_completed, item.ready_to_payout)" v-html="icon._rpt(item.bonus_payout_completed)">
+                                        <td class="tw-px-6 tw-py-4 tw-border-b tw-border-grey-light">{{
+                                            caretaker_username(item) }}</td>
+                                        <td class="tw-px-6 tw-py-4 tw-border-b tw-border-grey-light">{{ phone(item) }}</td>
+                                        <td class="tw-px-6 tw-py-4 tw-border-b tw-border-grey-light">{{ item.caretaker_email
+                                            ?? 'brak'
+                                        }}</td>
+                                        <td class="tw-px-6 tw-py-4 tw-border-b tw-border-grey-light"
+                                            :class="icon._rpt_class(item.bonus_payout_completed, item.ready_to_payout)"
+                                            v-html="icon._rpt(item.bonus_payout_completed)">
                                         </td>
-                                        <td class="py-4 px-6 border-b border-grey-light">
+                                        <td class="tw-px-6 tw-py-4 tw-border-b tw-border-grey-light">
                                             <a class="edit-user" :href="`/polecenia-opiekunek/${item.id}`">
-                                                <i class="fa-solid fa-file-pen text-xl"></i>
+                                                <i class="tw-text-xl fa-solid fa-file-pen"></i>
                                             </a>
                                         </td>
-                                        <td class="py-4 px-6 border-b border-grey-light">{{ format(item.created_at) }}</td>
+                                        <td class="tw-px-6 tw-py-4 tw-border-b tw-border-grey-light">{{
+                                            format(item.created_at) }}</td>
                                     </tr>
                                 </tbody>
                             </table>
                         </div>
                     </div>
-                    <NewPagination
-                        class="mt-4"
-                        :pagination="data"
-                        page_name="/polecenia-opiekunek"
-                    ></NewPagination>
+                    <NewPagination class="tw-mt-4" :pagination="data" page_name="/polecenia-opiekunek"></NewPagination>
                 </div>
                 <div v-else>
                     <StaticInfoAlert>Brak poleceń opiekunek.</StaticInfoAlert>

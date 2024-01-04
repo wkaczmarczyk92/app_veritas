@@ -7,8 +7,8 @@ import CompletePayoutRequests from './Parts/View/CompletePayoutRequests.vue';
 import Loader from '@/Components/Loader.vue';
 
 const payout_view = ref('pending');
-const active_button = ref('text-white bg-blue-600 hover:bg-blue-900 py-3 px-6 rounded-3xl shadow-xl');
-const inactive_button = ref('text-blue-600 py-3 shadow-xl px-6 bg-white hover:text-white hover:bg-blue-600 rounded-3xl border border-blue-600');
+const active_button = ref('tw-text-white tw-bg-blue-600 hover:tw-bg-blue-900 tw-py-3 tw-px-6 tw-rounded-3xl tw-shadow-xl');
+const inactive_button = ref('tw-text-blue-600 tw-py-3 tw-shadow-xl tw-px-6 tw-bg-white hover:tw-text-white hover:tw-bg-blue-600 tw-rounded-3xl tw-border tw-border-blue-600');
 
 const props = defineProps({
     levels: {
@@ -17,6 +17,17 @@ const props = defineProps({
     }
 })
 
+const breadcrumbs = [
+    {
+        title: 'VeritasApp',
+        disabled: false,
+        href: route('dashboard')
+    },
+    {
+        title: 'Wnioski o wypłatę',
+        disabled: true
+    }
+]
 
 </script>
 
@@ -24,25 +35,26 @@ const props = defineProps({
     <Head title="VeritasApp - wnioski o wypłatę" />
     <AdminLayout>
         <template #header>
-            <h2 class="font-semibold text-xl text-gray-200 leading-tight">Wnioski o wypłatę</h2>
+            <!-- <h2 class="text-xl font-semibold leading-tight text-gray-200">Użytkownicy</h2> -->
+            <v-breadcrumbs :items="breadcrumbs">
+                <template v-slot:divider>
+                    <i class="fa-solid fa-chevron-right"></i>
+                </template>
+            </v-breadcrumbs>
         </template>
 
-        <div class="py-12">
-            <div class="max-w-8xl mx-auto sm:px-6 px-4 lg:px-8">
-                <div class="flex flex-row gap-6">
+        <div class="tw-py-12">
+            <div class="tw-px-4 tw-mx-auto tw-max-w-8xl sm:tw-px-6 lg:tw-px-8">
+                <div class="tw-flex tw-flex-row tw-gap-6">
                     <div>
-                        <button 
-                            :class="payout_view == 'pending' ? active_button : inactive_button"
-                            @click="payout_view = 'pending'"
-                            >
+                        <button :class="payout_view == 'pending' ? active_button : inactive_button" class="tw-border-solid"
+                            @click="payout_view = 'pending'">
                             Oczekujące
                         </button>
                     </div>
                     <div>
-                        <button
-                            :class="payout_view == 'completed' ? active_button : inactive_button"
-                            @click="payout_view = 'completed'"
-                            >
+                        <button :class="payout_view == 'completed' ? active_button : inactive_button"
+                            class="tw-border-solid" @click="payout_view = 'completed'">
                             Zrealizowane
                         </button>
                     </div>
@@ -67,7 +79,7 @@ const props = defineProps({
                             </template>
                         </Suspense>
                     </div>
-                </Transition>                
+                </Transition>
             </div>
         </div>
     </AdminLayout>

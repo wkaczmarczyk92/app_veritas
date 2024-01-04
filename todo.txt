@@ -1,0 +1,1 @@
+[] przy automatycznym dodawaniu punktów zapisywać w komentarzu za jaki to miesiąć

@@ -36,7 +36,7 @@ const isLeft = () => {
 }
 
 const mergeClass = () => {
-    return `tooltip absolute z-40 ${props.class} ${isLeft()}` + (props.translateX ? ' t-x' : '')
+    return `tooltip tw-absolute tw-z-40 ${props.class} ${isLeft()}` + (props.translateX ? ' t-x' : '')
 }
 
 const top = toRef(props.top);
@@ -44,7 +44,6 @@ const top = toRef(props.top);
 </script>
 
 <style>
-
 .tooltip {
     display: block ruby;
     top: calc(-100% - v-bind(top + 'px'));
@@ -65,5 +64,4 @@ const top = toRef(props.top);
 .t-x {
     transform: translateX(-50%);
 }
-
 </style>

@@ -1,5 +1,4 @@
 <script setup>
-import Header from '@/Templates/HTML/Header.vue';
 
 import { format } from '@/Components/Functions/DateFormat.vue';
 import AlertInfo from '@/Components/Functions/AlertInfo.vue';
@@ -11,55 +10,61 @@ defineProps({
     }
 })
 
+const headers = [
+    'Opiekunka',
+    'Kwota bonusu',
+    '',
+    'Data utworzenia'
+]
+
 </script>
 
 <template>
-    <Header
-        title="Ostatnie zgłoszenia do BOK-u"
-        route_name="bokrequest.index"
-        route_title="Przejdź do zgłoszeń"
-        icon="fa-solid fa-arrow-turn-down-right"
-    ></Header>
-    <div class="overflow-x-auto" v-if="latest_bok_request.length > 0">
-        <table class="text-center w-full border-collapse text-xs">
-            <thead>
-                <tr class="table-tr">
-                    <th
-                        class="text-left py-2 pl-1 pr-6 bg-grey-lightest font-bold uppercase text-grey-dark border-b border-grey-light">
-                        Opiekunka</th>
-                    <th
-                        class="py-2 px-6 bg-grey-lightest font-bold uppercase text-grey-dark border-b border-grey-light">
-                        Kwota bonusu
-                    </th>
-                    <th
-                        class="py-2 px-6 bg-grey-lightest font-bold uppercase text-grey-dark border-b border-grey-light">
-                        
-                    </th>
-                    <th
-                        class="py-2 bg-grey-lightest font-bold uppercase text-grey-dark border-b border-grey-light text-[10px]">
-                        Data utworzenia
-                    </th>
-                </tr>
-            </thead>
-                <tbody>
-                    <tr class="hover:bg-grey-lighter" v-for="(bok_request, index) in latest_bok_request">
-                        <td class="py-3 pr-6 pl-1 border-b border-grey-light">{{ `${bok_request.user.user_profiles.first_name} ${bok_request.user.user_profiles.last_name}` }}</td>
-                        <td class="py-3 px-6 border-b border-grey-light">{{ bok_request.subject.subject }}</td>
-                        <td class="py-3 px-6 border-b border-grey-light">
-                            <a class="edit-user" :href="`/uzytkownik/${bok_request.user.id}`">
-                                <i class="fa-solid fa-user-pen"></i>
-                            </a>
-                        </td>
-                        <td class="py-4 pl-6 pr-1 border-b border-grey-light">{{ format(bok_request.created_at) }}</td>
-                    </tr>
-                </tbody>
-        </table>
-    </div>
-    <div v-else>
-        <AlertInfo
-            title=""
-            :show_icon="false">
-            Brak nowych wniosków o wypłatę
-        </AlertInfo>
-    </div>
+    <v-card variant="tonal" :color="'white'" class="tw-mt-6 tw-shadow-2xl">
+        <template #title>
+            <div class="tw-flex tw-flex-row tw-items-center tw-justify-between tw-mb-4">
+                <div class="tw-text-lg tw-font-bold tw-text-gray-800">
+                    Ostatnie zgłoszenia do BOK-u
+                </div>
+                <a :href="route('bokrequest.index')"
+                    class="tw-text-sm tw-text-blue-500 hover:tw-underline hover:tw-text-blue-700">
+                    Przejdź do zgłoszeń
+                    <span>
+                        <i class="fa-solid fa-arrow-turn-down-right"></i>
+                    </span>
+                </a>
+            </div>
+
+        </template>
+        <v-card-text>
+            <div class="overflow-x-auto" v-if="latest_bok_request.length > 0">
+                <v-data-table :items="latest_bok_request" height="auto" item-value="id">
+                    <template #headers>
+                        <tr class="tw-bg-gray-200">
+                            <th v-for="(header, index) in headers" :key="index">
+                                <span class="tw-font-bold">{{ header }}</span>
+                            </th>
+                        </tr>
+                    </template>
+                    <template v-slot:item="{ item }">
+                        <tr class="tw-text-xs">
+                            <td>{{ `${item.user.user_profiles.first_name}
+                                                            ${item.user.user_profiles.last_name}` }}</td>
+                            <td>{{ item.subject.subject }}</td>
+                            <td class="tw-text-lg">
+                                <a class="edit-user" :href="`/uzytkownik/${item.user.id}`">
+                                    <i class="tw-text-blue-500 fa-solid fa-user-pen hover:tw-text-blue-700"></i>
+                                </a>
+                            </td>
+                            <td>{{ format(item.created_at) }}</td>
+                        </tr>
+                    </template>
+                    <template #bottom></template>
+                </v-data-table>
+            </div>
+            <AlertInfo v-else title="" :show_icon="false">
+                Brak nowych wniosków o wypłatę
+            </AlertInfo>
+        </v-card-text>
+    </v-card>
 </template>

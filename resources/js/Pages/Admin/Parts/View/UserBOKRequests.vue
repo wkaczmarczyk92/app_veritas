@@ -50,53 +50,54 @@ const show_pagination_alert = (msg) => {
 </script>
 
 <template>
-    <AlertDanger v-model="pagination_alert.show" v-if="pagination_alert.show" :position_fixed="true">{{ pagination_alert.msg }}</AlertDanger>
-    <div class="bg-gray-100 shadow-xl rounded mb-6 grow">
-        <div class="px-6 pt-6 text-center">
-            <h1 class="text-2xl font-bold text-gray-800 inline-block min-w-auto max-w-full">
-                <i class="fa-solid fa-triangle-exclamation mr-2 text-red-500"></i>
+    <AlertDanger v-model="pagination_alert.show" v-if="pagination_alert.show" :position_fixed="true">{{ pagination_alert.msg
+    }}</AlertDanger>
+    <div class="tw-bg-gray-100 tw-shadow-xl tw-rounded tw-mb-6 tw-grow">
+        <div class="tw-px-6 tw-pt-6 tw-text-center">
+            <h1 class="tw-text-2xl tw-font-bold tw-text-gray-800 tw-inline-block tw-min-w-auto tw-max-w-full">
+                <i class="fa-solid fa-triangle-exclamation tw-mr-2 tw-text-red-500"></i>
                 Zgłoszenia do BOK-u
             </h1>
         </div>
-        <div v-if="data && data.data && data.data.length <= 0" class="p-4 pt-0">
-            <AlertInfo class="mt-10">Brak zgłoszeń do BOK-u.</AlertInfo>
+        <div v-if="data && data.data && data.data.length <= 0" class="tw-p-4 tw-pt-0">
+            <AlertInfo class="tw-mt-10">Brak zgłoszeń do BOK-u.</AlertInfo>
         </div>
         <div v-else>
-            <PaginationNoReload
-                :pagination="data"
-                class="mt-10 ml-6"
-                @show-alert="show_pagination_alert"
-                @reload-request-by-url="reload_by_url"
-                @reload-request-by-page-number="reload_by_page_number"
-            ></PaginationNoReload>
-            <div class="overflow-x-auto"  :class="data.total > data.per_page ? '' : 'mt-10'">
-                <table class="text-center w-full border-collapse">
+            <PaginationNoReload :pagination="data" class="tw-mt-10 tw-ml-6" @show-alert="show_pagination_alert"
+                @reload-request-by-url="reload_by_url" @reload-request-by-page-number="reload_by_page_number">
+            </PaginationNoReload>
+            <div class="tw-overflow-x-auto" :class="data.total > data.per_page ? '' : 'tw-mt-10'">
+                <table class="tw-text-center tw-w-full tw-border-collapse">
                     <thead>
                         <tr class="table-tr">
                             <th
-                                class="py-4 px-6 bg-grey-lightest font-bold uppercase text-sm text-grey-dark border-b border-grey-light">
+                                class="tw-py-4 tw-px-6 tw-bg-grey-lightest tw-font-bold tw-uppercase tw-text-sm tw-text-grey-dark tw-border-b tw-border-grey-light">
                                 #
                             </th>
                             <th
-                                class="py-4 px-6 bg-grey-lightest font-bold text-left uppercase text-sm text-grey-dark border-b border-grey-light">
+                                class="tw-py-4 tw-px-6 tw-bg-grey-lightest tw-font-bold tw-uppercase tw-text-sm tw-text-grey-dark tw-border-b tw-border-grey-light tw-text-left">
                                 Temat
                             </th>
                             <th
-                                class="py-4 px-6 bg-grey-lightest font-bold text-left uppercase text-sm text-grey-dark border-b border-grey-light">
+                                class="tw-py-4 tw-px-6 tw-bg-grey-lightest tw-font-bold tw-uppercase tw-text-sm tw-text-grey-dark tw-border-b tw-border-grey-light tw-text-left">
                                 Wiadomość
                             </th>
                             <th
-                                class="py-4 px-6 bg-grey-lightest font-bold uppercase text-sm text-grey-dark border-b border-grey-light">
+                                class="tw-py-4 tw-px-6 tw-bg-grey-lightest tw-font-bold tw-uppercase tw-text-sm tw-text-grey-dark tw-border-b tw-border-grey-lightt">
                                 Utworzono
                             </th>
                         </tr>
                     </thead>
                     <tbody>
-                        <tr class="hover:bg-grey-lighter" v-for="(bok_request, index) in forms">
-                            <td class="py-4 px-6 border-b border-grey-light">{{ bok_request.id }}</td>
-                            <td class="py-4 px-6 border-b border-grey-light text-left">{{ bok_request.subject.subject }}</td>
-                            <td class="py-4 px-6 border-b border-grey-light text-left">{{ bok_request.msg }}</td>
-                            <td class="py-4 px-6 border-b border-grey-light">{{ format(bok_request.created_at) }}</td>
+                        <tr class="hover:tw-bg-grey-lighter" v-for="(bok_request, index) in forms">
+                            <td class="tw-py-4 tw-px-6 tw-border-b tw-border-grey-light">{{ bok_request.id }}</td>
+                            <td class="tw-py-4 tw-px-6 tw-border-b tw-border-grey-light tw-text-left">{{
+                                bok_request.subject.subject }}
+                            </td>
+                            <td class="tw-py-4 tw-px-6 tw-border-b tw-border-grey-light tw-text-left">{{ bok_request.msg }}
+                            </td>
+                            <td class="tw-py-4 tw-px-6 tw-border-b tw-border-grey-light">{{ format(bok_request.created_at)
+                            }}</td>
                         </tr>
                         <!-- More rows... -->
                     </tbody>

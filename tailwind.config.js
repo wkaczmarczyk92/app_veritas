@@ -26,6 +26,9 @@ module.exports = {
         // require("tw-elements/dist/plugin.cjs")
     ],
 
+    // important: true,
+    prefix: 'tw-',
+
     // content: [
     //     "./src/**/*.{html,js}",
     //     "./node_modules/tw-elements/dist/js/**/*.js"

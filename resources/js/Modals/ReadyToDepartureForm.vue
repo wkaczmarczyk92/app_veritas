@@ -40,7 +40,7 @@ async function submit() {
 
     if (response?.errors) {
         errors.value = response.errors;
-        disabled.value = false;    
+        disabled.value = false;
         return;
     }
 
@@ -49,7 +49,7 @@ async function submit() {
     }
 
     useAlertStore.pushAlert(response.alert_type, response.msg);
-    disabled.value = false;    
+    disabled.value = false;
 }
 
 async function removeReadyToDepartureDate() {
@@ -68,26 +68,19 @@ async function removeReadyToDepartureDate() {
 </script>
 
 <template>
-    <h2 class="text-2xl font-bold mt-3 mb-6 text-gray-800">Zgłoś chęć wyjazdu!</h2>
+    <h2 class="tw-text-2xl tw-font-bold tw-mt-3 tw-mb-6 tw-text-gray-800">Zgłoś chęć wyjazdu!</h2>
     <p>
-        <InputLabel class="mb-2" value="Wybierz datę dyspozycyjności"></InputLabel>
-        <VueDatePicker 
-            v-model="departure_date" 
-            :format="format" 
-            :enable-time-picker="false"
-            auto-apply
-        >
+        <InputLabel class="tw-mb-2" value="Wybierz datę dyspozycyjności"></InputLabel>
+        <VueDatePicker v-model="departure_date" :format="format" :enable-time-picker="false" auto-apply>
         </VueDatePicker>
-        <InputError class="mt-2" :message="errors?.departure_date ? errors.departure_date[0] : ''" />
+        <InputError class="tw-mt-2" :message="errors?.departure_date ? errors.departure_date[0] : ''" />
     </p>
-    <p class="mt-2 text-red-500 underline hover:cursor-pointer" v-if="ready_to_departure_dates" @click="removeReadyToDepartureDate">
+    <p class="tw-mt-2 tw-text-red-500 tw-underline hover:tw-cursor-pointer" v-if="ready_to_departure_dates"
+        @click="removeReadyToDepartureDate">
         Usuń datę gotowości do wyjazdu
     </p>
-    <div class="mt-6 text-right">
-        <SButton 
-            :disabled="disabled"
-            @click="submit()" 
-            value="Aktualizuj datę">
+    <div class="tw-mt-6 tw-text-right">
+        <SButton :disabled="disabled" @click="submit()" value="Aktualizuj datę">
         </SButton>
         <PrimaryButton id="closeModal" @click="$emit('close')">
             Zamknij

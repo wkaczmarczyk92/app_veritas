@@ -4,8 +4,9 @@
 </script>
 
 <template>
-    <div id="modal" class="fixed inset-0 overflow-y-auto px-4 py-6 sm:px-0 z-50 bg-black bg-opacity-50">
-        <div class="bg-white rounded-lg p-6 w-full md:w-4/5 lg:w-1/2 mx-auto">
+    <div id="modal"
+        class="tw-fixed tw-inset-0 tw-overflow-y-auto tw-px-4 tw-py-6 sm:tw-px-0 tw-z-50 tw-bg-black tw-bg-opacity-50">
+        <div class="tw-bg-white tw-rounded-lg tw-p-6 tw-w-full md:tw-w-4/5 lg:tw-w-1/2 tw-mx-auto">
             <slot></slot>
         </div>
     </div>
@@ -13,4 +14,3 @@
 
 
 
-  

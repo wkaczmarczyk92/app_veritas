@@ -59,71 +59,72 @@ console.log(data.value);
 </script>
 
 <template>
-    <div id="modal" class="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 p-4">
-        <div class="bg-white rounded-lg p-6 w-full md:w-4/5 lg:w-1/2">
-            <h2 class="text-2xl font-bold mt-3 mb-6 text-gray-800">
-                <i class="fa-regular fa-user-group mr-2"></i>
+    <div id="modal"
+        class="tw-fixed tw-inset-0 tw-flex tw-items-center tw-justify-center tw-bg-black tw-bg-opacity-50 tw-p-4">
+        <div class="tw-bg-white tw-rounded-lg tw-p-6 tw-w-full md:tw-w-4/5 lg:tw-w-1/2">
+            <h2 class="tw-text-2xl tw-font-bold tw-mt-3 tw-mb-6 tw-text-gray-800">
+                <i class="fa-regular fa-user-group tw-mr-2"></i>
                 Twoje polecenia opiekunek
             </h2>
 
-            <div class="flex mt-8" v-if="count > per_page">
-                <nav class="flex justify-between">
+            <div class="tw-flex tw-mt-8" v-if="count > per_page">
+                <nav class="tw-flex tw-justify-between">
                     <a href="#"
-                        class="relative block py-2 px-3 leading-tight bg-white border border-gray-300 text-gray-800 mr-1 hover:bg-gray-200"
+                        class="tw-relative tw-block tw-py-2 tw-px-3 tw-leading-tight tw-bg-white tw-border tw-border-gray-300 tw-text-gray-800 tw-mr-1 hover:tw-bg-gray-200"
                         @click="page > 1 ? page-- : null">Wstecz</a>
                     <a href="#"
-                        class="relative block py-2 px-3 leading-tight bg-white border border-gray-300 text-gray-800 mr-1 disabled-paginatio-item">{{
+                        class="tw-relative tw-block tw-py-2 tw-px-3 tw-leading-tight tw-bg-white tw-border tw-border-gray-300 tw-text-gray-800 tw-mr-1 disabled-paginatio-item">{{
                             page }} z {{ data.last_page }}</a>
                     <a href="#"
-                        class="relative block py-2 px-3 leading-tight bg-white border border-gray-300 text-gray-800 mr-1 hover:bg-gray-200"
+                        class="tw-relative tw-block tw-py-2 tw-px-3 tw-leading-tight tw-bg-white tw-border tw-border-gray-300 tw-text-gray-800 tw-mr-1 hover:tw-bg-gray-200"
                         @click="page < data.last_page ? page++ : null">Dalej</a>
                 </nav>
             </div>
 
-            <div class="table-container overflow-x-auto" v-if="data.data.length">
-                <table class="text-center w-full border-collapse mt-4">
+            <div class="table-container tw-overflow-x-auto" v-if="data.data.length">
+                <table class="tw-text-center tw-w-full tw-border-collapse tw-mt-4">
                     <thead>
                         <tr class="table-tr">
                             <th
-                                class="py-4 px-6 bg-grey-lightest font-bold uppercase text-sm text-grey-dark border-b border-grey-light">
+                                class="tw-py-4 tw-px-6 tw-bg-grey-lightest tw-font-bold tw-uppercase tw-text-sm tw-text-grey-dark tw-border-b tw-border-grey-light">
                                 #</th>
                             <th
-                                class="py-4 px-6 bg-grey-lightest font-bold uppercase text-sm text-grey-dark border-b border-grey-light">
+                                class="tw-py-4 tw-px-6 tw-bg-grey-lightest tw-font-bold tw-uppercase tw-text-sm tw-text-grey-dark tw-border-b tw-border-grey-light">
                                 Gotowe do wypłaty</th>
                             <th
-                                class="py-4 px-6 bg-grey-lightest font-bold uppercase text-sm text-grey-dark border-b border-grey-light">
+                                class="tw-py-4 tw-px-6 tw-bg-grey-lightest tw-font-bold tw-uppercase tw-text-sm tw-text-grey-dark tw-border-b tw-border-grey-light">
                                 Wypłacono?</th>
                             <th
-                                class="py-4 px-6 bg-grey-lightest font-bold uppercase text-sm text-grey-dark border-b border-grey-light">
+                                class="tw-py-4 tw-px-6 tw-bg-grey-lightest tw-font-bold tw-uppercase tw-text-sm tw-text-grey-dark tw-border-b tw-border-grey-light">
                                 Data dodania</th>
                         </tr>
                     </thead>
                     <tbody>
-                        <tr class="hover:bg-grey-lighter" v-for="(item, index) in data.data">
-                            <td class="py-4 px-6 border-b border-grey-light">{{ item.id }}</td>
-                            <td 
-                                class="py-4 px-6 border-b border-grey-light" 
-                                :class="icon._rpt_class(item.bonus_payout_completed, item.ready_to_payout)" 
+                        <tr class="hover:tw-bg-grey-lighter" v-for="(item, index) in data.data">
+                            <td class="tw-py-4 tw-px-6 tw-border-b tw-border-grey-light">{{ item.id }}</td>
+                            <td class="tw-py-4 tw-px-6 tw-border-b tw-border-grey-light"
+                                :class="icon._rpt_class(item.bonus_payout_completed, item.ready_to_payout)"
                                 v-html="icon._rpt(item.bonus_payout_completed)">
                             </td>
-                            <td class="py-4 px-6 border-b border-grey-light">
-                                <i v-if="item.bonus_payout_completed" class="fa-solid fa-square-check fa-lg text-green-600"></i>
+                            <td class="tw-py-4 tw-px-6 tw-border-b tw-border-grey-light">
+                                <i v-if="item.bonus_payout_completed"
+                                    class="fa-solid fa-square-check fa-lg tw-text-green-600"></i>
                                 <span v-else>-</span>
                             </td>
-                            <td class="py-4 px-6 border-b border-grey-light">{{ format(item.created_at) }}</td>
+                            <td class="tw-py-4 tw-px-6 tw-border-b tw-border-grey-light">{{ format(item.created_at) }}</td>
                         </tr>
                     </tbody>
                 </table>
 
-                <div class="flex items-center justify-center spinner-container"
-                    :class="spinner_visible ? '' : 'hidden'">
-                    <div class="w-10 h-10 border-b-8 border-white-900 rounded-full animate-spin"></div>
+                <div class="tw-flex tw-items-center tw-justify-center tw-spinner-container"
+                    :class="spinner_visible ? '' : 'tw-hidden'">
+                    <div class="tw-w-10 tw-h-10 tw-border-b-8 tw-border-white-900 tw-rounded-full tw-animate-spin"></div>
                 </div>
             </div>
             <AlertInfo v-else>Brak poleconych opiekunek do wyświetlenia.</AlertInfo>
 
 
-            <div class="flex flex-row justify-end mt-4">
+            <div class="tw-flex tw-flex-row tw-justify-end tw-mt-4">
                 <PrimaryButton @click="$emit('close')">
                     Zamknij
                 </PrimaryButton>

@@ -24,8 +24,9 @@ defineEmits(['update:modelValue']);
 </script>
 
 <template>
-    <div class="relative">
-        <select :class="class" @change="$emit('update:modelValue', $event.target.value)" :value="modelValue" class="block appearance-none w-full bg-white border border-gray-300 text-gray-700 py-2 px-3 pr-8 rounded leading-tight focus:outline-none focus:bg-white focus:border-gray-500">
+    <div class="tw-relative">
+        <select :class="class" @change="$emit('update:modelValue', $event.target.value)" :value="modelValue"
+            class="tw-block tw-appearance-none tw-w-full tw-bg-white tw-border tw-border-gray-300 tw-text-gray-700 tw-py-2 tw-px-3 tw-pr-8 tw-rounded tw-leading-tight focus:tw-outline-none focus:tw-bg-white focus:tw-border-gray-500">
             <option value="">...</option>
             <option v-for="option in options" :value="option.id">{{ option[name_string] }}</option>
         </select>

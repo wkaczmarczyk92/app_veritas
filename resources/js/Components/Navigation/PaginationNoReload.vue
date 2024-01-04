@@ -36,16 +36,24 @@ const goto = () => {
 </script>
 
 <template>
-    <div class="flex flex-col md:flex-row mb-4" v-if="pagination.total > pagination.per_page">
-        <nav class="flex">
-            <a @click.prevent="$emit('reload-request-by-url', pagination.prev_page_url)" class="shadow-md relative block py-2 px-3 bg-white border border-gray-300 text-gray-800 mr-1 hover:bg-gray-200" :class="pagination.prev_page_url == null ? 'hover:cursor-not-allowed pointer-events-none' : 'hover:cursor-pointer'">Wstecz</a>
-            <a href="#" class="shadow-md relative block py-2 px-3 bg-white border border-gray-300 text-gray-800 mr-1 disabled-paginatio-item">{{ pagination.current_page }} z {{ pagination.last_page }}</a>
-            <a @click.prevent="$emit('reload-request-by-url', pagination.next_page_url)" class="shadow-md relative block py-2 px-3 bg-white border border-gray-300 text-gray-800 mr-1 hover:bg-gray-200" :class="pagination.next_page_url == null ? 'hover:cursor-not-allowed pointer-events-none' : 'hover:cursor-pointer'">Dalej</a>
+    <div class="tw-flex tw-flex-col md:tw-flex-row tw-mb-4" v-if="pagination.total > pagination.per_page">
+        <nav class="tw-flex">
+            <a @click.prevent="$emit('reload-request-by-url', pagination.prev_page_url)"
+                class="tw-shadow-md tw-relative tw-block tw-py-2 tw-px-3 tw-bg-white tw-border tw-border-gray-300 tw-text-gray-800 tw-mr-1 hover:tw-bg-gray-200"
+                :class="pagination.prev_page_url == null ? 'hover:cursor-not-allowed pointer-events-none' : 'hover:cursor-pointer'">Wstecz</a>
+            <a href="#"
+                class="tw-shadow-md tw-relative tw-block tw-py-2 tw-px-3 tw-bg-white tw-border tw-border-gray-300 tw-text-gray-800 tw-mr-1 disabled-paginatio-item">{{
+                    pagination.current_page }} z {{ pagination.last_page }}</a>
+            <a @click.prevent="$emit('reload-request-by-url', pagination.next_page_url)"
+                class="tw-shadow-md tw-relative tw-block tw-py-2 tw-px-3 tw-bg-white tw-border tw-border-gray-300 tw-text-gray-800 tw-mr-1 hover:tw-bg-gray-200"
+                :class="pagination.next_page_url == null ? 'hover:tw-cursor-not-allowed tw-pointer-events-none' : 'hover:tw-cursor-pointer'">Dalej</a>
         </nav>
-        <div class="flex md:justify-center mt-3 md:mt-0">
-            <div class="flex">
-                <input v-model="goto_page" type="number" class="border-2 border-gray-400 py-2" placeholder="Numer strony">
-                <button type="submit" class="btn-bg text-white font-bold py-2 px-4 ml-2" @click="goto()">Przejdź</button>
+        <div class="tw-flex md:tw-justify-center tw-mt-3 md:tw-mt-0">
+            <div class="tw-flex">
+                <input v-model="goto_page" type="number" class="tw-border-2 tw-border-gray-400 tw-py-2"
+                    placeholder="Numer strony">
+                <button type="submit" class="btn-bg tw-text-white tw-font-bold tw-py-2 tw-px-4 tw-ml-2"
+                    @click="goto()">Przejdź</button>
             </div>
         </div>
 

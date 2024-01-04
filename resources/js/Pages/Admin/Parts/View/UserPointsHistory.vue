@@ -44,7 +44,7 @@ const init_points_to_store = {
     user_id: props.user.id
 }
 
-const points_to_store = ref({...init_points_to_store});
+const points_to_store = ref({ ...init_points_to_store });
 points.value = props.user.user_points;
 
 watch(current_page, (new_value, old_value) => {
@@ -83,7 +83,7 @@ function displayPoints(points, type) {
 const storePoints = (type) => {
     points_to_store.value.type = type;
     disabled.value = true;
-    axios.post(route('userpoints.store'), {...points_to_store.value})
+    axios.post(route('userpoints.store'), { ...points_to_store.value })
         .then((response) => {
             if (response.data?.errors) {
                 errors.value = response.data.errors;
@@ -91,7 +91,7 @@ const storePoints = (type) => {
 
             if (response.data?.success) {
                 console.log(response.data);
-                points_to_store.value = {...init_points_to_store};
+                points_to_store.value = { ...init_points_to_store };
                 points_record_count.value += 1;
                 max_page = Math.ceil(points_record_count.value / per_page);
                 userPoints(1)
@@ -112,94 +112,102 @@ const disabled = ref(false);
 </script>
 
 <template>
-    <div class="bg-gray-100 shadow-xl rounded p-6">
-        <h2 class="font-semibold text-xl leading-tight">
-            <i class="fa-solid fa-chart-simple text-orange"></i>
+    <div class="tw-bg-gray-100 tw-shadow-xl tw-rounded tw-p-6">
+        <h2 class="tw-font-semibold tw-text-xl tw-leading-tight">
+            <i class="fa-solid fa-chart-simple tw-text-orange"></i>
             Historia punktów
         </h2>
 
-        <div class="text-left my-4">
-            <div class="flex justify-start flex-col sm:flex-row md:flex-col gap-1 sm:gap-0 md:gap-1 lg:flex-row lg:gap-0">
-                <input placeholder="wpisz ilość punktów..." type="text" class="py-1 border border-gray-300 px-4" v-model="points_to_store.value">
-                <button :disabled="disabled" class="inline-flex items-center px-4 py-2 bg-transparent text-green-700 border border-green-700 font-semibold text-xs uppercase tracking-widest hover:text-white hover:bg-green-700 focus:outline-none transition ease-in-out duration-150" @click="storePoints(3)">Dodaj</button>
-                <button :disabled="disabled" class="inline-flex items-center px-4 py-2 bg-transparent text-red-600 border border-red-700 font-semibold text-xs uppercase tracking-widest hover:text-white hover:bg-red-700 active:bg-red-900 focus:outline-none transition ease-in-out duration-150" @click="storePoints(4)">Odejmij</button>
-                
-            </div>
-            <InputError class="mt-2" :message="errors.value ? errors.value[0] : ''" />
+        <div class="tw-text-left tw-my-4">
+            <div
+                class="tw-flex tw-justify-start tw-flex-col sm:tw-flex-row md:tw-flex-col tw-gap-1 md:tw-gap-1 lg:tw-flex-row">
+                <input placeholder="wpisz ilość punktów..." type="text" class="tw-py-1 tw-border tw-border-gray-300 tw-px-4"
+                    v-model="points_to_store.value">
+                <button :disabled="disabled"
+                    class="tw-inline-flex tw-items-center tw-px-4 tw-py-2 tw-bg-transparent tw-border-solid tw-text-green-700 tw-border tw-border-green-700 tw-font-semibold tw-text-xs tw-uppercase tw-tracking-widest hover:tw-text-white hover:tw-bg-green-700 focus:tw-outline-none tw-transition tw-ease-in-out tw-duration-150"
+                    @click="storePoints(3)">Dodaj</button>
+                <button :disabled="disabled"
+                    class="tw-inline-flex tw-items-center tw-px-4 tw-py-2 tw-bg-transparent tw-border-solid tw-text-red-600 tw-border tw-border-red-700 tw-font-semibold tw-text-xs tw-uppercase tw-tracking-widest hover:tw-text-white hover:tw-bg-red-700 active:tw-bg-red-900 focus:tw-outline-none tw-transition tw-ease-in-out tw-duration-150"
+                    @click="storePoints(4)">Odejmij</button>
 
-            <div class="flex justify-start mt-4">
+            </div>
+            <InputError class="tw-mt-2" :message="errors.value ? errors.value[0] : ''" />
+
+            <div class="tw-flex tw-justify-start tw-mt-4">
                 <label class="">
                     <Checkbox name="remember" v-model:checked="points_to_store.add_comment" />
-                    <span class="ml-2 text-sm text-gray-600">Dodaj komentarz</span>
+                    <span class="tw-ml-2 tw-text-sm tw-text-gray-600">Dodaj komentarz</span>
                 </label>
             </div>
-            
-            
-            
-            <div v-if="points_to_store.add_comment" class="mt-4">                                
-                <InputLabel value="Komentarz" :class="'text-left'" :text_color="'text-gray-600'"></InputLabel>
-                <TextareaInput v-model="points_to_store.comment" :class="'mt-2'" placeholder="Komentarz..." :rows="3"></TextareaInput>
+
+
+
+            <div v-if="points_to_store.add_comment" class="tw-mt-4">
+                <InputLabel value="Komentarz" :class="'tw-text-left'" :text_color="'tw-text-gray-600'"></InputLabel>
+                <TextareaInput v-model="points_to_store.comment" :class="'tw-mt-2'" placeholder="Komentarz..." :rows="3">
+                </TextareaInput>
                 <InputError class="mt-2" :message="errors.comment ? errors.comment[0] : ''" />
             </div>
-            
+
 
         </div>
-        
-        <div class="flex mt-8" v-if="points_record_count > per_page">
-            <nav class="flex justify-between">
+
+        <div class="tw-flex tw-mt-8" v-if="points_record_count > per_page">
+            <nav class="tw-flex tw-justify-between">
                 <a href="#"
-                    class="relative block py-2 px-3 leading-tight bg-white border border-gray-300 text-gray-800 mr-1 hover:bg-gray-200"
+                    class="tw-relative tw-block tw-py-2 tw-px-3 tw-leading-tight tw-bg-white tw-border tw-border-gray-300 tw-text-gray-800 tw-mr-1 hover:tw-bg-gray-200"
                     @click="current_page > 1 ? current_page-- : null">Wstecz</a>
                 <a href="#"
-                    class="relative block py-2 px-3 leading-tight bg-white border border-gray-300 text-gray-800 mr-1 disabled-paginatio-item">{{
+                    class="tw-relative tw-block tw-py-2 tw-px-3 tw-leading-tight tw-bg-white tw-border tw-border-gray-300 tw-text-gray-800 tw-mr-1 disabled-paginatio-item">{{
                         current_page }} z {{ max_page }}</a>
                 <a href="#"
-                    class="relative block py-2 px-3 leading-tight bg-white border border-gray-300 text-gray-800 mr-1 hover:bg-gray-200"
+                    class="tw-relative tw-block tw-py-2 tw-px-3 tw-leading-tight tw-bg-white tw-border tw-border-gray-300 tw-text-gray-800 tw-mr-1 hover:tw-bg-gray-200"
                     @click="current_page < max_page ? current_page++ : null">Dalej</a>
             </nav>
         </div>
 
-        <div class="table-container overflow-x-auto" v-if="points.length">
-            <table class="text-center w-full border-collapse mt-4">
+        <div class="table-container tw-overflow-x-auto" v-if="points.length">
+            <table class="tw-text-center tw-w-full tw-border-collapse tw-mt-4">
                 <thead>
                     <tr class="table-tr">
                         <th
-                            class="py-4 px-6 bg-grey-lightest font-bold uppercase text-sm text-grey-dark border-b border-grey-light">
+                            class="tw-py-4 tw-px-6 tw-bg-grey-lightest tw-font-bold tw-uppercase tw-text-sm tw-text-grey-dark tw-border-b tw-border-grey-light">
                             #</th>
                         <th
-                            class="py-4 px-6 bg-grey-lightest font-bold uppercase text-sm text-grey-dark border-b border-grey-light">
+                            class="tw-py-4 tw-px-6 tw-bg-grey-lightest tw-font-bold tw-uppercase tw-text-sm tw-text-grey-dark tw-border-b tw-border-grey-light">
                             Punkty</th>
                         <th
-                            class="py-4 px-6 bg-grey-lightest font-bold uppercase text-sm text-grey-dark border-b border-grey-light">
+                            class="tw-py-4 tw-px-6 tw-bg-grey-lightest tw-font-bold tw-uppercase tw-text-sm tw-text-grey-dark tw-border-b tw-border-grey-light">
                             Dni</th>
                         <th
-                            class="py-4 px-6 bg-grey-lightest font-bold uppercase text-sm text-grey-dark border-b border-grey-light">
+                            class="tw-py-4 tw-px-6 tw-bg-grey-lightest tw-font-bold tw-uppercase tw-text-sm tw-text-grey-dark tw-border-b tw-border-grey-light">
                             Auto</th>
                         <th
-                            class="py-4 px-6 bg-grey-lightest font-bold uppercase text-sm text-grey-dark border-b border-grey-light">
+                            class="tw-py-4 tw-px-6 tw-bg-grey-lightest tw-font-bold tw-uppercase tw-text-sm tw-text-grey-dark tw-border-b tw-border-grey-light">
                             Komentarz</th>
                         <th
-                            class="py-4 px-6 bg-grey-lightest font-bold uppercase text-sm text-grey-dark border-b border-grey-light">
+                            class="tw-py-4 tw-px-6 tw-bg-grey-lightest tw-font-bold tw-uppercase tw-text-sm tw-text-grey-dark tw-border-b tw-border-grey-light">
                             Data dodania</th>
                     </tr>
                 </thead>
                 <tbody>
-                    <tr class="hover:bg-grey-lighter" v-for="(item, index) in points">
-                        <td class="py-4 px-6 border-b border-grey-light">{{ index + 1 }}</td>
-                        <td class="py-4 px-6 border-b border-grey-light" v-html="displayPoints(item.points, parseInt(item.type))"></td>
-                        <td class="py-4 px-6 border-b border-grey-light">{{ item.days }}</td>
-                        <td class="py-4 px-6 border-b border-grey-light"><span v-html="isAuto(item)"></span>
+                    <tr class="hover:tw-bg-grey-lighter" v-for="(item, index) in points">
+                        <td class="tw-py-4 tw-px-6 tw-border-b tw-border-grey-light">{{ index + 1 }}</td>
+                        <td class="tw-py-4 tw-px-6 tw-border-b tw-border-grey-light"
+                            v-html="displayPoints(item.points, parseInt(item.type))"></td>
+                        <td class="tw-py-4 tw-px-6 tw-border-b tw-border-grey-light">{{ item.days }}</td>
+                        <td class="tw-py-4 tw-px-6 tw-border-b tw-border-grey-light"><span v-html="isAuto(item)"></span>
                         </td>
-                        <td class="py-4 px-6 border-b border-grey-light">{{ item.comment ?? '-' }}</td>
-                        <td class="py-4 px-6 border-b border-grey-light">{{ formatDate(item.created_at) }}
+                        <td class="tw-py-4 tw-px-6 tw-border-b tw-border-grey-light">{{ item.comment ?? '-' }}</td>
+                        <td class="tw-py-4 tw-px-6 tw-border-b tw-border-grey-light">{{ formatDate(item.created_at) }}
                         </td>
                     </tr>
                 </tbody>
             </table>
 
-            <div class="flex items-center justify-center spinner-container"
-                :class="spinner_visible ? '' : 'hidden'">
-                <div class="w-10 h-10 border-b-8 border-white-900 rounded-full animate-spin"></div>
+            <div class="tw-flex tw-items-center tw-justify-center spinner-container"
+                :class="spinner_visible ? '' : 'tw-hidden'">
+                <div class="tw-w-10 tw-h-10 tw-border-b-8 tw-border-white-900 tw-rounded-full tw-animate-spin"></div>
             </div>
         </div>
         <AlertInfo v-else>Brak danych do wyświeltenia!</AlertInfo>

@@ -1,4 +1,4 @@
-<script setup> 
+<script setup>
 
 const props = defineProps({
     headers: {
@@ -7,19 +7,19 @@ const props = defineProps({
     },
     font_size: {
         type: String,
-        default: 'text-sm'
+        default: 'tw-text-sm'
     }
 });
 
 const merge_class = (index) => {
     let class_name = ''
     if (index == 0) {
-        class_name = 'pr-4'
+        class_name = 'tw-pr-4'
     } else if (index == props.headers.length - 1) {
-        class_name = 'pl-4'
+        class_name = 'tw-pl-4'
     } else {
-        class_name = 'px-6'
-    
+        class_name = 'tw-px-6'
+
     }
 
     return class_name + ' ' + props.font_size
@@ -28,12 +28,12 @@ const merge_class = (index) => {
 </script>
 
 <template>
-    <div class="overflow-x-auto table-container">
-        <table class="text-center w-full border-collapse">
+    <div class="tw-overflow-x-auto tw-table-container">
+        <table class="tw-text-center tw-w-full tw-border-collapse">
             <thead>
                 <tr class="table-tr">
                     <th v-for="(header, index) in headers"
-                        class="py-2 px-4 bg-grey-lightest font-bold uppercase text-grey-dark border-b border-grey-light"
+                        class="tw-py-2 tw-px-4 tw-bg-grey-lightest tw-font-bold tw-uppercase tw-text-grey-dark tw-border-b tw-border-grey-light"
                         :class="merge_class(index)">
                         {{ header }}
                     </th>

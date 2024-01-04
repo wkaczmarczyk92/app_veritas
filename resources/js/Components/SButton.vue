@@ -26,15 +26,14 @@ const dots = ref('.');
 </script>
 
 <template>
-    <button
-        :disabled="disabled"
-        class="btn-success inline-flex items-center px-4 py-2 bg-transparent disabled:bg-green-700 disabled:text-gray-200 disabled:pointer-events-none mr-1 text-green-700 border border-green-700 rounded-md font-semibold text-xs uppercase tracking-widest hover:text-white hover:bg-green-700 focus:outline-none transition ease-in-out duration-150">
+    <button :disabled="disabled"
+        class="btn-success tw-inline-flex tw-items-center tw-px-4 tw-py-2 tw-bg-transparent disabled:tw-bg-green-700 disabled:tw-text-gray-200 disabled:tw-pointer-events-none tw-mr-1 tw-text-green-700 tw-border-solid tw-border tw-border-green-700 tw-rounded-md tw-font-semibold tw-text-xs tw-uppercase tw-tracking-widest hover:tw-text-white hover:tw-bg-green-700 focus:tw-outline-none tw-transition tw-ease-in-out tw-duration-150">
         <span v-if="icon" v-html="icon"></span>
         <div v-if="!disabled">
-             {{ value }}
-        </div> 
+            {{ value }}
+        </div>
         <div v-else-if="disabled && !btn_off">Przetwarzanie...</div>
         <div v-else>{{ value }}</div>
-        
+
     </button>
 </template>
