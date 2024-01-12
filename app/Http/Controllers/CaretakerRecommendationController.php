@@ -81,11 +81,8 @@ class CaretakerRecommendationController extends Controller
         return response()->json(['success' => true, 'data' => $return_data]);
     }
 
-    /**
-     * Remove the specified resource from storage.
-     */
     public function destroy(string $id)
     {
-        //
+        return response()->json($this->recommendation_service->destroy($id));
     }
 }

@@ -30,7 +30,7 @@ use App\Http\Controllers\CRMCaretakerController;
 
 use App\Http\Controllers\LastLoginController;
 
-Route::middleware(['auth', 'role:admin|super-admin'])->group(function() {
+Route::middleware(['auth', 'role:admin|super-admin'])->group(function () {
     Route::get('/pulpit', [AdminDashboardController::class, 'index'])->name('dashboard');
 
     Route::get('/zgloszenia-na-oferty', [OfferController::class, 'index'])->name('offer.index');
@@ -56,7 +56,7 @@ Route::middleware(['auth', 'role:admin|super-admin'])->group(function() {
     // BOK REQUEST
     Route::get('/zgloszenia-do-boku', [BOKRequestController::class, 'index'])->name('bokrequest.index');
 
-    Route::post('/load-bok-requests/{id}', function(int $id) {
+    Route::post('/load-bok-requests/{id}', function (int $id) {
         return response()->json([
             BOKRequest::with(['user.user_profiles', 'subject'])
                 ->where('user_id', '=', $id)
@@ -68,29 +68,29 @@ Route::middleware(['auth', 'role:admin|super-admin'])->group(function() {
 
     // PAYOUT REQUEST
     Route::get('/wnioski-o-wyplate', [PayoutRequestController::class, 'index'])->name('payoutrequest.index');
-    
+
     Route::patch('/payoutrequests.update', [PayoutRequestController::class, 'update'])->name('payoutrequests.update');
 
-    Route::get('/payout-request-count', function() {
+    Route::get('/payout-request-count', function () {
         return PayoutRequest::with('user_has_bonus')
-            ->whereHas('user_has_bonus', function($query) {
+            ->whereHas('user_has_bonus', function ($query) {
                 $query->where('completed', false)
                     ->where('in_progress', true);
             })->count();
     })->name('payout.count.incomplete');
 
-    Route::post('/load-payout-requests/{id}', function(int $id) {
+    Route::post('/load-payout-requests/{id}', function (int $id) {
         return response()->json([PayoutRequest::with(['user_has_bonus.user.user_profiles'])
-            ->whereHas('user_has_bonus', function($query) use ($id) {
+            ->whereHas('user_has_bonus', function ($query) use ($id) {
                 $query->where('user_id', $id);
             })
             ->orderBy('created_at', 'desc')
             ->paginate(10)]);
     })->name('load.payout.requests.for.user');
 
-    Route::post('/load-incomplete-payout-requests', function(Request $request) {
+    Route::post('/load-incomplete-payout-requests', function (Request $request) {
         return response()->json([PayoutRequest::with(['user_has_bonus.user.user_profiles'])
-            ->whereHas('user_has_bonus', function($query) {
+            ->whereHas('user_has_bonus', function ($query) {
                 $query->where('completed', false)
                     ->where('in_progress', true);
             })
@@ -98,9 +98,9 @@ Route::middleware(['auth', 'role:admin|super-admin'])->group(function() {
             ->paginate(10, ['*'], 'incomplete_page')]);
     })->name('load.incomplete.payout.requests');
 
-    Route::post('/load-complete-payout-requests', function(Request $request) {
+    Route::post('/load-complete-payout-requests', function (Request $request) {
         return response()->json([PayoutRequest::with(['admin_user.user_profiles', 'user_has_bonus.user.user_profiles'])
-            ->whereHas('user_has_bonus', function($query) {
+            ->whereHas('user_has_bonus', function ($query) {
                 $query->where('completed', true)
                     ->where('in_progress', true);
             })
@@ -120,10 +120,10 @@ Route::middleware(['auth', 'role:admin|super-admin'])->group(function() {
 
     Route::delete('/post/{post}', [PostController::class, 'destroy'])->name('post.destroy');
 
-    Route::get('/post.all', function() {
+    Route::get('/post.all', function () {
         return Post::with('post_labels')
-        ->orderBy('order')
-        ->get();
+            ->orderBy('order')
+            ->get();
     })->name('post.all');
 
     Route::get('/post/{post}', [PostController::class, 'edit'])->name('post.edit');
@@ -132,7 +132,7 @@ Route::middleware(['auth', 'role:admin|super-admin'])->group(function() {
 
 
     // CONTACT FORMS
-    Route::post('/formularze-kontaktowe/user_id/{user_id}', function(int $id) {
+    Route::post('/formularze-kontaktowe/user_id/{user_id}', function (int $id) {
         return response()->json([
             ContactForm::where('user_id', '=', $id)
                 ->orderBy('created_at', 'desc')
@@ -141,7 +141,7 @@ Route::middleware(['auth', 'role:admin|super-admin'])->group(function() {
     })->name('contact.forms.user');
 
     // FAMILY RECOMMENDATIONS
-    Route::post('/rekomendacje-rodzin/user_id/{user_id}', function(int $id) {
+    Route::post('/rekomendacje-rodzin/user_id/{user_id}', function (int $id) {
         return response()->json([
             FamilyRecommendation::with('user.user_profiles')
                 ->where('user_id', '=', $id)
@@ -154,7 +154,7 @@ Route::middleware(['auth', 'role:admin|super-admin'])->group(function() {
 
 
     // CARETAKER RECOMMENDATIONS
-    Route::post('/rekomendacje-opiekunek/user_id/{user_id}', function(int $id) {
+    Route::post('/rekomendacje-opiekunek/user_id/{user_id}', function (int $id) {
         return response()->json([
             CaretakerRecommendation::with('user.user_profiles')
                 ->where('user_id', '=', $id)
@@ -162,6 +162,8 @@ Route::middleware(['auth', 'role:admin|super-admin'])->group(function() {
                 ->paginate(15)
         ]);
     })->name('caretaker.recommendations.user');
+
+    Route::delete('caretaker.recommendation/{id}', [CaretakerRecommendationController::class, 'destroy'])->name('caretaker.recommendation.destroy');
 
     Route::get('/polecenia-opiekunek', [CaretakerRecommendationController::class, 'index'])->name('caretaker.recommendations.index');
 
@@ -176,7 +178,7 @@ Route::middleware(['auth', 'role:admin|super-admin'])->group(function() {
     Route::patch('/accept.user.profile.img', [UserProfileImageController::class, 'accept'])->name('accept.user.profile.img');
     Route::patch('/decline.user.profile.img', [UserProfileImageController::class, 'decline'])->name('decline.user.profile.img');
 
-    Route::post('/count.unverified.profile.img', function() {
+    Route::post('/count.unverified.profile.img', function () {
         return UserProfileImage::where('status', 1)->count();
     })->name('count.unverified.profile.img');
 

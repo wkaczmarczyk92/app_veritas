@@ -1,1 +1,10 @@
-[] przy automatycznym dodawaniu punktów zapisywać w komentarzu za jaki to miesiąć
+[x] przy automatycznym dodawaniu punktów zapisywać w komentarzu za jaki to miesiąć
+
+
+Zmiana widoku strony głównej:
+    [] - stworzenie menu
+    [] - pogrupowanie modułów ze strony głównej
+
+
+[] - stworzenie modułu do pobrania PIT-ów
+[] - stworzenie modułu do wyświetlania historii i pobierania aneksów do umów

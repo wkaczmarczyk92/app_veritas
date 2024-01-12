@@ -14,27 +14,29 @@ use App\Helpers\Response;
 
 class CaretakerRecommendationService extends Service
 {
-    public function ov_get($search = '') {
-            $data = CaretakerRecommendation::with(['user.user_profiles', 'admin_user.user_profiles']);
+    public function ov_get($search = '')
+    {
+        $data = CaretakerRecommendation::with(['user.user_profiles', 'admin_user.user_profiles']);
 
-            if (isset($search) and $search != '') {
-                $data->where('id', '=', $search)
-                    ->orWhere('caretaker_first_name', 'like', "%{$search}%")
-                    ->orWhere('caretaker_last_name', 'like', "%{$search}%")
-                    ->orWhere('caretaker_email', 'like', "%{$search}%")
-                    ->orWhere('caretaker_phone_number', 'like', "%{$search}%")
-                    ->orWhereHas('user.user_profiles', function($query) use ($search) {
-                        $query->where('first_name', 'like', "%{$search}%")
-                            ->orWhere('last_name', 'like', "%{$search}%")
-                            ->orWhereRaw("CONCAT(first_name, ' ', last_name) like ?", ["%{$search}%"])
-                            ->orWhereRaw("CONCAT(last_name, ' ', first_name) like ?", ["%{$search}%"]);
-                    });
-            }
+        if (isset($search) and $search != '') {
+            $data->where('id', '=', $search)
+                ->orWhere('caretaker_first_name', 'like', "%{$search}%")
+                ->orWhere('caretaker_last_name', 'like', "%{$search}%")
+                ->orWhere('caretaker_email', 'like', "%{$search}%")
+                ->orWhere('caretaker_phone_number', 'like', "%{$search}%")
+                ->orWhereHas('user.user_profiles', function ($query) use ($search) {
+                    $query->where('first_name', 'like', "%{$search}%")
+                        ->orWhere('last_name', 'like', "%{$search}%")
+                        ->orWhereRaw("CONCAT(first_name, ' ', last_name) like ?", ["%{$search}%"])
+                        ->orWhereRaw("CONCAT(last_name, ' ', first_name) like ?", ["%{$search}%"]);
+                });
+        }
 
-            return $data->orderBy('created_at', 'desc')->paginate(50);
+        return $data->orderBy('created_at', 'desc')->paginate(50);
     }
 
-    public function store($user_id) {
+    public function store($user_id)
+    {
         try {
             CaretakerRecommendation::create([
                 'user_id' => $user_id
@@ -46,7 +48,8 @@ class CaretakerRecommendationService extends Service
         return Response::success('');
     }
 
-    public function update($data, $id) {
+    public function update($data, $id)
+    {
         DB::beginTransaction();
 
         try {
@@ -59,7 +62,7 @@ class CaretakerRecommendationService extends Service
             $caretaker->language_id             = $data['language_id'];
             $caretaker->locked                  = true;
 
-            if (app()->environment('production')) {
+            if (app()->environment('local')) {
                 $curl_request = new CURLRequest;
                 $arr = [
                     'first_name'    => $caretaker->caretaker_first_name,
@@ -70,10 +73,13 @@ class CaretakerRecommendationService extends Service
 
                 $response = $curl_request->send_new_caretaker_recommendation_to_leads($arr);
 
+                // dd($response);
+
                 if (!$response->success) {
                     throw new \Exception('CURL Request failed.');
                 }
             }
+
 
             $caretaker->crm_lead_id = $response->result->lead_id ?? 1;
             $caretaker->save();
@@ -87,5 +93,19 @@ class CaretakerRecommendationService extends Service
         }
 
         return Response::success('Dane opiekunki zostały zaktualizowane i przekazane do CC.');
+    }
+
+    public function destroy($id)
+    {
+        try {
+            $caretaker = $this->find($id, class: \App\Models\CaretakerRecommendation::class);
+            $caretaker->delete();
+        } catch (\Exception $e) {
+            return Response::danger('Wystąpił błąd podczas połączenia. Spróbuj ponownie później.', [
+                'exception' => $e->getMessage()
+            ]);
+        }
+
+        return Response::success('Opiekunka zostala usunięta. Za chwilę zostaniesz przekierowany...');
     }
 }

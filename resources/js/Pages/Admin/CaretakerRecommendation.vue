@@ -24,6 +24,8 @@ const props = defineProps({
     }
 });
 
+console.log(props.data);
+
 const data = ref(props.data);
 const errors = ref({});
 const icon = ref(new Icon);
@@ -82,6 +84,22 @@ const breadcrumbs = [
         disabled: true,
     }
 ]
+
+const delete_caretaker_recommendation = async () => {
+    if (confirm('Na pewno chcesz usunąć polecenie opiekunki?')) {
+        let response = await axios.delete(route('caretaker.recommendation.destroy', { id: props.data.id }));
+        response = response.data;
+
+        console.log(response);
+
+        if (response.success) {
+            alert(response.msg);;
+            window.location.href = route('caretaker.recommendations.index');
+        } else {
+            useAlertStore.pushAlert(response.alert_type, response.msg);
+        }
+    }
+}
 
 </script>
 <template>
@@ -143,6 +161,11 @@ const breadcrumbs = [
                                 <div :class="icon._rpt_class(data.bonus_payout_completed, data.ready_to_payout)"
                                     v-html="icon._rpt(data.bonus_payout_completed)">
                                 </div>
+                            </div>
+                            <div class="tw-flex tw-flex-row tw-mt-8">
+                                <a href="#" class="tw-text-red-600 hover:tw-underline hover:tw-text-red-800"
+                                    @click="delete_caretaker_recommendation()">Usuń
+                                    polecenie</a>
                             </div>
                         </div>
                         <div class="tw-p-6 tw-bg-gray-300 tw-rounded-tr tw-rounded-br tw-grow">

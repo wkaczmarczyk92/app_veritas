@@ -12,6 +12,8 @@ use App\Models\User;
 use App\Mail\ContactFormEmail;
 use Illuminate\Support\Facades\Mail;
 
+use App\Services\CRM\RecruiterService;
+
 class ContactFormController extends Controller
 {
     /**
@@ -63,7 +65,16 @@ class ContactFormController extends Controller
         Mail::to(ContactFormEmail::$email)->send(
             new ContactFormEmail($data)
         );
-        
+
+        $recruiter_service = new RecruiterService;
+        $recruiter = $recruiter_service->get($user->user_profiles->crt_id_user_recruiter);
+
+        if (!empty($recruiter->usr_email) and filter_var($recruiter->usr_email, FILTER_VALIDATE_EMAIL)) {
+            Mail::to(ContactFormEmail::$recruiter->usr_email)->send(
+                new ContactFormEmail($data)
+            );
+        }
+
         return response()->json([
             'success' => true
         ]);
