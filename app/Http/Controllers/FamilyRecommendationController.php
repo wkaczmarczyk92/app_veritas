@@ -15,6 +15,7 @@ use Exception;
 
 use App\Helpers\CURLRequest;
 use App\Models\User;
+use App\Models\Bonus;
 
 use App\Helpers\CountryCodeFinder;
 
@@ -37,7 +38,12 @@ class FamilyRecommendationController extends Controller
      */
     public function create()
     {
-        //
+        return Inertia::render('User/Recommendations/Family', [
+            'bonus' => [
+                'family_recommendation' => Bonus::where('name', 'family_recommendation')->pluck('bonus_value')[0],
+                'caretaker_recommendation' => Bonus::where('name', 'caretaker_recommendation')->pluck('bonus_value')[0],
+            ],
+        ]);
     }
 
     /**
@@ -71,26 +77,29 @@ class FamilyRecommendationController extends Controller
 
             $ccfinder = new CountryCodeFinder($user->user_profiles->phone_number);
 
-            $curl_request = new CURLRequest;
-            $curl_data = [
-                'r_name' => $user->user_profiles['first_name'] . ' ' . $user->user_profiles['last_name'],
-                'r_phone_number' => $ccfinder->phone(),
-                'r_country_code' => $ccfinder->code(),
-                'r_email' => $user->user_profiles['email'],
-                'family_name' => $request->family_last_name,
-                'family_phone_number' => $request->phone_number,
-                'family_country_code' => $request->country_code,
-                'api_recommendation_id' => $family_recommendation->id,
-                'info' => $request->info
-            ];
+            if (app()->environment('production')) {
+                $curl_request = new CURLRequest;
+                $curl_data = [
+                    'r_name' => $user->user_profiles['first_name'] . ' ' . $user->user_profiles['last_name'],
+                    'r_phone_number' => $ccfinder->phone(),
+                    'r_country_code' => $ccfinder->code(),
+                    'r_email' => $user->user_profiles['email'],
+                    'family_name' => $request->family_last_name,
+                    'family_phone_number' => $request->phone_number,
+                    'family_country_code' => $request->country_code,
+                    'api_recommendation_id' => $family_recommendation->id,
+                    'info' => $request->info
+                ];
 
-            $response = $curl_request->send_new_family_recommendation($curl_data);
+                $response = $curl_request->send_new_family_recommendation($curl_data);
 
-            if (!$response->success) {
-                throw new Exception('Błąd podczas połączenia. Spróbuj ponownie później.');
+                if (!$response->success) {
+                    throw new Exception('Błąd podczas połączenia. Spróbuj ponownie później.');
+                }
+
+                $family_recommendation->veritas_id = $response->veritas_id;
             }
 
-            $family_recommendation->veritas_id = $response->veritas_id;
             $family_recommendation->save();
 
             DB::commit();

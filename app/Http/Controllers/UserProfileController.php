@@ -4,6 +4,10 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 
+use Illuminate\Support\Facades\Auth;
+use App\Models\User;
+use Inertia\Inertia;
+
 class UserProfileController extends Controller
 {
     /**
@@ -33,9 +37,15 @@ class UserProfileController extends Controller
     /**
      * Display the specified resource.
      */
-    public function show(string $id)
+    public function show()
     {
-        //
+        $user = User::with(['user_profiles', 'user_points', 'ready_to_departure_dates', 'user_profile_image', 'user_has_bonus' => function ($query) {
+            // $query->where('completed', false)
+            //     ->where('in_progress', false);
+        }])->find(Auth::user()->id);
+        return Inertia::render('User/Profile', [
+            'user' => $user,
+        ]);
     }
 
     /**

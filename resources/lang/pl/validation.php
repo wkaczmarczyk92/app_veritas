@@ -171,7 +171,11 @@ return [
         ],
         'password' => [
             'required' => 'Pole HASŁO jest wymagane.',
-            'confirmed' => 'Podane hasła różnią się od siebie.'
+            'confirmed' => 'Podane hasła różnią się od siebie.',
+            'min' => 'Hasło musi składać się z przynajmniej 8 znaków.',
+        ],
+        'current_password' => [
+            'current_password' => 'Podane hasło jest nieprawidłowe.'
         ],
         '*.multiplier.multiplier_value' => [
             'min' => [
@@ -193,7 +197,7 @@ return [
             'date_format' => 'Format daty to RRR-MM-DD.',
             'after' => 'Data gotowości do wyjazdu musi być więszka niż dzisiejsza.'
         ],
-        'pesel' => [            
+        'pesel' => [
             'unique' => 'Podany PESEL jest przypisany do innego użytkownika.',
             'digits' => 'PESEL musi składać się dokładnie z 11 cyfr.',
             'numeric' => 'PESEL może składać się tylko z cyfr 0-9.',

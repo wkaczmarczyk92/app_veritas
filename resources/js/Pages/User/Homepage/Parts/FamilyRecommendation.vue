@@ -10,6 +10,9 @@ import MButton from '@/Components/Buttons/MButton.vue';
 import Checkbox from '@/Components/Checkbox.vue';
 
 import { AlertStore } from '@/Pinia/AlertStore';
+import { useModalStore } from '@/Pinia/ModalStore';
+
+const modalStore = useModalStore();
 
 defineProps({
     model_value: {
@@ -92,7 +95,7 @@ const submit = () => {
                 target="_blank"
                 class="tw-font-bold tw-text-blue-600 tw-underline hover:tw-cursor-pointer hover:tw-text-blue-800">veritas-opieka.pl</a>.<br>
             Możesz sprawdzić swoja aktualne polecenia rodzin <a href="#" class="tw-text-blue-600 tw-underline"
-                @click.prevent="$emit('update:model_value', true)">TUTAJ</a>.
+                @click.prevent="modalStore.visibility.family_recommendations = true">TUTAJ</a>.
         </div>
         <div class="tw-my-8">
             <InputLabel value="Nazwisko rodziny" :text_color="'tw-text-gray-800'"></InputLabel>

@@ -63,17 +63,19 @@ class PayoutRequestController extends Controller
                 $uhb->in_progress = true;
                 $uhb->save();
 
-                $email_data = [
-                    'username' => $user->user_profiles->first_name . ' ' . $user->user_profiles->last_name,
-                    'level' => Level::where('id', $uhb->level_id)->pluck('name'),
-                    'bonus_value' => $bonus['bonus_value'],
-                    'url' => "http://app.veritas.pl/uzytkownik/{$user->id}",
-                    'url_crm' => "https://local.grupa-veritas.pl/#/opiekunki/{$user->user_profiles->crt_id_caretaker}"
-                ];
+                if (app()->environment() == 'production') {
+                    $email_data = [
+                        'username' => $user->user_profiles->first_name . ' ' . $user->user_profiles->last_name,
+                        'level' => Level::where('id', $uhb->level_id)->pluck('name'),
+                        'bonus_value' => $bonus['bonus_value'],
+                        'url' => "http://app.veritas.pl/uzytkownik/{$user->id}",
+                        'url_crm' => "https://local.grupa-veritas.pl/#/opiekunki/{$user->user_profiles->crt_id_caretaker}"
+                    ];
 
-                Mail::to(PayoutRequestEmail::$email)->send(
-                    new PayoutRequestEmail($email_data)
-                );
+                    Mail::to(PayoutRequestEmail::$email)->send(
+                        new PayoutRequestEmail($email_data)
+                    );
+                }
             }
 
             DB::commit();
@@ -109,7 +111,7 @@ class PayoutRequestController extends Controller
      * Update the specified resource in storage.
      */
     public function update(Request $request)
-    {        
+    {
         DB::beginTransaction();
 
         try {

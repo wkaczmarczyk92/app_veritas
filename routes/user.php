@@ -17,13 +17,39 @@ use App\Http\Controllers\BOKRequestController;
 use App\Http\Controllers\CRMOfferDownloadController;
 use App\Http\Controllers\CaretakerRecommendationController;
 
-use App\Http\Controllers\OfferController;
+use App\Http\Controllers\UserProfileController;
 
-Route::middleware(['auth', 'role:user'])->group(function() {
+use App\Http\Controllers\OfferController;
+use App\Models\FamilyRecommendation;
+
+use App\Http\Controllers\CourseController;
+use App\Http\Controllers\InfoController;
+
+use App\Http\Controllers\DownloadFileController;
+
+use App\Http\Controllers\Auth\PasswordController;
+
+
+Route::middleware(['auth', 'role:user'])->group(function () {
     Route::get('/bok-subjects', [BOKSubjectController::class, 'index'])->name('boksubject.index');
     Route::post('/bok-request', [BOKRequestController::class, 'store'])->name('bokrequest.store');
 
     Route::get('/', [HomePageController::class, 'index'])->name('/');
+
+    Route::get('/pliki-do-pobrania', [DownloadFileController::class, 'files_to_download'])->name('download.files');
+
+    Route::get('/polec-opiekunke', [CaretakerRecommendationController::class, 'create'])->name('caretakerrecommendation.create');
+    Route::get('/polec-rodzine', [FamilyRecommendationController::class, 'create'])->name('familyrecommendation.create');
+
+    Route::get('/moje-konto', [UserProfileController::class, 'show'])->name('userprofile.show');
+
+    Route::get('/szukaj-ofert', [OfferController::class, 'user_offers'])->name('offer.user');
+
+    Route::get('/zmien-haslo', [PasswordController::class, 'edit'])->name('password.edit');
+    Route::post('/zmien-haslo', [PasswordController::class, 'update'])->name('password.update');
+
+    Route::get('/kursy', CourseController::class)->name('courses');
+    Route::get('/wazne-informacje', InfoController::class)->name('important.info');
 
     Route::post('/readytodeparturedate.store.or.update', [ReadyToDepartureDateController::class, 'storeOrUpdate'])->name('readytodeparturedate.store.or.update');
     Route::patch('/readytodeparturedate.destroy', [ReadyToDepartureDateController::class, 'destroy'])->name('readytodeparturedate.destroy');
@@ -35,11 +61,11 @@ Route::middleware(['auth', 'role:user'])->group(function() {
     Route::post('/payoutrequest.store', [PayoutRequestController::class, 'store'])->name('payoutrequest.store');
 
 
-    Route::get('/pointstopayout', function() {
+    Route::get('/pointstopayout', function () {
         return PointsSettingsPayout::find(1)->pluck('points_to_payout')[0];
     })->name('pointstopayout');
 
-    Route::get('/payoutcash', function() {
+    Route::get('/payoutcash', function () {
         return CashSettingsPayout::find(1)->pluck('payout_cash')[0];
     })->name('payoutcash');
 
@@ -47,7 +73,7 @@ Route::middleware(['auth', 'role:user'])->group(function() {
 
     Route::post('/offer.store', [OfferController::class, 'store'])->name('offer.store');
 
-    Route::get('/usercurrentpoints', function() {
+    Route::get('/usercurrentpoints', function () {
         return UserProfile::where('user_id', '=', Auth::user()->id)->pluck('current_points')[0];
     })->name('usercurrentpoints');
 });

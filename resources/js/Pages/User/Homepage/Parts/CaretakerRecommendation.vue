@@ -5,12 +5,11 @@ import axios from 'axios';
 import MButton from '@/Components/Buttons/MButton.vue';
 
 import { AlertStore } from '@/Pinia/AlertStore';
+import { useModalStore } from '@/Pinia/ModalStore';
+
+const modalStore = useModalStore();
 
 defineProps({
-    model_value: {
-        type: Boolean,
-        required: true
-    },
     bonus: {
         type: Object
     }
@@ -26,21 +25,20 @@ const success_msg = ref(false);
 const danger_msg = ref(false);
 const disabled = ref(false);
 
-const submit = () => {
+const submit = async () => {
     button_value.value = 'Zgłaszanie opiekunki w toku...';
     success_msg.value = false;
     danger_msg.value = false;
     disabled.value = true;
 
-    axios.post(route('caretakerrecommendation.store'))
-        .then(response => {
-            button_value.value = 'Zgłoś chęć polecenia opiekunki';
-            let alert_type = response.data.success ? 'success' : 'danger';
-            let msg = response.data.success ? 'Twoje polecenie opiekunki zostało zarejestrowane w systemie. Oczekuj na telefon od naszego konsultanta.' : 'Wystąpił błąd podczas połączenia. Spróbuj ponownie później.';
-            useAlertStore.pushAlert(alert_type, msg);
+    let response = await axios.post(route('caretakerrecommendation.store'));
 
-            disabled.value = false;
-        })
+    button_value.value = 'Zgłoś chęć polecenia opiekunki';
+    let alert_type = response.data.success ? 'success' : 'danger';
+    let msg = response.data.success ? 'Twoje polecenie opiekunki zostało zarejestrowane w systemie. Oczekuj na telefon od naszego konsultanta.' : 'Wystąpił błąd podczas połączenia. Spróbuj ponownie później.';
+    useAlertStore.pushAlert(alert_type, msg);
+
+    disabled.value = false;
 }
 
 </script>
@@ -58,7 +56,7 @@ const submit = () => {
             Znasz kogoś kto byłby zainteresowany współpracą z nami jako opiekun/opiekunka? Poleć nam taką osobę i zyskaj
             dodatkowe <span class="tw-text-blue-600 tw-font-bold">{{ bonus.caretaker_recommendation }}€</span>!<br>
             Możesz sprawdzić swoja aktualne polecenia <a href="#" class="tw-underline tw-text-blue-600"
-                @click.prevent="$emit('update:model_value', true)">TUTAJ</a>.
+                @click.prevent="modalStore.visibility.caretaker_recommendations = true">TUTAJ</a>.
         </div>
         <div class="tw-text-center tw-my-16 tw-px-6">
             <MButton @click="submit()" :value="button_value" icon="fa-solid fa-user-plus" bg="tw-bg-gray-800"

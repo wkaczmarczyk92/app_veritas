@@ -3,34 +3,19 @@
 import Modal from './Modal.vue';
 import UserCaretakerRecommendations from './UserCaretakerRecommendations.vue';
 
-defineProps({
-    model_value: {
-        type: Boolean,
-        required: true
-    },
-    user: {
-        type: Object,
-        required: true
-    }
-});
-
-const emit = defineEmits([
-    'update:model_value',
-])
-
-const close = () => emit('update:model_value', false);
+import Loader from '@/Components/Loader.vue';
 
 </script>
 
 <template>
     <teleport to='body'>
-        <Suspense>
-            <Modal>
-                <UserCaretakerRecommendations 
-                    :user="user"
-                    @close="close">
-                </UserCaretakerRecommendations>
-            </Modal>
-        </Suspense>
+        <Modal>
+            <Suspense>
+                <UserCaretakerRecommendations #default />
+                <template #fallback>
+                    <Loader #fallback class="tw-grow"></Loader>
+                </template>
+            </Suspense>
+        </Modal>
     </teleport>
 </template>

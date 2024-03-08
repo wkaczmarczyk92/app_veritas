@@ -194,7 +194,7 @@ const delete_caretaker_recommendation = async () => {
                                         :message="errors.caretaker_last_name ? errors.caretaker_last_name[0] : ''" />
                                 </div>
                                 <div class="tw-mt-4 tw-grow">
-                                    <InputLabel value="Adres e-mail" />
+                                    <InputLabel value="Adres e-mail (opcjonalnie)" />
 
                                     <TextInput type="text" class="tw-block tw-w-full tw-mt-1"
                                         v-model="data.caretaker_email" />

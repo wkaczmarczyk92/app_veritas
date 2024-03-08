@@ -3,27 +3,18 @@
 import Modal from './Modal.vue';
 import BOKForm from './BOKForm.vue';
 
-defineProps({
-    model_value: {
-        type: Boolean,
-        required: true
-    }
-});
-
-const emit = defineEmits([
-    'update:model_value'
-])
-
-const close = () => emit('update:model_value', false);
-
+import Loader from '@/Components/Loader.vue';
 </script>
 
 <template>
     <teleport to='body'>
-        <Suspense>
-            <Modal>
-                <BOKForm @close="close"></BOKForm>
-            </Modal>
-        </Suspense>
+        <Modal>
+            <Suspense>
+                <BOKForm #default></BOKForm>
+                <template #fallback>
+                    <Loader class="tw-grow"></Loader>
+                </template>
+            </Suspense>
+        </Modal>
     </teleport>
 </template>

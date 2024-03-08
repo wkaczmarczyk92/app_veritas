@@ -11,22 +11,33 @@ import PrimaryButton from '@/Components/PrimaryButton.vue';
 import axios from 'axios';
 import { AlertStore } from '@/Pinia/AlertStore';
 
-const props = defineProps({
-    ready_to_departure_dates: {
-        type: [Object, null]
-    }
-});
+import { useUserStore } from '@/Pinia/UserStore';
+import { useModalStore } from '@/Pinia/ModalStore';
 
-const emit = defineEmits([
-    'close',
-    'update'
-]);
+const userStore = useUserStore();
+const modalStore = useModalStore();
+
+await userStore.set_user();
+
+// const props = defineProps({
+//     ready_to_departure_dates: {
+//         type: [Object, null]
+//     }
+// });
+
+
+// const emit = defineEmits([
+//     'close',
+//     'update'
+// ]);
 
 const disabled = ref(false);
 const useAlertStore = AlertStore();
 
-const departure_date = ref(props.ready_to_departure_dates?.departure_date ?? '');
+const departure_date = ref(userStore.user.ready_to_departure_dates?.departure_date ?? '');
 const errors = ref({});
+
+console.log(departure_date.value)
 
 async function submit() {
     disabled.value = true;
@@ -45,7 +56,7 @@ async function submit() {
     }
 
     if (response?.ready_to_departure) {
-        emit('update', response.ready_to_departure);
+        userStore.user.ready_to_departure_dates = response?.ready_to_departure
     }
 
     useAlertStore.pushAlert(response.alert_type, response.msg);
@@ -54,11 +65,11 @@ async function submit() {
 
 async function removeReadyToDepartureDate() {
     let response = await axios.patch(route('readytodeparturedate.destroy'), {
-        id: props.ready_to_departure_dates.id
+        id: userStore.user.ready_to_departure_dates.id
     });
 
     if (response.data.success) {
-        emit('update', null);
+        userStore.user.ready_to_departure_dates = null;
         departure_date.value = null;
     }
 
@@ -75,14 +86,14 @@ async function removeReadyToDepartureDate() {
         </VueDatePicker>
         <InputError class="tw-mt-2" :message="errors?.departure_date ? errors.departure_date[0] : ''" />
     </p>
-    <p class="tw-mt-2 tw-text-red-500 tw-underline hover:tw-cursor-pointer" v-if="ready_to_departure_dates"
+    <p class="tw-mt-2 tw-text-red-500 tw-underline hover:tw-cursor-pointer" v-if="userStore.user.ready_to_departure_dates"
         @click="removeReadyToDepartureDate">
         Usuń datę gotowości do wyjazdu
     </p>
     <div class="tw-mt-6 tw-text-right">
         <SButton :disabled="disabled" @click="submit()" value="Aktualizuj datę">
         </SButton>
-        <PrimaryButton id="closeModal" @click="$emit('close')">
+        <PrimaryButton id="closeModal" @click="modalStore.visibility.ready_to_departure = false">
             Zamknij
         </PrimaryButton>
     </div>

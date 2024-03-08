@@ -42,7 +42,7 @@ const breadcrumbs = [
             <div class="tw-px-4 sm:tw-px-6 lg:tw-px-8">
                 <div
                     class="tw-px-6 tw-pt-16 tw-pb-8 tw-bg-gray-100 tw-rounded tw-shadow-xl sm:tw-rounded-lg sm:tw-px-20 sm:tw-pb-12">
-                    <NewPagination :pagination="last_logins"></NewPagination>
+                    <NewPagination :pagination="last_logins" page_name="/ostatnie-logowania"></NewPagination>
                     <table class="tw-w-full tw-text-center tw-border-collapse">
                         <thead>
                             <tr class="table-tr">

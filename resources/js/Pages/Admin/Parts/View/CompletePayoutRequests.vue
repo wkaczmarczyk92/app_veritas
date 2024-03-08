@@ -31,12 +31,17 @@ async function reloadRequestsByPageNumber(page) {
 const headers = [
     '#ID',
     'Imię i nazwisko opiekunki',
+    'PESEL',
     'Przejdź do użytkownika',
     'Kwota bonusu',
     'Za poziom',
-    'Zrealizowani przez',
+    'Zrealizowany przez',
     'Zrealizowano (data)'
 ];
+
+const admin_name = (user) => {
+    return user && user.user_profiles ? `${user.user_profiles.first_name} ${user.user_profiles.last_name}` : '-';
+}
 
 </script>
 
@@ -59,6 +64,7 @@ const headers = [
                     <td class="tw-py-4 tw-px-6 tw-border-b tw-border-grey-light">{{
                         `${payout_request.user_has_bonus.user.user_profiles.first_name}
                                             ${payout_request.user_has_bonus.user.user_profiles.last_name}` }}</td>
+                    <td class="tw-py-4 tw-px-6 tw-border-b tw-border-grey-light">{{ payout_request.user_has_bonus.user.pesel }}</td>
                     <td class="tw-py-4 tw-px-6 tw-border-b tw-border-grey-light">
                         <a class="edit-user" :href="`/uzytkownik/${payout_request.user_has_bonus.user.id}`">
                             <i class="fa-solid fa-user-pen"></i>
@@ -70,8 +76,7 @@ const headers = [
                             payout_request.user_has_bonus.level_id).toUpperCase() }}</b></span>
                     </td>
                     <td class="tw-py-4 tw-px-6 tw-border-b tw-border-grey-light">{{
-                        `${payout_request.admin_user.user_profiles.first_name}
-                                            ${payout_request.admin_user.user_profiles.last_name}` }}</td>
+                        admin_name(payout_request.admin_user) }}</td>
                     <td class="tw-py-4 tw-px-6 tw-border-b tw-border-grey-light">{{ format(payout_request.updated_at) }}
                     </td>
                 </tr>

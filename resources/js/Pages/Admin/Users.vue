@@ -9,6 +9,7 @@ import NewPagination from '@/Components/Navigation/NewPagination.vue';
 
 import AlertInfo from '@/Components/Functions/AlertInfo.vue';
 
+import MainContent from '@/Templates/HTML/MainContent.vue';
 
 import StaticInfoAlert from '@/Components/Alerts/StaticInfoAlert.vue';
 
@@ -143,112 +144,114 @@ const breadcrumbs = [
             </v-breadcrumbs>
         </template>
 
-        <div class="tw-py-12">
-            <div class="tw-px-4 tw-mx-auto tw-max-w-8xl tw-lg:px-8">
-                <div class="tw-flex tw-flex-col tw-items-center tw-gap-4 tw-mb-4 md:tw-flex-row">
-                    <v-text-field label="Szukaj" variant="solo-filled" placeholder="wpisz szukaną frazę" hide-details
-                        class="tw-w-full" v-model="search_string"></v-text-field>
+        <MainContent>
 
-                    <v-text-field label="Punkty" variant="solo-filled" placeholder="wpisz ilość punktów" hide-details
-                        class="tw-w-full focus:tw-ring-0" v-model="search_current_points">
-                        <template v-slot:prepend-inner><i class="tw-text-gray-400 fa-solid fa-trophy"></i></template>
-                    </v-text-field>
+            <div class="tw-flex tw-flex-col tw-items-center tw-gap-4 tw-mb-4 md:tw-flex-row">
+                <v-text-field label="Szukaj" variant="solo-filled" placeholder="wpisz szukaną frazę" hide-details
+                    class="tw-w-full" v-model="search_string" @keydown.enter="search()"></v-text-field>
 
-                    <v-text-field label="Ilość dni" variant="solo-filled" placeholder="wpisz ilość punktów" hide-details
-                        class="tw-w-full" v-model="search_total_days">
-                        <template v-slot:prepend-inner><i class="tw-text-gray-400 fa-solid fa-cloud-sun"></i></template>
-                    </v-text-field>
+                <v-text-field label="Punkty" variant="solo-filled" placeholder="wpisz ilość punktów" hide-details
+                    class="tw-w-full focus:tw-ring-0" v-model="search_current_points" @keydown.enter="search()">
+                    <template v-slot:prepend-inner><i class="tw-text-gray-400 fa-solid fa-trophy"></i></template>
+                </v-text-field>
 
-                    <!-- <Transition mode="out-in">
-                        <v-btn v-if="paramsHasValues()" variant="outlined"
-                            @click="router.visit(route('users'), { method: 'get' })" class="shadow-lg" color="#991b1b">
-                            <template v-slot:prepend><i class="w-4 h-4 fas fa-times-circle"></i></template>
-                            Usuń filtry
-                        </v-btn>
-                        <v-btn v-else variant="outlined" @click="router.visit(route('users'), { method: 'get' })"
-                            class="shadow-lg" color="#991b1b">
-                            <template v-slot:prepend><i class="w-4 h-4 fas fa-times-circle"></i></template>
-                            Usuń filtry
-                        </v-btn>
-                    </Transition> -->
-                </div>
-                <div class="tw-flex tw-flex-row tw-justify-end tw-gap-2 tw-mb-4">
-                    <v-btn variant="outlined" @click="search()" class="tw-shadow-lg" color="#22c55e">
-                        <template v-slot:prepend><i class="fa-solid fa-magnifying-glass"></i></template>
-                        Szukaj
-                    </v-btn>
-                    <v-btn variant="outlined" @click="router.visit(route('users'), { method: 'get' })" class="tw-shadow-lg"
-                        color="#991b1b" :disabled="!paramsHasValues()">
-                        <template v-slot:prepend><i class="tw-w-4 tw-h-4 fas fa-times-circle"></i></template>
+                <v-text-field label="Ilość dni" variant="solo-filled" placeholder="wpisz ilość punktów" hide-details
+                    class="tw-w-full" v-model="search_total_days" @keydown.enter="search()">
+                    <template v-slot:prepend-inner><i class="tw-text-gray-400 fa-solid fa-cloud-sun"></i></template>
+                </v-text-field>
+
+                <!-- <Transition mode="out-in">
+                    <v-btn v-if="paramsHasValues()" variant="outlined"
+                        @click="router.visit(route('users'), { method: 'get' })" class="shadow-lg" color="#991b1b">
+                        <template v-slot:prepend><i class="w-4 h-4 fas fa-times-circle"></i></template>
                         Usuń filtry
                     </v-btn>
-                </div>
-
-                <NewPagination :pagination="users" :url_params_string="url_params()"></NewPagination>
-
-                <v-card variant="tonal" :color="'white'" class="tw-mb-4 tw-shadow-2xl">
-                    <v-card-text>
-                        <div class="tw-overflow-x-auto" v-if="users.data.length > 0">
-                            <v-data-table :items="users.data" height="auto" item-value="id">
-                                <template #headers>
-                                    <tr class="tw-bg-gray-200">
-                                        <th>#ID</th>
-                                        <th class="tw-text-center">AV</th>
-                                        <th>PESEL</th>
-                                        <th>Imię i nazwisko</th>
-                                        <th>Punkty</th>
-                                        <th>Łącznie dni</th>
-                                        <th>Poziom</th>
-                                        <th>Rekruter</th>
-                                        <th class="tw-text-center">Przedź do użytkownika</th>
-                                    </tr>
-                                </template>
-                                <template v-slot:item="{ item }">
-                                    <tr class="tw-text-xs">
-                                        <td>#{{ item.id }}</td>
-                                        <td class="!tw-py-1 tw-text-center">
-                                            <div v-if="item.user_profile_image && item.user_profile_image.path && item.user_profile_image.status == 3"
-                                                class="tw-relative tw-border-2 tw-border-gray-800 tw-shadow-xl profile-img profile-img-sm"
-                                                :style="`background-image: url(user_profile_images/${item.user_profile_image.path});`">
-                                            </div>
-                                            <i v-else class="fa-solid fa-circle-user img-default img-default-sm"></i>
-                                        </td>
-                                        <td>{{ item.pesel }}</td>
-                                        <td>{{ item.full_name }}</td>
-                                        <td>{{ item.user_profiles.current_points ?? '-' }}</td>
-                                        <td>{{ item.user_profiles.total_days ?? '-' }}</td>
-                                        <td>
-                                            <span :class="levelColor(item.user_profiles.level)">
-                                                <b>
-                                                    {{ level(levels, item.user_profiles.level).toUpperCase() }}
-                                                </b>
-                                            </span>
-                                        </td>
-                                        <td>
-                                            {{ `${item.user_profiles.recruiter_first_name ??
-                                                '-'}${item.user_profiles.recruiter_last_name ?? ''}` }}
-                                        </td>
-                                        <td class="tw-text-center">
-                                            <a :href="`/uzytkownik/${item.id}`">
-                                                <i
-                                                    class="tw-text-lg tw-text-blue-500 fa-solid fa-user-pen hover:tw-text-blue-700"></i>
-                                            </a>
-                                        </td>
-                                    </tr>
-                                </template>
-                                <template #bottom></template>
-                            </v-data-table>
-                        </div>
-                        <AlertInfo v-else title="" :show_icon="false">
-                            Brak nowych wniosków o wypłatę
-                        </AlertInfo>
-                    </v-card-text>
-                </v-card>
-
-                <NewPagination :pagination="users" :url_params_string="url_params()"></NewPagination>
-
+                    <v-btn v-else variant="outlined" @click="router.visit(route('users'), { method: 'get' })"
+                        class="shadow-lg" color="#991b1b">
+                        <template v-slot:prepend><i class="w-4 h-4 fas fa-times-circle"></i></template>
+                        Usuń filtry
+                    </v-btn>
+                </Transition> -->
             </div>
-        </div>
+            <div class="tw-flex tw-flex-row tw-justify-end tw-gap-2 tw-mb-4">
+                <v-btn variant="outlined" @click="search()" class="tw-shadow-lg" color="#22c55e">
+                    <template v-slot:prepend><i class="fa-solid fa-magnifying-glass"></i></template>
+                    Szukaj
+                </v-btn>
+                <v-btn variant="outlined" @click="router.visit(route('users'), { method: 'get' })" class="tw-shadow-lg"
+                    color="#991b1b" :disabled="!paramsHasValues()">
+                    <template v-slot:prepend><i class="tw-w-4 tw-h-4 fas fa-times-circle"></i></template>
+                    Usuń filtry
+                </v-btn>
+            </div>
+
+            <NewPagination :pagination="users" :url_params_string="url_params()"></NewPagination>
+
+            <v-card variant="tonal" :color="'white'" class="tw-mb-4 tw-shadow-2xl">
+                <v-card-text class="!tw-p-0">
+                    <div class="tw-overflow-x-auto" v-if="users.data.length > 0">
+                        <v-data-table :items="users.data" height="auto" item-value="id">
+                            <template #headers>
+                                <tr class="tw-bg-gray-200">
+                                    <th>#ID</th>
+                                    <th class="!tw-text-center">AV</th>
+                                    <th>PESEL</th>
+                                    <th>Imię i nazwisko</th>
+                                    <th class="!tw-text-center">Punkty</th>
+                                    <th class="!tw-text-center">Łącznie dni</th>
+                                    <th>Poziom</th>
+                                    <th>Rekruter</th>
+                                    <!-- <th class="!tw-text-center">Przedź do użytkownika</th> -->
+                                </tr>
+                            </template>
+                            <template v-slot:item="{ item }">
+                                <tr class="tw-text-xs">
+                                    <td>#{{ item.id }}</td>
+                                    <td class="!tw-py-1 tw-text-center">
+                                        <div v-if="item.user_profile_image && item.user_profile_image.path && item.user_profile_image.status == 3"
+                                            class="tw-relative tw-border-2 tw-border-gray-800 tw-shadow-xl profile-img profile-img-sm"
+                                            :style="`background-image: url(user_profile_images/${item.user_profile_image.path});`">
+                                        </div>
+                                        <i v-else class="fa-solid fa-circle-user img-default img-default-sm"></i>
+                                    </td>
+                                    <td>{{ item.pesel }}</td>
+                                    <td>
+                                        <a :href="`/uzytkownik/${item.id}`" class="tw-text-blue-700 hover:tw-text-blue-900 hover:tw-underline">
+                                            {{ item.full_name }}
+                                        </a>
+                                    </td>
+                                    <td class="tw-text-center">{{ item.user_profiles.current_points ?? '-' }}</td>
+                                    <td class="tw-text-center">{{ item.user_profiles.total_days ?? '-' }}</td>
+                                    <td>
+                                        <span :class="levelColor(item.user_profiles.level)">
+                                            <b>
+                                                {{ level(levels, item.user_profiles.level).toUpperCase() }}
+                                            </b>
+                                        </span>
+                                    </td>
+                                    <td>
+                                        {{ `${item.user_profiles.recruiter_first_name ??
+                                            '-'}${item.user_profiles.recruiter_last_name ?? ''}` }}
+                                    </td>
+                                    <!-- <td class="tw-text-center">
+                                        <a :href="`/uzytkownik/${item.id}`">
+                                            <i
+                                                class="tw-text-lg tw-text-blue-500 fa-solid fa-user-pen hover:tw-text-blue-700"></i>
+                                        </a>
+                                    </td> -->
+                                </tr>
+                            </template>
+                            <template #bottom></template>
+                        </v-data-table>
+                    </div>
+                    <AlertInfo v-else title="" :show_icon="false">
+                        Brak nowych wniosków o wypłatę
+                    </AlertInfo>
+                </v-card-text>
+            </v-card>
+
+            <NewPagination :pagination="users" :url_params_string="url_params()"></NewPagination>
+        </MainContent>
     </AdminLayout>
 </template>
 

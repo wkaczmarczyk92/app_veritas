@@ -27,6 +27,8 @@ console.log(count_unverified.value);
 
 const showingNavigationDropdown = ref(false);
 
+console.log(showingNavigationDropdown.value)
+
 </script>
 
 <template>
@@ -219,17 +221,18 @@ const showingNavigationDropdown = ref(false);
                         </Dropdown>
                     </div>
                 </div>
+
                 <div class="-tw-mr-2 tw-flex tw-items-center sm:tw-hidden">
                     <button @click="showingNavigationDropdown = !showingNavigationDropdown"
                         class="tw-inline-flex tw-items-center tw-justify-center tw-p-2 tw-rounded-md tw-text-gray-400 hover:tw-text-gray-500 hover:tw-bg-gray-100 focus:tw-outline-none focus:tw-bg-gray-100 focus:tw-text-gray-500 tw-transition tw-duration-150 tw-ease-in-out">
                         <svg class="tw-h-6 tw-w-6" stroke="currentColor" fill="none" viewBox="0 0 24 24">
                             <path :class="{
-                                hidden: showingNavigationDropdown,
+                                'tw-hidden': showingNavigationDropdown,
                                 'tw-inline-flex': !showingNavigationDropdown,
                             }" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                                 d="M4 6h16M4 12h16M4 18h16" />
                             <path :class="{
-                                hidden: !showingNavigationDropdown,
+                                'tw-hidden': !showingNavigationDropdown,
                                 'tw-inline-flex': showingNavigationDropdown,
                             }" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                                 d="M6 18L18 6M6 6l12 12" />
@@ -239,7 +242,8 @@ const showingNavigationDropdown = ref(false);
             </div>
         </div>
 
-        <div :class="{ block: showingNavigationDropdown, hidden: !showingNavigationDropdown }" class="sm:tw-hidden">
+        <div :class="{ 'tw-block': showingNavigationDropdown, 'tw-hidden': !showingNavigationDropdown }"
+            class="sm:tw-hidden">
             <div class="tw-pt-2 tw-pb-3 tw-space-y-1">
                 <ResponsiveNavLink :href="route('dashboard')" :active="route().current('dashboard')">
                     Pulpit

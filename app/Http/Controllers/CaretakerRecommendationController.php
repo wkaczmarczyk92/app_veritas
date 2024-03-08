@@ -16,8 +16,10 @@ use Illuminate\Validation\ValidationException;
 use Exception;
 use App\Helpers\CURLRequest;
 
-use App\Http\Requests\Caretaker\UpdateRequest;
+use App\Models\User;
+use App\Models\Bonus;
 
+use App\Http\Requests\Caretaker\UpdateRequest;
 
 use App\Services\Caretaker\CaretakerRecommendationService;
 
@@ -84,5 +86,15 @@ class CaretakerRecommendationController extends Controller
     public function destroy(string $id)
     {
         return response()->json($this->recommendation_service->destroy($id));
+    }
+
+    public function create()
+    {
+        return Inertia::render('User/Recommendations/Caretaker', [
+            'bonus' => [
+                'family_recommendation' => Bonus::where('name', 'family_recommendation')->pluck('bonus_value')[0],
+                'caretaker_recommendation' => Bonus::where('name', 'caretaker_recommendation')->pluck('bonus_value')[0],
+            ],
+        ]);
     }
 }

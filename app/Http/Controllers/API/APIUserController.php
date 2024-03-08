@@ -16,6 +16,8 @@ use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Str;
 use App\Models\PasswordForUser;
 
+use Illuminate\Support\Facades\Auth;
+
 class APIUserController extends Controller
 {
     // {
@@ -29,7 +31,9 @@ class APIUserController extends Controller
     //     }
     // }
 
-    public function update(Request $request) 
+
+
+    public function update(Request $request)
     {
         $crt_id_caretaker = $request->carerId;
 
@@ -39,7 +43,7 @@ class APIUserController extends Controller
 
         if ($user == null) {
             echo json_encode([
-                'success' => true, 
+                'success' => true,
                 'msg' => 'Nie znaleziono użytkownika.',
                 'errors' => ''
             ], JSON_UNESCAPED_UNICODE);
@@ -97,7 +101,8 @@ class APIUserController extends Controller
     //     }
     // }
 
-    public function store(Request $request) {
+    public function store(Request $request)
+    {
         // echo json_encode([
         //     'success' => true,
         //     'msg' => 'Przerwa w systemie lojalnościowym.'
@@ -135,9 +140,9 @@ class APIUserController extends Controller
                     'pesel' => $request->pesel,
                     // 'password' => Hash::make($password),
                 ]);
-                
+
                 $user->assignRole('user');
-    
+
                 $user_profile = new UserProfile([
                     'first_name' => $request->user_profiles['first_name'],
                     'last_name' => $request->user_profiles['last_name'],
@@ -155,7 +160,7 @@ class APIUserController extends Controller
                     'departure_date' => $request['ssg_arrival_date'],
                     'sent' => false
                 ]);
-    
+
                 $user->user_profiles()->save($user_profile);
                 $user->password_for_user()->save($password_for_user);
                 DB::commit();
@@ -163,7 +168,7 @@ class APIUserController extends Controller
                 DB::rollback();
                 echo json_encode(['success' => false, 'msg' => $e->getMessage()], JSON_UNESCAPED_UNICODE);
                 return;
-            }           
+            }
         } else {
             $user->user_profiles->first_name = $request->user_profiles['first_name'];
             $user->user_profiles->last_name = $request->user_profiles['last_name'];
@@ -176,7 +181,7 @@ class APIUserController extends Controller
             DB::beginTransaction();
 
             try {
-                
+
                 $user->user_profiles->save();
                 DB::commit();
             } catch (Exception $e) {

@@ -441,6 +441,10 @@
   right: 10px;
   top: 26px;
 }
+.post .post__type .post__type__news {
+  right: 0px;
+  top: 30px;
+}
 .post .post__body p {
   color: #374151;
 }
@@ -451,6 +455,11 @@
   font-size: 120%;
   color: #1f2937;
   font-weight: bold;
+}
+.post .post__body p.ql-align-center {
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
 }
 
 .text-gradient {
@@ -587,6 +596,10 @@
   background-image: url("/images/loginscreen.jpg");
   background-repeat: no-repeat;
   background-size: cover;
+}
+
+.ql-align-center {
+  text-align: center;
 }
 
 /*# sourceMappingURL=user.css.map */

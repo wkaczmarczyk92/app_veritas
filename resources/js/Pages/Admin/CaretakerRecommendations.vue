@@ -26,6 +26,8 @@ const props = defineProps({
 const data = ref(props.data);
 const useAlertStore = AlertStore();
 
+console.log(data.value)
+
 const username = (item) => {
     return `${item.user.user_profiles.first_name} ${item.user.user_profiles.last_name}`;
 }
@@ -146,6 +148,10 @@ const breadcrumbs = [
     }
 ]
 
+const admin_username = (user) => {
+    return user.admin_user && user.admin_user.user_profiles ? `${user.admin_user.user_profiles.first_name} ${user.admin_user.user_profiles.last_name}` : 'brak';
+}
+
 </script>
 
 
@@ -204,13 +210,13 @@ const breadcrumbs = [
                             <table class="tw-w-full tw-text-center tw-border-collapse">
                                 <thead>
                                     <tr class="tw-text-xs tw-text-white">
-                                        <th colspan="4"
+                                        <th colspan="3"
                                             class="tw-px-2 tw-py-4 tw-font-bold tw-uppercase tw-bg-blue-700 tw-border-b tw-text-grey-dark tw-border-grey-light">
                                             Osoba polecająca</th>
                                         <th colspan="3"
                                             class="tw-px-2 tw-py-4 tw-font-bold tw-uppercase tw-bg-teal-700 tw-border-b tw-text-grey-dark tw-border-grey-light">
                                             Osoba polecana</th>
-                                        <th colspan="3"
+                                        <th colspan="4"
                                             class="tw-px-2 tw-py-4 tw-font-bold tw-uppercase tw-bg-purple-700 tw-border-b tw-text-grey-dark tw-border-grey-light">
                                             Dodatkowe informacje</th>
                                     </tr>
@@ -224,9 +230,9 @@ const breadcrumbs = [
                                         <th
                                             class="tw-px-2 tw-py-4 tw-font-bold tw-uppercase tw-bg-blue-500 tw-border-b tw-text-grey-dark tw-border-grey-light">
                                             Imię i nazwisko</th>
-                                        <th
+                                        <!-- <th
                                             class="tw-px-2 tw-py-4 tw-font-bold tw-uppercase tw-bg-blue-500 tw-border-b tw-text-grey-dark tw-border-grey-light">
-                                            Przejdź do użytkownika</th>
+                                            Przejdź do użytkownika</th> -->
                                         <th
                                             class="tw-px-2 tw-py-4 tw-font-bold tw-uppercase tw-bg-teal-500 tw-border-b tw-text-grey-dark tw-border-grey-light">
                                             Imię i nazwisko</th>
@@ -242,6 +248,9 @@ const breadcrumbs = [
                                         <th
                                             class="tw-px-2 tw-py-4 tw-font-bold tw-uppercase tw-bg-purple-500 tw-border-b tw-text-grey-dark tw-border-grey-light">
                                             Edytuj</th>
+                                        <th
+                                            class="tw-px-2 tw-py-4 tw-font-bold tw-uppercase tw-bg-purple-500 tw-border-b tw-text-grey-dark tw-border-grey-light">
+                                            Zaktualizowane przez</th>
                                         <th
                                             class="tw-px-2 tw-py-4 tw-font-bold tw-uppercase tw-bg-purple-500 tw-border-b tw-text-grey-dark tw-border-grey-light">
                                             Data utworzenia</th>
@@ -279,13 +288,16 @@ const breadcrumbs = [
                                         </td>
                                         <!-- <td class="tw-px-6 tw-py-4 tw-border-b tw-border-grey-light">{{ index + 1 + ((data.current_page - 1) * data.per_page) }}</td> -->
                                         <td class="tw-px-6 tw-py-4 tw-border-b tw-border-grey-light">{{ item.id }}</td>
-                                        <td class="tw-px-6 tw-py-4 tw-border-b tw-border-grey-light">{{ username(item) }}
-                                        </td>
                                         <td class="tw-px-6 tw-py-4 tw-border-b tw-border-grey-light">
+                                            <a :href="`/uzytkownik/${item.user.id}`" class="tw-text-blue-700 hover:tw-text-blue-900 hover:tw-underline">
+                                                {{ username(item) }}
+                                            </a>
+                                        </td>
+                                        <!-- <td class="tw-px-6 tw-py-4 tw-border-b tw-border-grey-light">
                                             <a class="edit-user" :href="`/uzytkownik/${item.user.id}`">
                                                 <i class="tw-text-xl fa-solid fa-user-pen"></i>
                                             </a>
-                                        </td>
+                                        </td> -->
                                         <td class="tw-px-6 tw-py-4 tw-border-b tw-border-grey-light">{{
                                             caretaker_username(item) }}</td>
                                         <td class="tw-px-6 tw-py-4 tw-border-b tw-border-grey-light">{{ phone(item) }}</td>
@@ -301,6 +313,8 @@ const breadcrumbs = [
                                                 <i class="tw-text-xl fa-solid fa-file-pen"></i>
                                             </a>
                                         </td>
+                                        <td class="tw-px-6 tw-py-4 tw-border-b tw-border-grey-light">{{
+                                            admin_username(item) }}</td>
                                         <td class="tw-px-6 tw-py-4 tw-border-b tw-border-grey-light">{{
                                             format(item.created_at) }}</td>
                                     </tr>

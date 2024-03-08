@@ -22,19 +22,20 @@ class CaretakerRecommendation extends Model
         'crt_id_caretaker',
         'bonus_payout_completed',
         'ready_to_payout',
-        'locked'
+        'locked',
+        'updated_by_user_id'
     ];
 
     protected $casts = [
         'language_id' => 'integer'
     ];
 
-    public function user() : BelongsTo
+    public function user(): BelongsTo
     {
         return $this->belongsTo(User::class);
     }
 
-    public function admin_user() : BelongsTo
+    public function admin_user(): BelongsTo
     {
         return $this->belongsTo(User::class, 'updated_by_user_id');
     }

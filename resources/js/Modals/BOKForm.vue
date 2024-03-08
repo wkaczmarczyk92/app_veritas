@@ -12,6 +12,7 @@ import PrimaryButton from '@/Components/PrimaryButton.vue';
 
 import { ref } from 'vue';
 import { AlertStore } from '@/Pinia/AlertStore';
+import { useModalStore } from '@/Pinia/ModalStore';
 
 async function getSubjects() {
     let subjects = await axios.get(route('boksubject.index'));
@@ -22,12 +23,10 @@ const subjects = await getSubjects();
 const useAlertStore = AlertStore();
 const form = ref({ subject_id: '', msg: '' })
 
+const modalStore = useModalStore();
+
 const errors = ref({});
 const disabled = ref(false);
-
-const emit = defineEmits([
-    'close'
-]);
 
 const submit = async () => {
     disabled.value = true;
@@ -79,7 +78,7 @@ const submit = async () => {
     <div class="tw-mt-6 tw-text-right">
         <SButton :disabled="disabled" value="Zgłoś problem" @click="submit()">
         </SButton>
-        <PrimaryButton id="closeModal" @click="$emit('close')">
+        <PrimaryButton id="closeModal" @click="modalStore.visibility.bok = false">
             Zamknij
         </PrimaryButton>
     </div>

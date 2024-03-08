@@ -32,6 +32,7 @@ class AuthenticatedSessionController extends Controller
      */
     public function store(LoginRequest $request): RedirectResponse
     {
+        // dd($request);
         $request->authenticate();
         $request->session()->regenerate();
 
@@ -39,7 +40,22 @@ class AuthenticatedSessionController extends Controller
             'user_id' => Auth::user()->id
         ]);
 
-        $redirect_to = $request->login_field == 'email' ? RouteServiceProvider::ADMIN_HOME : RouteServiceProvider::HOME;
+        if ($request->login_field == 'email') {
+            $user = Auth::user();
+
+            if ($user->hasRole(['admin', 'super-admin'])) {
+                $redirect_to = RouteServiceProvider::ADMIN_HOME;
+            } else if ($user->hasRole('recruiter')) {
+                $redirect_to = RouteServiceProvider::RECRUITER_HOME;
+            } else if ($user->hasRole('course_moderator')) {
+                $redirect_to = RouteServiceProvider::COURSE_MODERATOR_HOME;
+            }
+        } else {
+            $redirect_to = RouteServiceProvider::HOME;
+        }
+        // dd($redirect_to);
+
+        // $redirect_to = $request->login_field == 'email' ? RouteServiceProvider::ADMIN_HOME : RouteServiceProvider::HOME;
 
         return redirect()->route($redirect_to);
     }

@@ -15,15 +15,23 @@ use Illuminate\Validation\ValidationException;
 use Illuminate\Validation\Rule;
 
 use App\Helpers\CURLRequest;
+use Illuminate\Support\Facades\Auth;
 
 use App\Models\ReadyToDepartureDate;
 use Exception;
 
 class UserController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     */
+    public function get()
+    {
+        $user = User::with(['user_profiles', 'user_points', 'ready_to_departure_dates', 'user_profile_image', 'user_has_bonus' => function ($query) {
+            // $query->where('completed', false)
+            //     ->where('in_progress', false);
+        }])->find(Auth::user()->id);
+
+        return response()->json($user);
+    }
+
     public function index(Request $request)
     {
         $order_by = $request->order_by ?? 'full_name';
@@ -67,7 +75,7 @@ class UserController extends Controller
         }
 
         $users->orderBy($order_by, $order);
-        
+
         $users = $users->paginate(10);
 
         return Inertia::render('Admin/Users', [
@@ -160,13 +168,12 @@ class UserController extends Controller
                 ]);
 
                 $departure_date = $request->ready_to_departure_dates['departure_date'];
-
             } else {
                 if ($user->ready_to_departure_dates != null) {
                     $ready_to_departure = ReadyToDepartureDate::find($user->ready_to_departure_dates->id)->delete();
                     $departure_date = null;
                 }
-            }     
+            }
 
             // $arr = [
             //     'section' => 'personal_data',
@@ -185,11 +192,11 @@ class UserController extends Controller
             // $curl_request = new CURLRequest;
             // $departure_response = $curl_request->caretaker_departure_date($departure_date, $user->user_profiles->crt_id_caretaker);
             // $response = $curl_request->update_caretaker_data($arr);
-           
+
             // if (!$response->success) {
             //     throw new Exception('CRM Update failed.');
             // }
-            
+
             DB::commit();
         } catch (\Throwable $e) {
             DB::rollback();
@@ -197,5 +204,10 @@ class UserController extends Controller
         }
 
         return response()->json(['success' => true]);
+    }
+
+    public function create_as_course_moderator()
+    {
+        // return Inertia::render('Cour');
     }
 }

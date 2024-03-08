@@ -17,6 +17,8 @@ import AlertDanger from '@/Components/Functions/AlertDanger.vue';
 
 import { AlertStore } from '@/Pinia/AlertStore';
 
+import MainContent from '@/Templates/HTML/MainContent.vue';
+
 const props = defineProps({
     data: {
         type: Object,
@@ -127,88 +129,124 @@ const breadcrumbs = [
                 </template>
             </v-breadcrumbs>
         </template>
-        <div class="tw-py-12">
-            <div class="tw-px-4 tw-max-w-8xl sm:tw-px-6 lg:tw-px-8">
-                <div
-                    class="tw-px-6 tw-pt-16 tw-pb-8 tw-bg-gray-100 tw-rounded tw-shadow-xl sm:tw-rounded-lg sm:tw-px-20 sm:tw-pb-12">
-                    <h2 class="tw-text-3xl tw-font-bold tw-text-gray-800">
-                        <i class="tw-text-indigo-600 fa-solid fa-list-timeline"></i>
-                        Posty
-                    </h2>
-                    <hr class="tw-my-4">
-
-                    <div class="tw-flex tw-flex-row tw-gap-2 tw-mb-2">
-                        <label>
-                            <Checkbox v-model:checked="checked"></Checkbox>
-                            <span class="tw-ml-2 tw-text-sm tw-text-gray-600">Zmień kolejność postów</span>
-                        </label>
-                    </div>
-
-                    <div class="relative overflow-x-auto" v-if="posts.length > 0">
-                        <AbsoluteLoader v-if="loader_active" :text="text"></AbsoluteLoader>
-                        <table class="tw-w-full tw-text-center tw-border-collapse">
-                            <thead>
-                                <tr class="table-tr">
-                                    <th
-                                        class="tw-px-2 tw-py-4 tw-text-sm tw-font-bold tw-uppercase tw-border-b tw-bg-grey-lightest tw-text-grey-dark tw-border-grey-light">
-                                        #</th>
-                                    <th
-                                        class="tw-px-2 tw-py-4 tw-text-sm tw-font-bold tw-text-left tw-uppercase tw-border-b tw-bg-grey-lightest tw-text-grey-dark tw-border-grey-light">
-                                        Tytuł</th>
-                                    <th
-                                        class="tw-px-2 tw-py-4 tw-text-sm tw-font-bold tw-text-left tw-uppercase tw-border-b tw-bg-grey-lightest tw-text-grey-dark tw-border-grey-light">
-                                        Wyświetlany od</th>
-                                    <th
-                                        class="tw-px-2 tw-py-4 tw-text-sm tw-font-bold tw-text-left tw-uppercase tw-border-b tw-bg-grey-lightest tw-text-grey-dark tw-border-grey-light">
-                                        Wyświetlany do</th>
-                                    <th
-                                        class="tw-px-2 tw-py-4 tw-text-sm tw-font-bold tw-text-center tw-uppercase tw-border-b tw-bg-grey-lightest tw-text-grey-dark tw-border-grey-light">
-                                        Status</th>
-                                    <th
-                                        class="tw-px-2 tw-py-4 tw-text-sm tw-font-bold tw-uppercase tw-border-b tw-bg-grey-lightest tw-text-grey-dark tw-border-grey-light">
-                                        Akcje</th>
+        <MainContent>
+            <!-- <v-card variant="tonal" :color="'white'" class="tw-mb-4 tw-shadow-2xl">
+                <v-card-text class="!tw-p-0">
+                    <div class="tw-overflow-x-auto" v-if="posts.length > 0">
+                        <v-data-table :items="posts" height="auto" item-value="id">
+                            <template #headers>
+                                <tr class="tw-bg-gray-200">
+                                    <th>#ID</th>
+                                    <th>Tytuł</th>
+                                    <th>Wyświetlany od</th>
+                                    <th>Wyświetlany do</th>
+                                    <th>Status</th>
+                                    <th>Akcje</th>
                                 </tr>
-                            </thead>
-                            <draggable tag="tbody" @change="update_order" v-model="posts" @start="drag = true"
-                                @end="drag = false" :disabled="!checked" item-key="id">
-                                <template #item="{ element }">
-                                    <tr class="hover:tw-bg-grey-lighter tw-draggable-tr" :key="element.id">
-                                        <td class="tw-px-2 tw-py-4 tw-border-b tw-border-grey-light">{{ element.id }}</td>
-                                        <td class="tw-px-2 tw-py-4 tw-text-left tw-border-b tw-border-grey-light">{{
-                                            element.title }}</td>
-                                        <td class="tw-px-2 tw-py-4 tw-text-left tw-border-b tw-border-grey-light">{{
-                                            element.start_at }}
-                                        </td>
-                                        <td class="tw-px-2 tw-py-4 tw-text-left tw-border-b tw-border-grey-light">{{
-                                            element.end_at }}</td>
-                                        <td class="tw-px-2 tw-py-4 tw-text-center tw-border-b tw-border-grey-light">
-                                            <i class="tw-text-2xl tw-text-blue-700 fa-solid fa-globe"
-                                                :class="element.type == 'draft' ? 'draft-post' : 'publish-post'"></i>
-                                        </td>
-                                        <td class="tw-px-2 tw-py-4 tw-border-b tw-border-grey-light">
-                                            <i class="tw-mr-2 tw-text-2xl tw-text-red-600 fa-sharp fa-solid fa-trash hover:tw-text-red-800 hover:tw-cursor-pointer"
-                                                @click="remove(element)"></i>
-                                            <i class="tw-text-2xl tw-text-blue-500 fa-solid fa-pen-to-square hover:tw-text-blue-800 hover:tw-cursor-pointer"
-                                                @click="edit(element)"></i>
-                                        </td>
-                                    </tr>
-                                </template>
-                            </draggable>
-
-
-
-                            <!-- More rows... -->
-                        </table>
+                            </template>
+                            <template v-slot:item="{ item }">
+                                <draggable tag="tr" @change="update_order" v-model="posts" @start="drag = true"
+                                    @end="drag = false" :disabled="!checked" item-key="id" class=" tw-draggable-tr">
+                                    <template #item="{ element }">
+                                        <tr class="hover:tw-bg-grey-lighter" :key="element.id">
+                                            <td class="tw-px-2 tw-py-4 tw-border-b tw-border-grey-light">{{ element.id }}</td>
+                                            <td class="tw-px-2 tw-py-4 tw-text-left tw-border-b tw-border-grey-light">{{
+                                                element.title }}</td>
+                                            <td class="tw-px-2 tw-py-4 tw-text-left tw-border-b tw-border-grey-light">{{
+                                                element.start_at }}
+                                            </td>
+                                            <td class="tw-px-2 tw-py-4 tw-text-left tw-border-b tw-border-grey-light">{{
+                                                element.end_at }}</td>
+                                            <td class="tw-px-2 tw-py-4 tw-text-center tw-border-b tw-border-grey-light">
+                                                <i class="tw-text-2xl tw-text-blue-700 fa-solid fa-globe"
+                                                    :class="element.type == 'draft' ? 'draft-post' : 'publish-post'"></i>
+                                            </td>
+                                            <td class="tw-px-2 tw-py-4 tw-border-b tw-border-grey-light">
+                                                <i class="tw-mr-2 tw-text-2xl tw-text-red-600 fa-sharp fa-solid fa-trash hover:tw-text-red-800 hover:tw-cursor-pointer"
+                                                    @click="remove(element)"></i>
+                                                <i class="tw-text-2xl tw-text-blue-500 fa-solid fa-pen-to-square hover:tw-text-blue-800 hover:tw-cursor-pointer"
+                                                    @click="edit(element)"></i>
+                                            </td>
+                                        </tr>
+                                    </template>
+                                </draggable>
+                            </template>
+                            <template #bottom></template>
+                        </v-data-table>
                     </div>
-                    <AlertInfo v-else>Brak postów do wyświetlenia.</AlertInfo>
+                </v-card-text>
+            </v-card> -->
 
+            <div
+                class="tw-px-6 tw-pt-16 tw-pb-8 tw-bg-gray-100 tw-rounded tw-shadow-xl sm:tw-rounded-lg sm:tw-px-20 sm:tw-pb-12">
+                <h2 class="tw-text-3xl tw-font-bold tw-text-gray-800">
+                    <i class="tw-text-indigo-600 fa-solid fa-list-timeline"></i>
+                    Posty
+                </h2>
+                <hr class="tw-my-4">
 
+                <div class="tw-flex tw-flex-row tw-gap-2 tw-mb-2">
+                    <label>
+                        <Checkbox v-model:checked="checked"></Checkbox>
+                        <span class="tw-ml-2 tw-text-sm tw-text-gray-600">Zmień kolejność postów</span>
+                    </label>
                 </div>
-            </div>
-        </div>
 
+                <div class="relative overflow-x-auto" v-if="posts.length > 0">
+                    <AbsoluteLoader v-if="loader_active" :text="text"></AbsoluteLoader>
+                    <table class="tw-w-full tw-text-center tw-border-collapse">
+                        <thead>
+                            <tr class="table-tr">
+                                <th
+                                    class="tw-px-2 tw-py-4 tw-text-sm tw-font-bold tw-uppercase tw-border-b tw-bg-grey-lightest tw-text-grey-dark tw-border-grey-light">
+                                    #</th>
+                                <th
+                                    class="tw-px-2 tw-py-4 tw-text-sm tw-font-bold tw-text-left tw-uppercase tw-border-b tw-bg-grey-lightest tw-text-grey-dark tw-border-grey-light">
+                                    Tytuł</th>
+                                <th
+                                    class="tw-px-2 tw-py-4 tw-text-sm tw-font-bold tw-text-left tw-uppercase tw-border-b tw-bg-grey-lightest tw-text-grey-dark tw-border-grey-light">
+                                    Wyświetlany od</th>
+                                <th
+                                    class="tw-px-2 tw-py-4 tw-text-sm tw-font-bold tw-text-left tw-uppercase tw-border-b tw-bg-grey-lightest tw-text-grey-dark tw-border-grey-light">
+                                    Wyświetlany do</th>
+                                <th
+                                    class="tw-px-2 tw-py-4 tw-text-sm tw-font-bold tw-text-center tw-uppercase tw-border-b tw-bg-grey-lightest tw-text-grey-dark tw-border-grey-light">
+                                    Status</th>
+                                <th
+                                    class="tw-px-2 tw-py-4 tw-text-sm tw-font-bold tw-uppercase tw-border-b tw-bg-grey-lightest tw-text-grey-dark tw-border-grey-light">
+                                    Akcje</th>
+                            </tr>
+                        </thead>
+                        <draggable tag="tbody" @change="update_order" v-model="posts" @start="drag = true"
+                            @end="drag = false" :disabled="!checked" item-key="id">
+                            <template #item="{ element }">
+                                <tr class="hover:tw-bg-grey-lighter tw-draggable-tr" :key="element.id">
+                                    <td class="tw-px-2 tw-py-4 tw-border-b tw-border-grey-light">{{ element.id }}</td>
+                                    <td class="tw-px-2 tw-py-4 tw-text-left tw-border-b tw-border-grey-light">{{
+                                        element.title }}</td>
+                                    <td class="tw-px-2 tw-py-4 tw-text-left tw-border-b tw-border-grey-light">{{
+                                        element.start_at }}
+                                    </td>
+                                    <td class="tw-px-2 tw-py-4 tw-text-left tw-border-b tw-border-grey-light">{{
+                                        element.end_at }}</td>
+                                    <td class="tw-px-2 tw-py-4 tw-text-center tw-border-b tw-border-grey-light">
+                                        <i class="tw-text-2xl tw-text-blue-700 fa-solid fa-globe"
+                                            :class="element.type == 'draft' ? 'draft-post' : 'publish-post'"></i>
+                                    </td>
+                                    <td class="tw-px-2 tw-py-4 tw-border-b tw-border-grey-light">
+                                        <i class="tw-mr-2 tw-text-2xl tw-text-red-600 fa-sharp fa-solid fa-trash hover:tw-text-red-800 hover:tw-cursor-pointer"
+                                            @click="remove(element)"></i>
+                                        <i class="tw-text-2xl tw-text-blue-500 fa-solid fa-pen-to-square hover:tw-text-blue-800 hover:tw-cursor-pointer"
+                                            @click="edit(element)"></i>
+                                    </td>
+                                </tr>
+                            </template>
+                        </draggable>
+
+                    </table>
+                </div>
+                <AlertInfo v-else>Brak postów do wyświetlenia.</AlertInfo>
+            </div>
+        </MainContent>
     </AdminLayout>
 </template>
-
-
-<!-- <section class="mt-10 overflow-hidden bg-gray-100 rounded shadow-xl sm:rounded-lg"> -->

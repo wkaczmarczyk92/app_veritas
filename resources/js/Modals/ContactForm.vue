@@ -11,12 +11,10 @@ import TextareaInput from '@/Components/TextareaInput.vue';
 
 import SButton from '@/Components/SButton.vue';
 
-import SuccessAlert from '@/Components/Alerts/SuccessAlert.vue';
 import { AlertStore } from '@/Pinia/AlertStore';
+import { useModalStore } from '@/Pinia/ModalStore';
 
-const emit = defineEmits([
-    'close'
-]);
+const modalStore = useModalStore();
 
 const init_form = {
     subject: '',
@@ -73,7 +71,7 @@ const submit = () => {
     </div>
     <div class="tw-mt-6 tw-text-right tw-flex tw-flex-row tw-justify-end tw-gap-1">
         <SButton class="tw-ml-4" :value="sbutton_value" :disabled="disabled" @click="submit()"></SButton>
-        <PrimaryButton id="closeModal" @click="$emit('close')">
+        <PrimaryButton id="closeModal" @click="modalStore.visibility.contact_form = false">
             Zamknij
         </PrimaryButton>
     </div>

@@ -76,6 +76,10 @@ const breadcrumbs = [
     }
 ]
 
+const display_date = (updated_at, created_at) => {
+    return updated_at ? format(updated_at) : format(created_at);
+}
+
 </script>
 
 <template>
@@ -120,7 +124,7 @@ const breadcrumbs = [
                                                 user.user_profiles.last_name }}</span>
                                         </div>
                                         <p class="tw-text-sm tw-font-bold">Dodano:</p>
-                                        <p class="tw-text-sm tw-font-bold">{{ format(user.user_profile_image.created_at) }}
+                                        <p class="tw-text-sm tw-font-bold">{{ display_date(user.user_profile_image.updated_at, user.user_profile_image.created_at) }}
                                         </p>
                                     </div>
                                 </li>

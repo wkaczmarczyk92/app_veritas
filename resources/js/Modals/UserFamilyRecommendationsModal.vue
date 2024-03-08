@@ -3,34 +3,19 @@
 import Modal from './Modal.vue';
 import UserFamilyRecommendations from './UserFamilyRecommendations.vue';
 
-defineProps({
-    model_value: {
-        type: Boolean,
-        required: true
-    },
-    user: {
-        type: Object,
-        required: true
-    }
-});
-
-const emit = defineEmits([
-    'update:model_value',
-])
-
-const close = () => emit('update:model_value', false);
+import Loader from '@/Components/Loader.vue';
 
 </script>
 
 <template>
     <teleport to='body'>
-        <Suspense>
-            <Modal>
-                <UserFamilyRecommendations 
-                    :user="user"
-                    @close="close">
-                </UserFamilyRecommendations>
-            </Modal>
-        </Suspense>
+        <Modal>
+            <Suspense>
+                <UserFamilyRecommendations #default />
+                <template #fallback>
+                    <Loader class="tw-grow"></Loader>
+                </template>
+            </Suspense>
+        </Modal>
     </teleport>
 </template>

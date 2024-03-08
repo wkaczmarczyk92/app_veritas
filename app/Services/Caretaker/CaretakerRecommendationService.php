@@ -12,6 +12,8 @@ use App\Models\Language;
 use App\Helpers\CURLRequest;
 use App\Helpers\Response;
 
+use Illuminate\Support\Facades\Auth;
+
 class CaretakerRecommendationService extends Service
 {
     public function ov_get($search = '')
@@ -52,6 +54,8 @@ class CaretakerRecommendationService extends Service
     {
         DB::beginTransaction();
 
+        $msg = 'Wystąpił błąd podczas połączenia. Spróbuj ponownie później.';
+
         try {
             $caretaker = $this->find($id, class: \App\Models\CaretakerRecommendation::class);
 
@@ -61,8 +65,9 @@ class CaretakerRecommendationService extends Service
             $caretaker->caretaker_phone_number  = $data['caretaker_phone_number'];
             $caretaker->language_id             = $data['language_id'];
             $caretaker->locked                  = true;
+            $caretaker->updated_by_user_id      = Auth::user()->id;
 
-            if (app()->environment('local')) {
+            if (app()->environment('production')) {
                 $curl_request = new CURLRequest;
                 $arr = [
                     'first_name'    => $caretaker->caretaker_first_name,
@@ -76,7 +81,7 @@ class CaretakerRecommendationService extends Service
                 // dd($response);
 
                 if (!$response->success) {
-                    throw new \Exception('CURL Request failed.');
+                    throw new \Exception($response->msg . ' - CRM');
                 }
             }
 
@@ -87,7 +92,7 @@ class CaretakerRecommendationService extends Service
             DB::commit();
         } catch (\Exception $e) {
             DB::rollback();
-            return Response::danger('Wystąpił błąd podczas połączenia. Spróbuj ponownie później.', [
+            return Response::danger($e->getMessage(), [
                 'exception' => $e->getMessage()
             ]);
         }

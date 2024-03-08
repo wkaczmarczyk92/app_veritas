@@ -543,6 +543,11 @@
             right: 10px;
             top: 26px;
         }
+
+        .post__type__news {
+            right: 0px;
+            top: 30px;
+        }
     }
 
     .post__body {
@@ -559,6 +564,14 @@
                 font-weight: bold;
             }
         }
+
+        p.ql-align-center {
+            display: flex;
+            flex-direction: row;
+            justify-content: center;
+        }
+
+
 
     }
 }
@@ -776,4 +789,8 @@
     background-image: url('/images/loginscreen.jpg');
     background-repeat: no-repeat;
     background-size: cover;
+}
+
+.ql-align-center {
+    text-align: center;
 }

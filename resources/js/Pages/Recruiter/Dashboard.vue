@@ -1,0 +1,3 @@
+<template>
+    recruiter dashboard
+</template>

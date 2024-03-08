@@ -15,6 +15,7 @@ use App\Http\Controllers\PasswordRequestController;
 use App\Http\Controllers\OneTimeSMSPasswordController;
 
 use App\Http\Controllers\LandController;
+use App\Http\Controllers\UserController;
 
 /*
 |--------------------------------------------------------------------------
@@ -28,6 +29,11 @@ use App\Http\Controllers\LandController;
 */
 
 Route::middleware(['auth', 'role:user|admin|super-admin'])->group(function () {
+
+
+    Route::get('/user', [UserController::class, 'get'])->name('user.get');
+
+
     Route::post('/store.or.update.user.profile.image', [UserProfileImageController::class, 'storeOrUpdate'])->name('store.or.update.user.profile.image');
 
     Route::post('/count.user.points.records/{user_id}', function (int $id) {
@@ -88,3 +94,5 @@ require __DIR__ . '/superadmin.php';
 require __DIR__ . '/admin.php';
 require __DIR__ . '/user.php';
 require __DIR__ . '/cron.php';
+require __DIR__ . '/course_moderator.php';
+require __DIR__ . '/recruiter.php';

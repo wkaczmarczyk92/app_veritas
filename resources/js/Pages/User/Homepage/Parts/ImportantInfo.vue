@@ -4,12 +4,12 @@ import { sprintf } from 'sprintf-js';
 
 const props = defineProps({
     recruiter: {
-        type: Object,
+        type: [Object, null],
         required: true
     }
 });
 
-console.log(Object.keys(props.recruiter).length);
+console.log(props.recruiter);
 
 const display_phone_number = (number) => {
 
@@ -25,7 +25,7 @@ const display_phone_number = (number) => {
 }
 
 const username_exists = () => {
-    return Object.keys(props.recruiter).length == 0 ? false : true;
+    return props.recruiter ? (Object.keys(props.recruiter).length == 0 ? false : true) : false;
 }
 
 </script>
@@ -33,7 +33,6 @@ const username_exists = () => {
 <template>
     <section
         class="tw-bg-gray-100 tw-overflow-hidden tw-shadow-xl tw-rounded-lg tw-px-6 sm:tw-px-20 tw-pt-16 tw-pb-8 sm:tw-pb-12 tw-mt-10 tw-relative">
-        <!-- <img class="cbg-image" src="images/cbg.jpg" alt=""> -->
         <h2 class="tw-text-2xl sm:tw-text-3xl tw-text-gray-800 tw-font-bold tw-relative tw-z-10">
             Ważne informacje
         </h2>
@@ -49,16 +48,16 @@ const username_exists = () => {
                     Dane koordynatora:
                 </h2>
                 <div class="tw-text-lg tw-ml-2 sm:tw-ml-6 tw-mt-2">
-                    <i class="fa-solid fa-user-tie"></i> <span class="tw-text-gray-800">{{ recruiter.usr_first_name }} {{
-                        recruiter.usr_last_name }}</span>
+                    <i class="fa-solid fa-user-tie"></i> <span class="tw-text-gray-800">{{ recruiter?.usr_first_name }} {{
+                        recruiter?.usr_last_name }}</span>
                 </div>
                 <div class="tw-text-lg tw-ml-2 sm:tw-ml-6 tw-mt-1">
                     <i class="fa-solid fa-envelope"></i> <a class="tw-text-blue-700 hover:tw-text-blue-900 phone_link"
-                        :href="`mailto:${recruiter.usr_email}`">{{ recruiter.usr_email }}</a>
+                        :href="`mailto:${recruiter?.usr_email}`">{{ recruiter?.usr_email }}</a>
                 </div>
-                <div class="tw-text-lg tw-ml-2 sm:tw-ml-6 tw-mt-1" v-if="recruiter.usr_phone">
+                <div class="tw-text-lg tw-ml-2 sm:tw-ml-6 tw-mt-1" v-if="recruiter?.usr_phone">
                     <i class="fa-regular fa-mobile"></i> <a class="tw-text-blue-700 hover:tw-text-blue-900 phone_link"
-                        :href="`tel:${recruiter.usr_phone}`">{{ display_phone_number(recruiter.usr_phone) }}</a>
+                        :href="`tel:${recruiter?.usr_phone}`">{{ display_phone_number(recruiter?.usr_phone) }}</a>
                 </div>
             </div>
         </div>

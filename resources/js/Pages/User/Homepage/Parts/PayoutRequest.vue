@@ -6,17 +6,20 @@ import Header from '@/Components/Templates/Header.vue';
 import MButton from '@/Components/Buttons/MButton.vue';
 
 import { AlertStore } from '@/Pinia/AlertStore';
+import { useUserStore } from '@/Pinia/UserStore';
 
+const userStore = useUserStore();
+await userStore.set_user();
 
 const props = defineProps({
-    current_points: {
-        type: [null, Number],
-        required: true
-    },
-    user: {
-        type: Object,
-        required: true
-    },
+    // current_points: {
+    //     type: [null, Number],
+    //     required: true
+    // },
+    // user: {
+    //     type: Object,
+    //     required: true
+    // },
     payout_active: {
         type: Boolean,
         default: false
@@ -25,7 +28,7 @@ const props = defineProps({
 
 console.log(props.user_has_bonus);
 
-const user = toRef(props.user);
+// const user = toRef(props.user);
 
 const payout_active = toRef(props.payout_active);
 
@@ -34,35 +37,35 @@ const useAlertStore = AlertStore();
 const button_value = ref('Wyślij wniosek o wypłatę');
 const btn_disabled = ref(false);
 
-const submit = () => {
+const submit = async () => {
     button_value.value = 'Wysyłanie wniosku w toku...';
     btn_disabled.value = true;
 
     let data = {
-        'user_has_bonus': user.value.user_has_bonus
+        'user_has_bonus': userStore.user.user_has_bonus
     };
 
-    axios.post(route('payoutrequest.store'), { ...data })
-        .then(response => {
-            if (response.data?.success == false) {
-                useAlertStore.pushAlert('danger', 'Wystąpił błąd podczas połączenia. Spróbuj ponownie później.');
-            }
+    let response = await axios.post(route('payoutrequest.store'), { ...data })
 
-            if (response.data?.success == true) {
-                useAlertStore.pushAlert('success', 'Twój wniosek o wypłatę został wysłany pomyślnie.');
-                payout_active.value = true;
-                user.value.user_has_bonus = []
-            }
+    if (response.data?.success == false) {
+        useAlertStore.pushAlert('danger', 'Wystąpił błąd podczas połączenia. Spróbuj ponownie później.');
+    }
 
-            button_value.value = 'Wyślij wniosek o wypłatę';
-            btn_disabled.value = false;
-        })
+    if (response.data?.success == true) {
+        useAlertStore.pushAlert('success', 'Twój wniosek o wypłatę został wysłany pomyślnie.');
+        payout_active.value = true;
+        userStore.user.user_has_bonus = []
+        await userStore.set_user()
+    }
+
+    button_value.value = 'Wyślij wniosek o wypłatę';
+    btn_disabled.value = false;
 }
 
 const count_total_payout_value = () => {
     let return_value = 0;
 
-    user.value.user_has_bonus.forEach((item, index) => {
+    userStore.user.user_has_bonus.forEach((item, index) => {
         return_value += !item.completed ? item.bonus_value : 0;
     })
 
@@ -70,18 +73,16 @@ const count_total_payout_value = () => {
 }
 
 const anything_to_payout = () => {
-    if (user.value.user_has_bonus == null) {
+    if (userStore.user.user_has_bonus == null) {
         return false;
     }
 
-    let is = user.value.user_has_bonus.filter(item => {
+    let is = userStore.user.user_has_bonus.filter(item => {
         return !item.completed && !item.in_progress;
     })
 
     return is.length > 0 ? true : false;
 }
-
-
 
 </script>
 
@@ -103,7 +104,8 @@ const anything_to_payout = () => {
             </Transition>
 
             <Transition name="bounce">
-                <div v-if="user.user_profiles.level == 1" class="tw-text-center tw-text-md sm:tw-text-lg tw-text-gray-100">
+                <div v-if="userStore.user.user_profiles.level == 1"
+                    class="tw-text-center tw-text-md sm:tw-text-lg tw-text-gray-100">
                     Aby wypłacić bonus musisz najpierw osiągnąć BRĄZOWY poziom.
                 </div>
                 <div class="tw-text-gray-100 tw-text-center tw-text-md sm:tw-text-lg" v-else-if="anything_to_payout()">
@@ -111,25 +113,14 @@ const anything_to_payout = () => {
                     <div class="tw-mt-4">
                         <span class="tw-text-blue-500 tw-font-bold">Gratulacje!</span> Możesz dokonać wypłaty bonusu
                     </div>
-                    <!-- <br class="my-4"> -->
-                    <!-- Z Twojego konta zostanie odjęte <span class="text-blue-500 font-bold">{{ user_points_to_sub }} punktów, </span>
-                    a Twój nowy stan konta po wypłacie będzie wynosił <span class="text-blue-500 font-bold">{{ user_new_points }} punktów</span> -->
+
                     <div class="tw-text-center tw-mb-16 tw-mt-4">
                         <MButton :disabled="btn_disabled" @click="submit()" icon="fa-sharp fa-solid fa-euro-sign"
                             bg="tw-bg-transparent" :value="button_value" color="tw-text-blue-500"
                             add_class="tw-px-16 tw-py-6 tw-rounded-2xl neon-after-btn tw-border-blue-500 tw-font-bold tw-text-lg sm:tw-text-2xl tw-relative tw-mt-6">
                         </MButton>
-
                     </div>
-
                 </div>
-                <!-- <div v-else>
-                    <div class="text-gray-100 text-sm sm:text-md text-center">
-                        Twój aktualny stan konta to <span class="text-blue-500 font-bold">{{ user_current_points }} punktów</span>.
-                        Aby dokonać wypłaty bonusu musisz uzbierać minimum <span class="text-blue-500 font-bold">{{ points_to_payout }} punktów</span>.
-
-                    </div>
-                </div> -->
             </Transition>
         </div>
         <div v-else class="tw-text-gray-100 tw-text-lg sm:tw-text-xl tw-text-center">Brak aktywnych wniosków do wypłaty i

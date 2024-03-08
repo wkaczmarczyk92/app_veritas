@@ -11,6 +11,8 @@ use App\Models\PostLabel;
 use Illuminate\Validation\ValidationException;
 use Illuminate\Support\Facades\DB;
 
+use App\Services\Post\PostServiceGetter;
+
 class PostController extends Controller
 {
     /**
@@ -64,7 +66,6 @@ class PostController extends Controller
                 'label_id' => $request->label_id,
                 'order' => ($max + 1)
             ]);
-
         } catch (ValidationException $e) {
             return response()->json(['success' => false, 'errors' => $e->errors()]);
         }
@@ -72,7 +73,8 @@ class PostController extends Controller
         return response()->json(['success' => true]);
     }
 
-    public function updateOrder(Request $request) {
+    public function updateOrder(Request $request)
+    {
         // return response()->json(['success' => false]);
         $count_posts = Post::count();
         $min_order = Post::min('order');
@@ -168,6 +170,5 @@ class PostController extends Controller
             : ['success' => false];
 
         return response()->json($response);
-
     }
 }

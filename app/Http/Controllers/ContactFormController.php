@@ -54,25 +54,27 @@ class ContactFormController extends Controller
 
         $user = User::with('user_profiles')->find(Auth::user()->id);
 
-        $data = [
-            'subject' => $request->subject,
-            'msg' => $request->msg,
-            'username' => $user->user_profiles->first_name . ' ' . $user->user_profiles->last_name,
-            'url' => "http://app.veritas.pl/uzytkownik/{$user->id}",
-            'url_crm' => "https://local.grupa-veritas.pl/#/opiekunki/{$user->user_profiles->crt_id_caretaker}"
-        ];
+        if (app()->environment('production')) {
+            $data = [
+                'subject' => $request->subject,
+                'msg' => $request->msg,
+                'username' => $user->user_profiles->first_name . ' ' . $user->user_profiles->last_name,
+                'url' => "http://app.veritas.pl/uzytkownik/{$user->id}",
+                'url_crm' => "https://local.grupa-veritas.pl/#/opiekunki/{$user->user_profiles->crt_id_caretaker}"
+            ];
 
-        Mail::to(ContactFormEmail::$email)->send(
-            new ContactFormEmail($data)
-        );
-
-        $recruiter_service = new RecruiterService;
-        $recruiter = $recruiter_service->get($user->user_profiles->crt_id_user_recruiter);
-
-        if (!empty($recruiter->usr_email) and filter_var($recruiter->usr_email, FILTER_VALIDATE_EMAIL)) {
-            Mail::to(ContactFormEmail::$recruiter->usr_email)->send(
+            Mail::to(ContactFormEmail::$email)->send(
                 new ContactFormEmail($data)
             );
+
+            $recruiter_service = new RecruiterService;
+            $recruiter = $recruiter_service->get($user->user_profiles->crt_id_user_recruiter);
+
+            if (!empty($recruiter->usr_email) and filter_var($recruiter->usr_email, FILTER_VALIDATE_EMAIL)) {
+                Mail::to($recruiter->usr_email)->send(
+                    new ContactFormEmail($data)
+                );
+            }
         }
 
         return response()->json([
