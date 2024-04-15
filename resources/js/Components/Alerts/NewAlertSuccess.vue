@@ -25,12 +25,10 @@ setInterval(() => {
 </script>
 
 <template>
-    <div class="tw-w-full tw-rounded-xl tw-text-white tw-shadow-md tw-mt-2 tw-bg-gradient-to-br tw-from-green-700 tw-via-green-600 tw-to-green-900"
+    <div class="tw-w-full tw-rounded tw-text-green-600 tw-shadow-md tw-mt-2 tw-bg-green-200 tw-border tw-border-green-400 tw-relative"
         role="alert">
-        <div class="tw-bg-green-900 tw-rounded-tr-xl tw-rounded-tl-xl tw-text-right tw-px-2 tw-py-1 tw-text-md">
-            <i class="fa-regular fa-circle-xmark hover:tw-cursor-pointer tw-text-white"
-                @click="$emit('remove', index);"></i>
-        </div>
+        <i class="fa-regular fa-circle-xmark hover:tw-cursor-pointer tw-text-green-600 tw-absolute tw-right-2 tw-top-2"
+            @click="$emit('remove', index);"></i>
         <div class="tw-px-6 tw-py-4">
             <div class="tw-flex">
                 <div class="tw-grow tw-text-center">

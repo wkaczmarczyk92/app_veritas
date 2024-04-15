@@ -10,7 +10,8 @@ use App\Models\CRMPlaner;
 
 class OfferService
 {
-    public function download(User $user, $lands) {
+    public function download(User $user, $lands)
+    {
         $user->load('user_profiles', 'ready_to_departure_dates');
 
         if ($user->ready_to_departure_dates == null) {
@@ -21,9 +22,9 @@ class OfferService
             ];
         }
 
-        $caretaker = CRMCaretaker::with(['data' => function($query) {
-                $query->select('crt_id_data_caretaker', 'crt_id_language');
-            }])
+        $caretaker = CRMCaretaker::with(['data' => function ($query) {
+            $query->select('crt_id_data_caretaker', 'crt_id_language');
+        }])
             ->where('crt_id_caretaker', $user->user_profiles->crt_id_caretaker)
             ->has('data')
             ->orderBy('crt_id_caretaker')
@@ -39,7 +40,7 @@ class OfferService
             $offers = CRMPlaner::with(['family', 'family.patient', 'family.patient.mobility', 'family.patient.waking_up', 'family.address'])
                 ->has('family.patient')
                 ->whereIn('pnr_id_status', [1, 11])
-                ->whereHas('family.address', function($query) use ($zip_code) {
+                ->whereHas('family.address', function ($query) use ($zip_code) {
                     $query->whereIn('adr_postcode', $zip_code->toArray());
                 })
                 ->where('pnr_start_date', '>=', $user->ready_to_departure_dates->departure_date)
@@ -47,7 +48,7 @@ class OfferService
                 ->where('pnr_caretaker_rate', '>=', 1000)
                 ->where('pnr_caretaker_rate', '<=', 2700)
                 ->whereRaw('pnr_caretaker_rate + 400 <= pnr_family_rate')
-                ->orderBy('pnr_id_planer', 'desc')
+                ->orderBy('pnr_start_date', 'asc')
                 ->get();
 
             $offers = $offers->toArray();

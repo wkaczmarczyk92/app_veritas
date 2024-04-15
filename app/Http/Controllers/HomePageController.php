@@ -14,6 +14,18 @@ use Inertia\Inertia;
 
 use App\Services\Post\PostServiceGetter;
 
+// select user_profiles.first_name as imię, 
+// user_profiles.last_name as nazwisko, 
+// user_profiles.current_points as punkty, 
+// users.pesel,
+// user_has_bonuses.bonus_value as "wartość bonusu w €"
+// from user_profiles 
+// left join users on users.id = user_profiles.user_id 
+// left join user_has_bonuses on user_has_bonuses.user_id = user_profiles.user_id
+// where user_profiles.current_points >= 280
+// and user_has_bonuses.completed = 0
+// and user_profiles.last_name != 'pażdzioch'
+
 class HomePageController extends Controller
 {
     public function index()

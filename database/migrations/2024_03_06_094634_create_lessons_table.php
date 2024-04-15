@@ -17,8 +17,9 @@ return new class extends Migration
             $table->string('name')->max('255');
             $table->text('description')->nullable();
 
-            $table->bigInteger('compendium_id')->unsigned();
-            $table->foreign('compendium_id')->references('id')->on('compendia');
+            $table->morphs('lessonable');
+
+            $table->integer('order')->min(1);
 
             $table->bigInteger('created_by')->unsigned();
             $table->foreign('created_by')->references('id')->on('users');

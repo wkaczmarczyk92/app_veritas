@@ -6,8 +6,8 @@ import DropdownLink from '@/Components/DropdownLink.vue';
 import NavLink from '@/Components/NavLink.vue';
 import ResponsiveNavLink from '@/Components/ResponsiveNavLink.vue';
 import { Link } from '@inertiajs/vue3';
-import { storeToRefs } from 'pinia'
 
+import LogoCourse from '@/Composables/LogoCourse.vue';
 const showingNavigationDropdown = ref(false);
 
 console.log(showingNavigationDropdown.value)
@@ -21,12 +21,13 @@ console.log(showingNavigationDropdown.value)
                 <div class="tw-flex">
                     <div class="tw-shrink-0 tw-flex tw-items-center">
                         <Link :href="route('dashboard')">
-                        <ApplicationLogo class="tw-block tw-h-16 tw-w-auto tw-fill-current" />
+                        <LogoCourse class="tw-w-28 tw-h-auto" />
                         </Link>
                     </div>
 
                     <div class="tw-hidden tw-space-x-8 sm:-tw-my-px sm:tw-ml-10 sm:tw-flex">
-                        <NavLink :href="route('course_moderator.dashboard')" :active="route().current('course_moderator.dashboard')">
+                        <NavLink :href="route('course_moderator.dashboard')"
+                            :active="route().current('course_moderator.dashboard')">
                             Pulpit
                         </NavLink>
                         <div
@@ -38,8 +39,9 @@ console.log(showingNavigationDropdown.value)
                                         <button type="button"
                                             class="tw-inline-flex tw-items-center tw-px-3 tw-border tw-border-transparent tw-text-sm tw-leading-4 tw-font-medium tw-rounded-md tw-text-gray-300 tw-bg-gray-800 hover:tw-text-gray-400 focus:tw-outline-none tw-transition tw-ease-in-out tw-duration-150">
 
-                                            <svg class="tw-ml-2 -tw-mr-0.5 tw-h-4 tw-w-4" xmlns="http://www.w3.org/2000/svg"
-                                                viewBox="0 0 20 20" fill="currentColor">
+                                            <svg class="tw-ml-2 -tw-mr-0.5 tw-h-4 tw-w-4"
+                                                xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20"
+                                                fill="currentColor">
                                                 <path fill-rule="evenodd"
                                                     d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z"
                                                     clip-rule="evenodd" />
@@ -49,8 +51,10 @@ console.log(showingNavigationDropdown.value)
                                 </template>
 
                                 <template #content>
-                                    <DropdownLink :href="route('course_moderator.create_user')"> Dodaj użytkownika</DropdownLink>
-                                    <DropdownLink :href="route('course_moderator.users')"> List użytkowników</DropdownLink>
+                                    <DropdownLink :href="route('course_moderator.create_user')"> Dodaj użytkownika
+                                    </DropdownLink>
+                                    <DropdownLink :href="route('course_moderator.users')"> List użytkowników
+                                    </DropdownLink>
                                 </template>
                             </Dropdown>
                         </div>
@@ -63,8 +67,9 @@ console.log(showingNavigationDropdown.value)
                                         <button type="button"
                                             class="tw-inline-flex tw-items-center tw-px-3 tw-border tw-border-transparent tw-text-sm tw-leading-4 tw-font-medium tw-rounded-md tw-text-gray-300 tw-bg-gray-800 hover:tw-text-gray-400 focus:tw-outline-none tw-transition tw-ease-in-out tw-duration-150">
 
-                                            <svg class="tw-ml-2 -tw-mr-0.5 tw-h-4 tw-w-4" xmlns="http://www.w3.org/2000/svg"
-                                                viewBox="0 0 20 20" fill="currentColor">
+                                            <svg class="tw-ml-2 -tw-mr-0.5 tw-h-4 tw-w-4"
+                                                xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20"
+                                                fill="currentColor">
                                                 <path fill-rule="evenodd"
                                                     d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z"
                                                     clip-rule="evenodd" />
@@ -74,8 +79,10 @@ console.log(showingNavigationDropdown.value)
                                 </template>
 
                                 <template #content>
-                                    <DropdownLink :href="route('pointbreakpoints.index')"> Dodaj kompendium</DropdownLink>
-                                    <DropdownLink :href="route('level.bonus.value.index')"> Lista kompendiów</DropdownLink>
+                                    <DropdownLink :href="route('course_moderator.compendium.create')"> Dodaj kompendium
+                                    </DropdownLink>
+                                    <DropdownLink :href="route('course_moderator.compendium.index')"> Lista kompendiów
+                                    </DropdownLink>
                                 </template>
                             </Dropdown>
                         </div>
@@ -88,8 +95,9 @@ console.log(showingNavigationDropdown.value)
                                         <button type="button"
                                             class="tw-inline-flex tw-items-center tw-px-3 tw-border tw-border-transparent tw-text-sm tw-leading-4 tw-font-medium tw-rounded-md tw-text-gray-300 tw-bg-gray-800 hover:tw-text-gray-400 focus:tw-outline-none tw-transition tw-ease-in-out tw-duration-150">
 
-                                            <svg class="tw-ml-2 -tw-mr-0.5 tw-h-4 tw-w-4" xmlns="http://www.w3.org/2000/svg"
-                                                viewBox="0 0 20 20" fill="currentColor">
+                                            <svg class="tw-ml-2 -tw-mr-0.5 tw-h-4 tw-w-4"
+                                                xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20"
+                                                fill="currentColor">
                                                 <path fill-rule="evenodd"
                                                     d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z"
                                                     clip-rule="evenodd" />
@@ -99,8 +107,10 @@ console.log(showingNavigationDropdown.value)
                                 </template>
 
                                 <template #content>
-                                    <DropdownLink :href="route('pointbreakpoints.index')"> Dodaj vademecum</DropdownLink>
-                                    <DropdownLink :href="route('level.bonus.value.index')"> List vademeców</DropdownLink>
+                                    <DropdownLink :href="route('course_moderator.vademecum.create')"> Dodaj vademecum
+                                    </DropdownLink>
+                                    <DropdownLink :href="route('course_moderator.vademecum.index')"> List vademeców
+                                    </DropdownLink>
                                 </template>
                             </Dropdown>
                         </div>
@@ -113,8 +123,9 @@ console.log(showingNavigationDropdown.value)
                                         <button type="button"
                                             class="tw-inline-flex tw-items-center tw-px-3 tw-border tw-border-transparent tw-text-sm tw-leading-4 tw-font-medium tw-rounded-md tw-text-gray-300 tw-bg-gray-800 hover:tw-text-gray-400 focus:tw-outline-none tw-transition tw-ease-in-out tw-duration-150">
 
-                                            <svg class="tw-ml-2 -tw-mr-0.5 tw-h-4 tw-w-4" xmlns="http://www.w3.org/2000/svg"
-                                                viewBox="0 0 20 20" fill="currentColor">
+                                            <svg class="tw-ml-2 -tw-mr-0.5 tw-h-4 tw-w-4"
+                                                xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20"
+                                                fill="currentColor">
                                                 <path fill-rule="evenodd"
                                                     d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z"
                                                     clip-rule="evenodd" />
@@ -124,64 +135,21 @@ console.log(showingNavigationDropdown.value)
                                 </template>
 
                                 <template #content>
-                                    <DropdownLink :href="route('pointbreakpoints.index')"> Dodaj test</DropdownLink>
-                                    <DropdownLink :href="route('level.bonus.value.index')"> List testów</DropdownLink>
+                                    <DropdownLink :href="route('course_moderator.test.create')"> Dodaj test
+                                    </DropdownLink>
+                                    <DropdownLink :href="route('course_moderator.test.index')"> List testów
+                                    </DropdownLink>
                                 </template>
                             </Dropdown>
                         </div>
-                        <div
-                            class="dropdown-item tw-ml-3 tw-relative tw-items-center tw-inline-flex tw-items-center tw-px-1 tw-border-b-2 tw-border-transparent tw-text-sm tw-font-medium tw-leading-5 tw-text-gray-300 hover:tw-text-gray-400 hover:tw-border-gray-300 focus:tw-outline-none focus:tw-text-gray-700 focus:tw-border-gray-300 tw-transition tw-duration-150 tw-ease-in-out">
-                            <Dropdown align="right" width="48">
-                                <template #trigger>
-                                    Webinaria
-                                    <span class="tw-inline-flex tw-rounded-md">
-                                        <button type="button"
-                                            class="tw-inline-flex tw-items-center tw-px-3 tw-border tw-border-transparent tw-text-sm tw-leading-4 tw-font-medium tw-rounded-md tw-text-gray-300 tw-bg-gray-800 hover:tw-text-gray-400 focus:tw-outline-none tw-transition tw-ease-in-out tw-duration-150">
-
-                                            <svg class="tw-ml-2 -tw-mr-0.5 tw-h-4 tw-w-4" xmlns="http://www.w3.org/2000/svg"
-                                                viewBox="0 0 20 20" fill="currentColor">
-                                                <path fill-rule="evenodd"
-                                                    d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z"
-                                                    clip-rule="evenodd" />
-                                            </svg>
-                                        </button>
-                                    </span>
-                                </template>
-
-                                <template #content>
-                                    <DropdownLink :href="route('pointbreakpoints.index')"> Dodaj webinarium</DropdownLink>
-                                    <DropdownLink :href="route('level.bonus.value.index')"> List webinariów</DropdownLink>
-                                </template>
-                            </Dropdown>
-                        </div>
-                        <div
-                            class="dropdown-item tw-ml-3 tw-relative tw-items-center tw-inline-flex tw-items-center tw-px-1 tw-border-b-2 tw-border-transparent tw-text-sm tw-font-medium tw-leading-5 tw-text-gray-300 hover:tw-text-gray-400 hover:tw-border-gray-300 focus:tw-outline-none focus:tw-text-gray-700 focus:tw-border-gray-300 tw-transition tw-duration-150 tw-ease-in-out">
-                            <Dropdown align="right" width="48">
-                                <template #trigger>
-                                    Pliki
-                                    <span class="tw-inline-flex tw-rounded-md">
-                                        <button type="button"
-                                            class="tw-inline-flex tw-items-center tw-px-3 tw-border tw-border-transparent tw-text-sm tw-leading-4 tw-font-medium tw-rounded-md tw-text-gray-300 tw-bg-gray-800 hover:tw-text-gray-400 focus:tw-outline-none tw-transition tw-ease-in-out tw-duration-150">
-
-                                            <svg class="tw-ml-2 -tw-mr-0.5 tw-h-4 tw-w-4" xmlns="http://www.w3.org/2000/svg"
-                                                viewBox="0 0 20 20" fill="currentColor">
-                                                <path fill-rule="evenodd"
-                                                    d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z"
-                                                    clip-rule="evenodd" />
-                                            </svg>
-                                        </button>
-                                    </span>
-                                </template>
-
-                                <template #content>
-                                    <DropdownLink :href="route('pointbreakpoints.index')"> Dodaj pliki</DropdownLink>
-                                    <DropdownLink :href="route('level.bonus.value.index')"> List plików</DropdownLink>
-                                </template>
-                            </Dropdown>
-                        </div>
-                        <!-- <NavLink :href="route('bokrequest.index')" :active="route().current('bokrequest.index')">
-                            Wyszukiwarka
-                        </NavLink> -->
+                        <NavLink :href="route('course_moderator.video.index')"
+                            :active="route().current('course_moderator.video.index')">
+                            Webinaria
+                        </NavLink>
+                        <NavLink :href="route('course_moderator.files.index')"
+                            :active="route().current('course_moderator.files.index')">
+                            Pliki
+                        </NavLink>
                     </div>
                 </div>
 
@@ -237,7 +205,8 @@ console.log(showingNavigationDropdown.value)
         <div :class="{ 'tw-block': showingNavigationDropdown, 'tw-hidden': !showingNavigationDropdown }"
             class="sm:tw-hidden">
             <div class="tw-pt-2 tw-pb-3 tw-space-y-1">
-                <ResponsiveNavLink :href="route('course_moderator.dashboard')" :active="route().current('course_moderator.dashboard')">
+                <ResponsiveNavLink :href="route('course_moderator.dashboard')"
+                    :active="route().current('course_moderator.dashboard')">
                     Pulpit
                 </ResponsiveNavLink>
                 <!-- <ResponsiveNavLink :href="route('bokrequest.index')" :active="route().current('bokrequest.index')">

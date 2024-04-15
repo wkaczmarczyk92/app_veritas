@@ -10,6 +10,8 @@ use Illuminate\Validation\Rules\Password;
 
 use Inertia\Inertia;
 
+use Illuminate\Support\Str;
+
 use Illuminate\Validation\ValidationException;
 
 class PasswordController extends Controller
@@ -50,5 +52,11 @@ class PasswordController extends Controller
     public function edit()
     {
         return Inertia::render('User/PasswordChange');
+    }
+
+    public function generate() {
+        return response()->json([
+            'password' => Str::password()
+        ]);
     }
 }

@@ -4,6 +4,8 @@ import AlertInfo from '@/Components/Functions/AlertInfo.vue';
 import Header from '@/Templates/HTML/Header.vue';
 import Table from '@/Templates/HTML/Table.vue';
 
+import TableLink from '@/Templates/HTML/TableLink.vue';
+
 defineProps({
     users: {
         type: Object,
@@ -15,7 +17,6 @@ const headers = [
     'PESEL',
     'Imię i nazwisko',
     'Rekruter',
-    ''
 ]
 
 </script>
@@ -48,14 +49,15 @@ const headers = [
                     <template v-slot:item="{ item }">
                         <tr class="tw-text-xs">
                             <td>{{ item.pesel }}</td>
-                            <td>{{ item.user_profiles.first_name }} {{ item.user_profiles.last_name }}</td>
-                            <td>{{ `${item.user_profiles.recruiter_first_name ??
-                                '-'}${item.user_profiles.recruiter_last_name ??
-                                ''}` }}</td>
-                            <td class="tw-text-lg">
-                                <a :href="`/uzytkownik/${item.id}`">
-                                    <i class="tw-text-blue-500 fa-solid fa-user-pen hover:tw-text-blue-700"></i>
-                                </a>
+                            <td>
+                                <TableLink :url="`/uzytkownik/${item.id}`">
+                                    {{ item.user_profiles.first_name }} {{ item.user_profiles.last_name }}
+                                </TableLink>
+                            </td>
+                            <td>
+                                {{ `${item.user_profiles.recruiter_first_name ??
+                                    '-'}${item.user_profiles.recruiter_last_name ??
+                                    ''}` }}
                             </td>
                         </tr>
                     </template>

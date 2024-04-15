@@ -20,6 +20,17 @@ use Illuminate\Support\Facades\Auth;
 use App\Models\ReadyToDepartureDate;
 use Exception;
 
+use App\Helpers\Response;
+
+use Illuminate\Support\Facades\Hash;
+use App\Models\CRMRecruiter;
+
+
+use Spatie\Permission\Models\Role;
+use App\Models\Common\CompanyBranch;
+
+use App\Http\Requests\User\CourseModerator\StoreRequest as CourseModeratorStoreRequest;
+
 class UserController extends Controller
 {
     public function get()
@@ -208,6 +219,113 @@ class UserController extends Controller
 
     public function create_as_course_moderator()
     {
-        // return Inertia::render('Cour');
+        return Inertia::render('CourseModerator/User/CreateForm', [
+            'company_branches' => CompanyBranch::all(),
+            'roles' => Role::where('show_course', true)->get()
+        ]);
+    }
+
+    public function index_course_moderator()
+    {
+        // dd(User::with(['user_profiles', 'roles', 'company_branches', 'last_login' => function ($query) {
+        //     $query->latest()->first();
+        // }])
+        //     ->join('user_profiles', 'users.id', '=', 'user_profiles.user_id')
+        //     ->select('users.*')
+        //     ->whereHas('roles', function ($query) {
+        //         $query->whereIn('name', ['recruiter', 'super-visor', 'team-leader', 'recruiter-assistant', 'course_moderator']);
+        //     })->orderByRaw('CONCAT(user_profiles.last_name, " ", user_profiles.first_name) ASC')->paginate(50));
+
+        return Inertia::render('CourseModerator/User/Users');
+    }
+
+    public function recruiters()
+    {
+        return response()->json([
+            'users' => User::with(['user_profiles', 'roles', 'company_branches', 'last_login' => function ($query) {
+                $query->latest()->first();
+            }])
+                ->join('user_profiles', 'users.id', '=', 'user_profiles.user_id')
+                ->select('users.*')
+                ->whereHas('roles', function ($query) {
+                    $query->whereIn('name', ['recruiter', 'super-visor', 'team-leader', 'recruiter-assistant', 'course_moderator']);
+                })->orderByRaw('CONCAT(user_profiles.last_name, " ", user_profiles.first_name) ASC')->paginate(50)
+        ]);
+    }
+
+    public function store_as_course_moderator(CourseModeratorStoreRequest $request)
+    {
+        // dd($request->all());
+        DB::beginTransaction();
+
+        try {
+            $user = User::create([
+                'email' => $request->email,
+                'password' => Hash::make($request->password)
+            ]);
+
+            $user_profile = new UserProfile([
+                'first_name' => $request->first_name,
+                'last_name' => $request->last_name,
+                'crt_id_user_recruiter' => $request->crm_id
+            ]);
+
+            $user->user_profiles()->save($user_profile);
+            // $user->assignRole('recruiter');
+
+            if (!empty($request->roles)) {
+                $user->roles()->attach($request->roles);
+            } else {
+                $user->assignRole('recruiter');
+            }
+
+            if (!empty($request->company_branches)) {
+                $user->company_branches()->attach($request->company_branches);
+            }
+
+            DB::commit();
+        } catch (\Exception $e) {
+            DB::rollback();
+
+            return Response::danger('Wystąpił błąd podczas zapisu. Spróbuj ponownie później.', e: $e);
+        }
+
+        return Response::success('Użytkownik został dodany.');
+    }
+
+    public function course_moderator_show(int $id)
+    {
+        $user = User::with(['user_profiles', 'company_branches', 'roles'])
+            ->find($id);
+
+        // dd($user);
+
+        if (!$user) {
+            abort(404, 'Not found.');
+        }
+
+        return Inertia::render('CourseModerator/User/User', [
+            'user' => $user
+        ]);
+    }
+
+    public function update_crm_id(Request $request, int $id)
+    {
+        $recruiter = CRMRecruiter::on('crm_database')
+            ->where('usr_email', $request->email)
+            ->first();
+
+        if ($recruiter) {
+            UserProfile::where('user_id', $id)
+                ->update([
+                    'crt_id_user_recruiter' => $recruiter->usr_id_user
+                ]);
+
+            return Response::success('Konta zostały połączone.', [
+                'crm_id' => $recruiter->usr_id_user
+            ]);
+        } else {
+            return Response::danger('Nie znaleziono rekrutera o podanym adresie email.');
+        }
     }
 }

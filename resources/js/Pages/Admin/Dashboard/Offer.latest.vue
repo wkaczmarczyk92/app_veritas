@@ -28,14 +28,12 @@
                     <template v-slot:item="{ item }">
                         <tr class="tw-text-xs">
                             <td>#{{ item.crm_offer_id }}</td>
-                            <td>{{ item.user.user_profiles.first_name }} {{
-                                item.user.user_profiles.last_name }}</td>
-                            <td class="tw-text-lg tw-text-center">
-                                <a class="tw-edit-user" :href="`/uzytkownik/${item.user.id}`">
-                                    <i class="tw-text-blue-500 fa-solid fa-user-pen hover:tw-text-blue-700"></i>
-                                </a>
+                            <td>
+                                <TableLink :url="`/uzytkownik/${item.user.id}`">
+                                    {{ item.user.user_profiles.first_name + ' ' + item.user.user_profiles.last_name }}
+                                </TableLink>
                             </td>
-                            <td class="tw-text-lg tw-text-center">
+                            <td class="tw-text-lg">
                                 <a class="tw-edit-user"
                                     :href="`https://local.grupa-veritas.pl/#/rodziny/${item.crm_family_id}`"
                                     target="_blank">
@@ -62,6 +60,8 @@ import AlertInfo from '@/Components/Functions/AlertInfo.vue';
 
 import Header from '@/Templates/HTML/Header.vue';
 
+import TableLink from '@/Templates/HTML/TableLink.vue';
+
 defineProps({
     offers: {
         type: Object,
@@ -72,7 +72,7 @@ defineProps({
 const headers = [
     'ID oferty',
     'opiekunka',
-    'link do profilu',
+    // 'link do profilu',
     'rodzina w CRM',
     'kod HP'
 ]

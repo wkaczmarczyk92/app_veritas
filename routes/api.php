@@ -8,6 +8,8 @@ use App\Http\Controllers\API\APIReadyToDepartureController;
 use App\Http\Controllers\API\APIFamilyRecommendationController;
 use App\Http\Controllers\FamilyRecommendationController;
 
+use App\Http\Controllers\API\CourseSearchController;
+
 /*
 |--------------------------------------------------------------------------
 | API Routes

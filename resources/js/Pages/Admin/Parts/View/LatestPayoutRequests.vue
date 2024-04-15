@@ -4,6 +4,8 @@ import Header from '@/Templates/HTML/Header.vue';
 import AlertInfo from '@/Components/Functions/AlertInfo.vue';
 import { format } from '@/Components/Functions/DateFormat.vue';
 
+import TableLink from '@/Templates/HTML/TableLink.vue';
+
 defineProps({
     latest_payout_requests: {
         type: Object,
@@ -14,7 +16,6 @@ defineProps({
 const headers = [
     'Opiekunka',
     'Kwota wypłaty',
-    '',
     'Data utworzenia'
 ]
 
@@ -49,16 +50,14 @@ const headers = [
                     </template>
                     <template v-slot:item="{ item }">
                         <tr class="tw-text-xs">
-                            <td>{{
-                                `${item.user_has_bonus.user.user_profiles.first_name}${item.user_has_bonus.user.user_profiles.last_name}`
-                            }}
+                            <td>
+                                <TableLink :url="`/uzytkownik/${item.user_has_bonus.user.id}`">
+                                    {{
+                                        `${item.user_has_bonus.user.user_profiles.first_name}${item.user_has_bonus.user.user_profiles.last_name}`
+                                    }}
+                                </TableLink>
                             </td>
                             <td>{{ item.payout_value }}€</td>
-                            <td class="tw-text-lg tw-text-center">
-                                <a class="edit-user" :href="`/uzytkownik/${item.user_has_bonus.user.id}`">
-                                    <i class="tw-text-blue-500 fa-solid fa-user-pen hover:tw-text-blue-700"></i>
-                                </a>
-                            </td>
                             <td class="tw-text-xs tw-text-center">{{ format(item.created_at) }}
                             </td>
                         </tr>

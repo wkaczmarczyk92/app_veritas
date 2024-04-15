@@ -3,6 +3,8 @@
 import { format } from '@/Components/Functions/DateFormat.vue';
 import AlertInfo from '@/Components/Functions/AlertInfo.vue';
 
+import TableLink from '@/Templates/HTML/TableLink.vue';
+
 defineProps({
     latest_bok_request: {
         type: Object,
@@ -13,7 +15,6 @@ defineProps({
 const headers = [
     'Opiekunka',
     'Kwota bonusu',
-    '',
     'Data utworzenia'
 ]
 
@@ -48,14 +49,13 @@ const headers = [
                     </template>
                     <template v-slot:item="{ item }">
                         <tr class="tw-text-xs">
-                            <td>{{ `${item.user.user_profiles.first_name}
-                                                            ${item.user.user_profiles.last_name}` }}</td>
-                            <td>{{ item.subject.subject }}</td>
-                            <td class="tw-text-lg">
-                                <a class="edit-user" :href="`/uzytkownik/${item.user.id}`">
-                                    <i class="tw-text-blue-500 fa-solid fa-user-pen hover:tw-text-blue-700"></i>
-                                </a>
+                            <td>
+                                <TableLink :url="`/uzytkownik/${item.user.id}`">
+                                    {{ `${item.user.user_profiles.first_name}
+                                        ${item.user.user_profiles.last_name}` }}
+                                </TableLink>
                             </td>
+                            <td>{{ item.subject.subject }}</td>
                             <td>{{ format(item.created_at) }}</td>
                         </tr>
                     </template>

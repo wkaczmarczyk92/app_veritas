@@ -1,0 +1,14 @@
+[type="text"]:focus,
+[type="number"]:focus,
+[type="email"]:focus,
+[type="password"]:focus {
+    outline: none!important;
+    box-shadow: none!important;
+}
+
+
+h3:not([class]) {
+    font-size: 1.17em;
+    margin: 1em 0;
+    font-weight: bold;
+}

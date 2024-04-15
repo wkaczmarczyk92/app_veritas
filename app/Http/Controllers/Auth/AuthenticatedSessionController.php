@@ -32,7 +32,6 @@ class AuthenticatedSessionController extends Controller
      */
     public function store(LoginRequest $request): RedirectResponse
     {
-        // dd($request);
         $request->authenticate();
         $request->session()->regenerate();
 
@@ -53,7 +52,6 @@ class AuthenticatedSessionController extends Controller
         } else {
             $redirect_to = RouteServiceProvider::HOME;
         }
-        // dd($redirect_to);
 
         // $redirect_to = $request->login_field == 'email' ? RouteServiceProvider::ADMIN_HOME : RouteServiceProvider::HOME;
 

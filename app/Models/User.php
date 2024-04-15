@@ -11,8 +11,15 @@ use Laravel\Sanctum\HasApiTokens;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
+use Illuminate\Database\Eloquent\Relations\MorphToMany;
 
 use Spatie\Permission\Traits\HasRoles;
+
+use App\Models\Courses\VideoFramed;
+
+use App\Models\Common\CompanyBranch;
+use Illuminate\Database\Eloquent\Relations\MorphTo;
 
 class User extends Authenticatable
 {
@@ -48,64 +55,74 @@ class User extends Authenticatable
         'email_verified_at' => 'datetime',
     ];
 
-    public function user_profiles() : HasOne
+    public function user_profiles(): HasOne
     {
         return $this->hasOne(UserProfile::class);
     }
 
-    public function user_points() : HasMany
+    public function user_points(): HasMany
     {
         return $this->hasMany(UserPoint::class);
     }
 
-    public function ready_to_departure_dates() : HasOne
+    public function ready_to_departure_dates(): HasOne
     {
         return $this->hasOne(ReadyToDepartureDate::class);
     }
 
-    public function caretaker_recommendation() : HasMany
+    public function caretaker_recommendation(): HasMany
     {
         return $this->hasMany(CaretakerRecommendation::class);
     }
 
-    public function family_recommendation() : HasMany
+    public function family_recommendation(): HasMany
     {
         return $this->hasMany(FamilyRecommendation::class);
     }
 
-    public function user_profile_image() : HasOne
+    public function user_profile_image(): HasOne
     {
         return $this->hasOne(UserProfileImage::class);
     }
 
-    public function password_requests() : HasMany
+    public function password_requests(): HasMany
     {
         return $this->hasMany(PasswordRequest::class);
     }
 
-    public function user_has_bonus() : HasMany
+    public function user_has_bonus(): HasMany
     {
         return $this->hasMany(UserHasBonus::class);
     }
 
-    public function password_for_user() : HasOne
+    public function password_for_user(): HasOne
     {
         return $this->hasOne(PasswordForUser::class);
     }
 
-    public function last_login() : HasMany
+    public function last_login(): HasMany
     {
         return $this->hasMany(LastLogin::class);
     }
 
-    public function one_time_sms_passwords() : HasMany
+    public function one_time_sms_passwords(): HasMany
     {
         return $this->hasMany(OneTimeSMSPassword::class);
     }
 
-    public function offers() : HasMany
+    public function offers(): HasMany
     {
         return $this->hasMany(Offer::class);
+    }
+
+    public function video_frameds(): HasMany
+    {
+        return $this->hasMany(VideoFramed::class);
+    }
+
+    public function company_branches(): MorphToMany
+    {
+        return $this->morphToMany(CompanyBranch::class, 'model', 'model_has_company_branches', 'model_id', 'company_branch_id')->withPivot('model_type')->wherePivot('model_type', User::class);
     }
 
     // public function family_recomenndations() : HasMany

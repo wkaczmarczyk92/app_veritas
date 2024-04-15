@@ -13,6 +13,8 @@ import MainContent from '@/Templates/HTML/MainContent.vue';
 
 import StaticInfoAlert from '@/Components/Alerts/StaticInfoAlert.vue';
 
+import TableLink from '@/Templates/HTML/TableLink.vue';
+
 const props = defineProps({
     users: {
         type: Object,
@@ -216,9 +218,9 @@ const breadcrumbs = [
                                     </td>
                                     <td>{{ item.pesel }}</td>
                                     <td>
-                                        <a :href="`/uzytkownik/${item.id}`" class="tw-text-blue-700 hover:tw-text-blue-900 hover:tw-underline">
+                                        <TableLink :url="`/uzytkownik/${item.id}`">
                                             {{ item.full_name }}
-                                        </a>
+                                        </TableLink>
                                     </td>
                                     <td class="tw-text-center">{{ item.user_profiles.current_points ?? '-' }}</td>
                                     <td class="tw-text-center">{{ item.user_profiles.total_days ?? '-' }}</td>

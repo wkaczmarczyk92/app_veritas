@@ -7,6 +7,8 @@ use Illuminate\Http\Request;
 use App\Models\CRMRecruiter;
 use App\Models\UserProfile;
 
+use App\Http\Requests\CRM\Recruiter\SearchFormRequest;
+
 class CRMRecruiterController extends Controller
 {
     public function index() {
@@ -37,5 +39,32 @@ class CRMRecruiterController extends Controller
         return response()->json($recruiter);
     }
 
-    // public function email() 
+    public function search_in_crm(SearchFormRequest $request) {
+        if ($request->email) {
+            $recruiter = CRMRecruiter::on('crm_database')
+                ->where('usr_email', 'like', "%{$request->email}%")
+                ->first();
+        } else {
+            $recruiter = CRMRecruiter::on('crm_database')
+                ->where('usr_id_user', '=', $request->crm_id)
+                ->where('usr_email', '!=', null)
+                ->first();
+        }
+
+        // $recruiter = CRMRecruiter::on('crm_database')
+        //     ->where(function($query) use ($request){
+        //         $query->where('usr_id_user', '=', $request->crm_id)
+        //             ->where('usr_id_user', '!=', null);
+        //     })
+        //     ->orWhere(function($query) use ($request) {
+        //         $query->where('usr_email', 'like', "%{$request->email}%")
+        //             ->where('usr_email', '!=', null);
+        //     })
+        //     ->first();
+
+        return response()->json([
+            'recruiter' => $recruiter
+        ]);
+    }
+    // public function email()
 }

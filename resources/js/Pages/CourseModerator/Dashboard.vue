@@ -19,6 +19,7 @@
 <script setup>
 
 import { Head } from '@inertiajs/vue3';
+import SearchModal from './Modal/SearchModal.vue';
 
 import CourseModeratorLayout from '@/Layouts/CourseModeratorLayout.vue';
 import MainContent from '@/Templates/HTML/MainContent.vue';

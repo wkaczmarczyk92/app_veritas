@@ -80,7 +80,7 @@ Route::middleware(['auth', 'role:user|admin|super-admin'])->group(function () {
     Route::get('/user.point.last.insert.date', [UserPointController::class, 'last_insert_date'])->name('user.point.last.insert.date');
 });
 
-// Route::get('/test', [TestController::class, 'overdueCRON'])->name('test');
+Route::get('/test', [TestController::class, 'overdueCRON'])->name('test');
 // Route::get('/svg-test', [TestController::class, 'svg_test']);
 // Route::get('/phpversion', [TestController::class, 'php_version'])->name('phpversion');
 
@@ -96,3 +96,24 @@ require __DIR__ . '/user.php';
 require __DIR__ . '/cron.php';
 require __DIR__ . '/course_moderator.php';
 require __DIR__ . '/recruiter.php';
+require __DIR__ . '/common.php';
+
+
+
+Route::fallback(function () {
+    if (!auth()->check()) {
+        return redirect()->route('login');
+    }
+
+    if (auth()->user()->hasAnyRole(['super-admin', 'admin'])) {
+        return redirect()->route('dashboard');
+    }
+
+    if (auth()->user()->hasAnyRole(['user'])) {
+        return redirect()->route('/');
+    }
+
+    if (auth()->user()->hasAnyRole(['course_moderator'])) {
+        return redirect()->route('course_moderator.dashboard');
+    }
+});
