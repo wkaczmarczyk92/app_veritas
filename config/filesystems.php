@@ -41,6 +41,16 @@ return [
             'root' => public_path('user_profile_images'),
         ],
 
+        'media_library' => [
+            'driver' => 'local',
+            'root' => public_path('media_library'),
+        ],
+
+        'lessons' => [
+            'driver' => 'local',
+            'root' => public_path('lessons'),
+        ],
+
         'public' => [
             'driver' => 'local',
             'root' => storage_path('app/public'),
@@ -49,11 +59,35 @@ return [
             'throw' => false,
         ],
 
+        // 'media_library' => [
+        //     'driver' => 'local',
+        //     'root' => storage_path('app/public'),
+        //     'url' => env('APP_URL') . '/uploads/media_library',
+        //     'visibility' => 'public',
+        //     'throw' => false,
+        // ],
+
         'course_files' => [
             'driver' => 'local',
             'root' => storage_path('app/public/course_files'),
             'url' => env('APP_URL') . '/course_files',
             'visibility' => 'public',
+            'throw' => false,
+        ],
+
+        // 'lessons' => [
+        //     'driver' => 'local',
+        //     'root' => storage_path('app/public/lessons'),
+        //     'url' => env('APP_URL') . '/lessons',
+        //     'visibility' => 'public',
+        //     'throw' => false,
+        // ],
+
+        'exports' => [
+            'driver' => 'local',
+            'root' => storage_path('app/public/exports'),
+            'url' => env('APP_URL') . '/exports',
+            'visibility' => 'private',
             'throw' => false,
         ],
 
@@ -85,6 +119,7 @@ return [
     'links' => [
         public_path('uploads') => storage_path('app/public'),
         public_path('course_files') => storage_path('app/public/course_files'),
+        // public_path('uploads/media_library') => storage_path('app/media_library'),
     ],
 
 ];

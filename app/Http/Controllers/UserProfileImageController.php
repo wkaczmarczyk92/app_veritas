@@ -9,89 +9,41 @@ use Illuminate\Support\Facades\DB;
 use Exception;
 use Illuminate\Support\Facades\Auth;
 use Inertia\Inertia;
+use App\Helpers\Response;
 
-
-
+use App\Services\Image\UserProfileImageService;
+use Illuminate\Support\Facades\Storage;
 // QUERY
 // czyszczenie weryfikacji zdjęc
 // update `user_profile_images` set status = 1, accepted_by_user_id = null, updated_at = null
 
 class UserProfileImageController extends Controller
 {
+    private UserProfileImageService $_user_profile_image_service;
+
+    public function __construct(UserProfileImageService $user_profile_image_service)
+    {
+        $this->_user_profile_image_service = $user_profile_image_service;
+    }
+
+
     public function storeOrUpdate(Request $request)
-    {  
-        $admin_id = $request->accepted_by_user_id === true ? Auth::user()->id : null;
-        $user = User::with('user_profile_image')->find($request->id);
-
-        DB::beginTransaction();
-
-        try {
-            $filename = "{$request->id}.{$request->file('file')->extension()}";
-            $path = $request->file('file')->storeAs('', $filename, 'public_images');
-            $user->user_profile_image()->updateOrCreate([
-                'user_id' => $request->id
-            ], [
-                'path' => $filename,
-                'status' => $request->status,
-                'accepted_by_user_id' => $admin_id
-            ]);
-
-            DB::commit();
-        } catch (Exception $e) {
-            DB::rollback();
-            return response()->json([
-                'success' => false,
-                'msg' => $e->getMessage()
-            ]);
-        }
-
-        $user->load('user_profile_image');
-
-        return response()->json([
-            'success' => true,
-            'user_profile_image' => $user->user_profile_image
-        ]);
+    {
+        return $this->_user_profile_image_service->store_or_update($request);
     }
 
-    public function accept(Request $request) {
-        $profile_image = UserProfileImage::where('user_id', '=', $request->id)->first();
-        $profile_image->status = $request->status;
-        $profile_image->accepted_by_user_id = Auth::user()->id;
-        $profile_image->save();
-
-        return response()->json($profile_image);
+    public function accept(Request $request)
+    {
+        return $this->_user_profile_image_service->accept($request);
     }
 
-    public function massAccept(Request $request) {
-        DB::beginTransaction();
-        
-        try {
-            foreach ($request->ids as $id) {
-                $profile_image = UserProfileImage::where('user_id', '=', $id)->first();
-                $profile_image->status = 3;
-                $profile_image->accepted_by_user_id = Auth::user()->id;
-                $profile_image->save();
-            }
-
-            DB::commit();
-        } catch (Exception $e) {
-            DB::rollback();
-            return response()->json([
-                'success' => false,
-                'msg' => 'Wystąpił błąd podczas połączenia. Spróbuj ponownie później.',
-                'alert_type' => 'danger',
-                'exception' => $e->getMessage()
-            ]);
-        }
-
-        return response()->json([
-            'success' => true,
-            'alert_type' => 'success',
-            'msg' => 'Wybrane zdjęcia zostały zaakceptowane.'
-        ]);
+    public function massAccept(Request $request)
+    {
+        return $this->_user_profile_image_service->mass_accept($request);
     }
 
-    public function decline(Request $request) {
+    public function decline(Request $request)
+    {
         $profile_image = UserProfileImage::where('user_id', '=', $request->id)->first();
         $profile_image->status = $request->status;
         $profile_image->decline_info = $request->decline_info;
@@ -99,6 +51,29 @@ class UserProfileImageController extends Controller
         $profile_image->save();
 
         return response()->json($profile_image);
+    }
+
+    public function decline_2(Request $request)
+    {
+        try {
+            DB::beginTransaction();
+
+            $images = UserProfileImage::whereIn('user_id', $request->ids)->get();
+
+            foreach ($images as $image) {
+                $image->status = 2;
+                Storage::disk('public_images')->delete($image->path);
+                $image->save();
+            }
+
+            DB::commit();
+        } catch (Exception $e) {
+            DB::rollback();
+
+            return Response::danger('Coś poszło nie tak podczas usuwania zdjęć. Niektóre z nich mogły zostać usunięte bez aktualizacji w bazie. Spróbuj ponownie później.', e: $e);
+        }
+
+        return Response::success('Wybrane zdjęcia zostały usunięte');
     }
 
     public function verify()
@@ -114,9 +89,9 @@ class UserProfileImageController extends Controller
     {
         return response()->json([
             'users' => User::with(['user_profiles', 'user_profile_image'])
-                        ->whereHas('user_profile_image', function ($query) {
-                            $query->where('status', '=', 1);
-                        })->get()
+                ->whereHas('user_profile_image', function ($query) {
+                    $query->where('status', '=', 1);
+                })->get()
         ]);
     }
 }

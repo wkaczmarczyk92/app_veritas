@@ -23,9 +23,10 @@ class SMS
     ];
 
     // private string $_bearer_token = 'uAQ0Ed3jKmJXfOUJ58eCaLtncz6g4WCUoqoRnz60';
-    private string $_bearer_token = 'XUB2M6ipuWxCx4kxLdg7cpDhLciINQNYH3Jah4aB'; // nowy wygenerowany
+    private string $_bearer_token = 'orTDWF1BbWOnXkzEz3gy0W8hiXZaySEp1audAJ8C'; // nowy wygenerowany
 
-    public function send() {
+    public function send()
+    {
         $url = !$this->_backup ? $this->url['default'] : $this->url['backup'];
 
         $curl = curl_init();
@@ -48,7 +49,13 @@ class SMS
 
         $response = json_decode($response, JSON_UNESCAPED_UNICODE);
 
-        return isset($response['error']) ? false : true;
+        return isset($response['error']) ? isset($response['error']) : true;
     }
 
+    public function set_time($time = null)
+    {
+        // jezcze walidacja czy time jest prawidlowym formatem czasu
+        // ewentualna zamiana innych formatow na unix timestamp
+        $this->params['date'] = $time ? $time : date('Y-m-d 12:00:00');
+    }
 }

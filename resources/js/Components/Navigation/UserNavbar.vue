@@ -37,8 +37,9 @@ const showingNavigationDropdown = ref(false);
                                             class="tw-inline-flex tw-items-center tw-px-3 tw-border tw-border-transparent tw-text-sm tw-leading-4 tw-font-medium tw-rounded-md tw-text-gray-300 tw-bg-gray-800 hover:tw-text-gray-400 focus:tw-outline-none tw-transition tw-ease-in-out tw-duration-150">
                                             <!-- {{ $page.props.auth.user.name }} -->
 
-                                            <svg class="tw-ml-2 -tw-mr-0.5 tw-h-4 tw-w-4" xmlns="http://www.w3.org/2000/svg"
-                                                viewBox="0 0 20 20" fill="currentColor">
+                                            <svg class="tw-ml-2 -tw-mr-0.5 tw-h-4 tw-w-4"
+                                                xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20"
+                                                fill="currentColor">
                                                 <path fill-rule="evenodd"
                                                     d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z"
                                                     clip-rule="evenodd" />
@@ -65,8 +66,9 @@ const showingNavigationDropdown = ref(false);
                                             class="tw-inline-flex tw-items-center tw-px-3 tw-border tw-border-transparent tw-text-sm tw-leading-4 tw-font-medium tw-rounded-md tw-text-gray-300 tw-bg-gray-800 hover:tw-text-gray-400 focus:tw-outline-none tw-transition tw-ease-in-out tw-duration-150">
                                             <!-- {{ $page.props.auth.user.name }} -->
 
-                                            <svg class="tw-ml-2 -tw-mr-0.5 tw-h-4 tw-w-4" xmlns="http://www.w3.org/2000/svg"
-                                                viewBox="0 0 20 20" fill="currentColor">
+                                            <svg class="tw-ml-2 -tw-mr-0.5 tw-h-4 tw-w-4"
+                                                xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20"
+                                                fill="currentColor">
                                                 <path fill-rule="evenodd"
                                                     d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z"
                                                     clip-rule="evenodd" />
@@ -83,8 +85,67 @@ const showingNavigationDropdown = ref(false);
                                 </template>
                             </Dropdown>
                         </div>
-                        <NavLink :href="route('offer.user')" :active="route().current('offer.user')">
+                        <div
+                            class="dropdown-item tw-ml-3 tw-relative tw-items-center tw-inline-flex tw-items-center tw-px-1 tw-border-b-2 tw-border-transparent tw-text-sm tw-font-medium tw-leading-5 tw-text-gray-300 hover:tw-text-gray-400 hover:tw-border-gray-300 focus:tw-outline-none focus:tw-text-gray-700 focus:tw-border-gray-300 tw-transition tw-duration-150 tw-ease-in-out">
+                            <Dropdown align="right" width="48">
+                                <template #trigger>
+                                    Oferty
+                                    <span class="tw-inline-flex tw-rounded-md">
+                                        <button type="button"
+                                            class="tw-inline-flex tw-items-center tw-px-3 tw-border tw-border-transparent tw-text-sm tw-leading-4 tw-font-medium tw-rounded-md tw-text-gray-300 tw-bg-gray-800 hover:tw-text-gray-400 focus:tw-outline-none tw-transition tw-ease-in-out tw-duration-150">
+                                            <!-- {{ $page.props.auth.user.name }} -->
+
+                                            <svg class="tw-ml-2 -tw-mr-0.5 tw-h-4 tw-w-4"
+                                                xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20"
+                                                fill="currentColor">
+                                                <path fill-rule="evenodd"
+                                                    d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z"
+                                                    clip-rule="evenodd" />
+                                            </svg>
+                                        </button>
+                                    </span>
+                                </template>
+
+                                <template #content>
+                                    <DropdownLink :href="route('offer.user')"> Szukaj ofert
+                                    </DropdownLink>
+                                    <DropdownLink :href="route('my_offers_free_account')"> Moje zgłoszenia
+                                    </DropdownLink>
+                                </template>
+                            </Dropdown>
+                        </div>
+                        <!-- <div
+                            class="dropdown-item tw-ml-3 tw-relative tw-items-center tw-inline-flex tw-items-center tw-px-1 tw-border-b-2 tw-border-transparent tw-text-sm tw-font-medium tw-leading-5 tw-text-gray-300 hover:tw-text-gray-400 hover:tw-border-gray-300 focus:tw-outline-none focus:tw-text-gray-700 focus:tw-border-gray-300 tw-transition tw-duration-150 tw-ease-in-out">
+                            <Dropdown align="right" width="48">
+                                <template #trigger>
+                                    Lekcje
+                                    <span class="tw-inline-flex tw-rounded-md">
+                                        <button type="button"
+                                            class="tw-inline-flex tw-items-center tw-px-3 tw-border tw-border-transparent tw-text-sm tw-leading-4 tw-font-medium tw-rounded-md tw-text-gray-300 tw-bg-gray-800 hover:tw-text-gray-400 focus:tw-outline-none tw-transition tw-ease-in-out tw-duration-150">
+                                            <svg class="tw-ml-2 -tw-mr-0.5 tw-h-4 tw-w-4"
+                                                xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20"
+                                                fill="currentColor">
+                                                <path fill-rule="evenodd"
+                                                    d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z"
+                                                    clip-rule="evenodd" />
+                                            </svg>
+                                        </button>
+                                    </span>
+                                </template>
+
+                                <template #content>
+                                    <DropdownLink :href="route('user.german.lessons.index')"> Lekcje niemieckiego
+                                    </DropdownLink>
+                                    <DropdownLink :href="route('my_offers_free_account')"> Rozwiąż test
+                                    </DropdownLink>
+                                </template>
+                            </Dropdown>
+                        </div> -->
+                        <!-- <NavLink :href="route('offer.user')" :active="route().current('offer.user')">
                             Szukaj ofert
+                        </NavLink> -->
+                        <NavLink :href="route('crm.document.index')" :active="route().current('crm.document.index')">
+                            Dokumenty
                         </NavLink>
                         <NavLink :href="route('courses')" :active="route().current('courses')">
                             Kursy
@@ -177,6 +238,9 @@ const showingNavigationDropdown = ref(false);
                 </div>
                 <ResponsiveNavLink :href="route('offer.user')" :active="route().current('offer.user')">
                     Szukaj ofert
+                </ResponsiveNavLink>
+                <ResponsiveNavLink :href="route('crm.document.index')" :active="route().current('crm.document.index')">
+                    Dokumenty
                 </ResponsiveNavLink>
                 <ResponsiveNavLink :href="route('courses')" :active="route().current('courses')">
                     Kursy

@@ -13,12 +13,13 @@ class CRONSendSMSWithPassword extends Command
 {
     protected $signature = 'cron:sms-with-password';
 
-    public function handle() {
+    public function handle()
+    {
         set_time_limit(0);
         $today = date('Y-m-d');
 
         $users = User::with(['user_profiles', 'password_for_user'])
-            ->whereHas('password_for_user', function($query) use ($today) {
+            ->whereHas('password_for_user', function ($query) use ($today) {
                 $query->where('sent', false)
                     ->where('departure_date', '<=', $today);
             })->get();
@@ -26,7 +27,7 @@ class CRONSendSMSWithPassword extends Command
         // $password = Str::random();
         // $sms = new SMS;
         // $sms->params['to'] = '+48723864128';
-        // $sms->params['message'] = "Dzień dobry,\nponiżej znajduje się automatycznie wygenerowane hasło, za pomocą którego można zalogować się do aplikacji Veritas:\n\nLink do aplikacji - http://app.veritas.pl/login\nHasło - {$password}\n\nPozdrawiamy,\nzespół Veritas";
+        // $sms->params['message'] = "Dzień dobry,\nponiżej znajduje się automatycznie wygenerowane hasło, za pomocą którego można zalogować się do aplikacji Veritas:\n\nLink do aplikacji - https://app.veritas.pl/login\nHasło - {$password}\n\nPozdrawiamy,\nzespół Veritas";
         // $result = $sms->send();
 
         // var_dump($result);
@@ -36,7 +37,7 @@ class CRONSendSMSWithPassword extends Command
             $password = Str::random();
             $sms = new SMS;
             $sms->params['to'] = $user->user_profiles->phone_number;
-            $sms->params['message'] = "Dzień dobry,\nponiżej znajduje się automatycznie wygenerowane hasło, za pomocą którego można zalogować się do aplikacji Veritas:\n\nLink do aplikacji - http://app.veritas.pl/login\nHasło - {$password}\n\nPozdrawiamy,\nzespół Veritas";
+            $sms->params['message'] = "Dzień dobry,\nponiżej znajduje się automatycznie wygenerowane hasło, za pomocą którego można zalogować się do aplikacji Veritas:\n\nLink do aplikacji - https://app.veritas.pl/login\nHasło - {$password}\n\nPozdrawiamy,\nzespół Veritas";
             $result = $sms->send();
 
             // var_dump($sms->params);
@@ -50,5 +51,4 @@ class CRONSendSMSWithPassword extends Command
             }
         }
     }
-
 }

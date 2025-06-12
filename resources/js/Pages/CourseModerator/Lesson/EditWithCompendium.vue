@@ -35,9 +35,9 @@
                             Aktualizuj lekcję
                         </v-btn>
                         <v-btn variant="outlined" color="#dc2626" size="large" :href="route('course_moderator.compendium.lesson.show', {
-                compendium_id: props.lesson.lessonable_id,
-                lesson_id: props.lesson.id
-            })" :disabled="form.progress">
+                            compendium_id: props.lesson.lessonable_id,
+                            lesson_id: props.lesson.id
+                        })" :disabled="form.progress">
                             <i class="fa-solid fa-xmark tw-mr-2"></i>
                             Zakończ edycję
                         </v-btn>
@@ -53,28 +53,9 @@
                             <Preview :progress="form.progress" :form="form"></Preview>
                         </div>
                         <div>
-                            <Editor api-key="r2mcdb1fzo4fckqa7t15kwl0dog0cwn3sf22nwxidwty980a"
-                                v-model="form.description" :init="{
-                height: 500,
-                menubar: false,
-                plugins: [
-                    'advlist autolink lists link image charmap print preview anchor',
-                    'searchreplace visualblocks code fullscreen',
-                    'insertdatetime media table paste code help wordcount'
-                ],
-                toolbar:
-                    'undo redo | formatselect | bold italic backcolor | \
-                        alignleft aligncenter alignright alignjustify | \
-                        bullist numlist outdent indent | removeformat | help | image',
-                file_picker_types: 'image',
-                /* and here's our custom image picker*/
-                file_picker_callback: upload_file,
 
-                /* enable title field in the Image dialog*/
-                image_title: true,
-                /* enable automatic uploads of images represented by blob or data URIs*/
-                automatic_uploads: true,
-            }" />
+                            <MCEEditor v-model:modelValue="form.description"
+                                @update-value="form.description = $event" />
                             <InputError :message="errors.description ? errors.description[0] : ''" class="tw-mt-1">
                             </InputError>
                         </div>
@@ -93,6 +74,7 @@ import CourseModeratorLayout from '@/Layouts/CourseModeratorLayout.vue'
 import MainContent from '@/Templates/HTML/MainContent.vue'
 
 import { ref, watch } from 'vue'
+import MCEEditor from '@/Composables/MCEEditor.vue'
 import { AlertStore } from '@/Pinia/AlertStore'
 
 import TInput from '@/Composables/Form/TInput.vue'

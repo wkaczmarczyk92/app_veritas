@@ -12,19 +12,22 @@ use App\Models\BOKSubject;
 
 class MailService
 {
-    public function bok_email($subject_id, $msg, User $user, $recruiter = null) : void {
-        $subject = BOKSubject::where('id', $subject_id)->first();
+    public function bok_email($data, User $user, $recruiter = null): void
+    {
+        $subject = BOKSubject::where('id', $data['subject_id'])->first();
 
         if ($subject == null) {
             throw new \Exception('Subject not found.');
         }
 
         $email_data = [
-            'subject'   => $subject->subject,
-            'msg'       => $msg,
-            'username'  => $user->user_profiles->first_name.' '.$user->user_profiles->last_name,
-            'url'       => "http://app.veritas.pl/uzytkownik/{$user->id}",
-            'url_crm'   => "https://local.grupa-veritas.pl/#/opiekunki/{$user->user_profiles->crt_id_caretaker}",
+            'subject'       => $subject->subject,
+            'msg'           => $data['msg'],
+            'username'      => $user->user_profiles->first_name . ' ' . $user->user_profiles->last_name,
+            'url'           => "https://app.veritas.pl/uzytkownik/{$user->id}",
+            'url_crm'       => "https://local.grupa-veritas.pl/#/opiekunki/{$user->user_profiles->crt_id_caretaker}",
+            'bank_account'  => $data['bank_account'],
+            'subject_id'    => $data['subject_id'],
         ];
 
         $emails = [];
@@ -46,7 +49,8 @@ class MailService
         }
     }
 
-    public function offer_email($users, $recruiter_service) {
+    public function offer_email($users, $recruiter_service)
+    {
         foreach ($users as $user) {
             $email = app()->environment() == 'production' ? $recruiter_service->get($user->user_profiles->crt_id_user_recruiter)->usr_email : Mail::$local_email;
 
@@ -57,7 +61,7 @@ class MailService
                     $user->offers
                 ],
                 'caretaker_crm_url' => 'https://local.grupa-veritas.pl/#/opiekunki/' . $user->user_profiles->crt_id_caretaker,
-                'caretaker_app_url' => 'http://app.veritas.pl/uzytkownik/' . $user->id,
+                'caretaker_app_url' => 'https://app.veritas.pl/uzytkownik/' . $user->id,
             ];
 
             Mail::to($email)->send(

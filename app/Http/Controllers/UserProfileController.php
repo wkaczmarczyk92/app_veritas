@@ -39,12 +39,22 @@ class UserProfileController extends Controller
      */
     public function show()
     {
-        $user = User::with(['user_profiles', 'user_points', 'ready_to_departure_dates', 'user_profile_image', 'user_has_bonus' => function ($query) {
-            // $query->where('completed', false)
-            //     ->where('in_progress', false);
-        }])->find(Auth::user()->id);
+        $user = User::with([
+            'user_profiles',
+            'user_points',
+            'ready_to_departure_dates',
+            'user_profile_image',
+            'user_has_bonus'
+        ])->find(Auth::user()->id);
+
+        $user_with_crm_account = $user->user_profiles->crt_id_caretaker;
+
+        $layout = $user_with_crm_account ? 'user' : 'free_account';
+
         return Inertia::render('User/Profile', [
             'user' => $user,
+            'layout' => $layout,
+            'user_with_crm_account' => $user_with_crm_account
         ]);
     }
 

@@ -1,0 +1,158 @@
+<Test>
+	<NazwaTestu>Odmiana czasownika „sein” i forma grzecznościowa „Sie”</NazwaTestu>
+	<NumerLekcji>1</NumerLekcji>
+	<Pytania>
+		<Pytanie>
+			<TypPytania>closed</TypPytania> <!-- open, closed, closed_multiple, match, blank_space,
+			listening_comprehension -->
+			<TrescPytania>Jak brzmi forma czasownika „sein” dla „ich”?</TrescPytania>
+			<Odpowiedzi>
+				<!-- tylko jeśli TypPytania to closed, closed_multiple, blank_space -->
+				<Odpowiedz id="1">bist</Odpowiedz>
+				<Odpowiedz id="2">bin</Odpowiedz>
+				<Odpowiedz id="3">ist</Odpowiedz>
+				<Odpowiedz id="4">seid</Odpowiedz>
+				<Odpowiedz id="5">sind</Odpowiedz>
+			</Odpowiedzi>
+			<PoprawnaOdpowiedz>2</PoprawnaOdpowiedz>
+			<Czas>30</Czas> <!-- czas w sekundach -->
+		</Pytanie>
+
+		<Pytanie>
+			<TypPytania>closed</TypPytania>
+			<TrescPytania>„Du ___ freundlich.” – wybierz poprawną formę.</TrescPytania>
+			<Odpowiedzi>
+				<Odpowiedz id="1">bin</Odpowiedz>
+				<Odpowiedz id="2">ist</Odpowiedz>
+				<Odpowiedz id="3">bist</Odpowiedz>
+				<Odpowiedz id="4">sind</Odpowiedz>
+				<Odpowiedz id="5">seid</Odpowiedz>
+			</Odpowiedzi>
+			<PoprawnaOdpowiedz>3</PoprawnaOdpowiedz>
+			<Czas>30</Czas>
+		</Pytanie>
+
+		<Pytanie>
+			<TypPytania>closed</TypPytania>
+			<TrescPytania>Która forma „sein” pasuje do „wir”?</TrescPytania>
+			<Odpowiedzi>
+				<Odpowiedz id="1">seid</Odpowiedz>
+				<Odpowiedz id="2">bin</Odpowiedz>
+				<Odpowiedz id="3">sind</Odpowiedz>
+				<Odpowiedz id="4">ist</Odpowiedz>
+				<Odpowiedz id="5">habt</Odpowiedz>
+			</Odpowiedzi>
+			<PoprawnaOdpowiedz>3</PoprawnaOdpowiedz>
+			<Czas>30</Czas>
+		</Pytanie>
+
+		<Pytanie>
+			<TypPytania>closed</TypPytania>
+			<TrescPytania>„Ihr ___ müde.” – uzupełnij zdanie.</TrescPytania>
+			<Odpowiedzi>
+				<Odpowiedz id="1">seid</Odpowiedz>
+				<Odpowiedz id="2">sind</Odpowiedz>
+				<Odpowiedz id="3">ist</Odpowiedz>
+				<Odpowiedz id="4">bin</Odpowiedz>
+				<Odpowiedz id="5">wart</Odpowiedz>
+			</Odpowiedzi>
+			<PoprawnaOdpowiedz>1</PoprawnaOdpowiedz>
+			<Czas>30</Czas>
+		</Pytanie>
+
+		<Pytanie>
+			<TypPytania>closed</TypPytania>
+			<TrescPytania>Jak brzmi poprawna forma „sein” dla zaimka grzecznościowego „Sie”?</TrescPytania>
+			<Odpowiedzi>
+				<Odpowiedz id="1">seid</Odpowiedz>
+				<Odpowiedz id="2">bist</Odpowiedz>
+				<Odpowiedz id="3">ist</Odpowiedz>
+				<Odpowiedz id="4">sind</Odpowiedz>
+				<Odpowiedz id="5">habt</Odpowiedz>
+			</Odpowiedzi>
+			<PoprawnaOdpowiedz>4</PoprawnaOdpowiedz>
+			<Czas>30</Czas>
+		</Pytanie>
+
+		<Pytanie>
+			<TypPytania>closed</TypPytania>
+			<TrescPytania>„Frau Schmidt, ___ Sie Ärztin?” – wybierz poprawną formę.</TrescPytania>
+			<Odpowiedzi>
+				<Odpowiedz id="1">bist</Odpowiedz>
+				<Odpowiedz id="2">seid</Odpowiedz>
+				<Odpowiedz id="3">sind</Odpowiedz>
+				<Odpowiedz id="4">ist</Odpowiedz>
+				<Odpowiedz id="5">habt</Odpowiedz>
+			</Odpowiedzi>
+			<PoprawnaOdpowiedz>3</PoprawnaOdpowiedz>
+			<Czas>30</Czas>
+		</Pytanie>
+
+		<Pytanie>
+			<TypPytania>closed</TypPytania>
+			<TrescPytania>W którym zdaniu użyto formy grzecznościowej „Sie”?</TrescPytania>
+			<Odpowiedzi>
+				<Odpowiedz id="1">Ich bin freundlich.</Odpowiedz>
+				<Odpowiedz id="2">Du bist müde.</Odpowiedz>
+				<Odpowiedz id="3">Sie sind Frau Müller.</Odpowiedz>
+				<Odpowiedz id="4">Wir sind zu Hause.</Odpowiedz>
+				<Odpowiedz id="5">Ihr seid pünktlich.</Odpowiedz>
+			</Odpowiedzi>
+			<PoprawnaOdpowiedz>3</PoprawnaOdpowiedz>
+			<Czas>30</Czas>
+		</Pytanie>
+
+		<Pytanie>
+			<TypPytania>closed</TypPytania>
+			<TrescPytania>Czym różni się „sie” od „Sie”?</TrescPytania>
+			<Odpowiedzi>
+				<Odpowiedz id="1">„się” znaczy oni, a „Sie” – Państwo/Pan/Pani</Odpowiedz>
+				<Odpowiedz id="2">znaczeniem czasownika</Odpowiedz>
+				<Odpowiedz id="3">rodzajem czasownika</Odpowiedz>
+				<Odpowiedz id="4">miejscem w zdaniu</Odpowiedz>
+				<Odpowiedz id="5">niczym</Odpowiedz>
+			</Odpowiedzi>
+			<PoprawnaOdpowiedz>1</PoprawnaOdpowiedz>
+			<Czas>30</Czas>
+		</Pytanie>
+
+		<Pytanie>
+			<TypPytania>closed</TypPytania>
+			<TrescPytania>Jak poprawnie zapisać pytanie do osoby nieznajomej?</TrescPytania>
+			<Odpowiedzi>
+				<Odpowiedz id="1">bist du müde?</Odpowiedz>
+				<Odpowiedz id="2">sind sie müde?</Odpowiedz>
+				<Odpowiedz id="3">Sind Sie müde?</Odpowiedz>
+				<Odpowiedz id="4">sind Sie Müde?</Odpowiedz>
+				<Odpowiedz id="5">seid Sie müde?</Odpowiedz>
+			</Odpowiedzi>
+			<PoprawnaOdpowiedz>3</PoprawnaOdpowiedz>
+			<Czas>30</Czas>
+		</Pytanie>
+
+		<Pytanie>
+			<TypPytania>listening_comprehension</TypPytania>
+			<TrescPytania>„- Guten Tag! Ich bin Anna, Ihre Betreuerin. - Sind Sie müde? - Ja, ich
+				bin ein bisschen müde.”
+				Co wynika z dialogu?</TrescPytania>
+			<Odpowiedzi>
+				<Odpowiedz id="1">Anna jest pacjentką i jest zmęczona.</Odpowiedz>
+				<Odpowiedz id="2">Mężczyzna jest lekarzem.</Odpowiedz>
+				<Odpowiedz id="3">Anna jest opiekunką, a rozmówca jest trochę zmęczony.</Odpowiedz>
+				<Odpowiedz id="4">Rozmowa dotyczy lekarstw.</Odpowiedz>
+				<Odpowiedz id="5">Rozmówcy są w szpitalu.</Odpowiedz>
+			</Odpowiedzi>
+			<PoprawnaOdpowiedz>3</PoprawnaOdpowiedz>
+			<Czas>45</Czas>
+		</Pytanie>
+
+		<!-- <Pytanie>
+			<TypPytania>open</TypPytania>
+			<TrescPytania>Opisz swoje doświadczenie z językiem niemieckim.</TrescPytania> -->
+		<!-- Brak tagu <Odpowiedzi> — poprawnie przy pytaniu typu open -->
+		<!-- <Czas>60</Czas>
+		</Pytanie> -->
+
+	</Pytania>
+</Test>
+  

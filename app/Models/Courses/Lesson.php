@@ -10,6 +10,10 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\MorphTo;
 
 use App\Models\Common\Visibility;
+use App\Models\Common\File;
+use Illuminate\Database\Eloquent\Relations\MorphToMany;
+use App\Models\User;
+use App\Models\Test\Test;
 
 class Lesson extends Model
 {
@@ -30,6 +34,11 @@ class Lesson extends Model
     protected static function booted()
     {
         static::creating(function ($lesson) {
+            // Jeżeli order został już przekazany (np. z $request->order), to nie nadpisuj.
+            if (! is_null($lesson->order)) {
+                return;
+            }
+
             // Ustal najwyższy obecny 'order' dla lekcji w tym samym compendium.
             $highest_order = self::where('lessonable_id', $lesson->lessonable_id)
                 ->where('lessonable_type', $lesson->lessonable_type)->max('order');
@@ -48,5 +57,20 @@ class Lesson extends Model
     public function visibility(): BelongsTo
     {
         return $this->belongsTo(Visibility::class);
+    }
+
+    public function user(): BelongsTo
+    {
+        return $this->belongsTo(User::class, 'created_by', 'id');
+    }
+
+    public function files(): MorphToMany
+    {
+        return $this->morphToMany(File::class, 'model', 'model_has_files', 'model_id', 'file_id');
+    }
+
+    public function test(): MorphToMany
+    {
+        return $this->morphToMany(Test::class, 'model', 'model_has_tests', 'model_id', 'test_id');
     }
 }

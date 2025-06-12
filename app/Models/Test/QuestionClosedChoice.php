@@ -17,4 +17,8 @@ class QuestionClosedChoice extends Model
         'question_id',
         'multiple_answers'
     ];
+
+    protected $casts = [
+        'is_correct' => 'boolean',
+    ];
 }

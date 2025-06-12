@@ -5,13 +5,14 @@ namespace App\Exports;
 use App\Models\User;
 use Maatwebsite\Excel\Concerns\FromArray;
 
+
 class CaretakersExport implements FromArray
 {
     private $_collection;
     private $_array;
 
-    public function __construct($array) {
-        // $this->_collection = $collection;
+    public function __construct($array)
+    {
         $this->_array = $array;
     }
 
@@ -21,7 +22,8 @@ class CaretakersExport implements FromArray
         return $this->_collection;
     }
 
-    public function array() : array {
+    public function array(): array
+    {
         return $this->_array;
     }
 }

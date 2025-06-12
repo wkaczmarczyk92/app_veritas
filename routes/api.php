@@ -26,13 +26,16 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
 });
 
 Route::middleware('token')->group(function () {
-    Route::patch('/user.update', [APIUserController::class, 'update'])->name('api.user.update');
+    Route::controller(APIUserController::class)->group(function () {
+        Route::name('api.')->group(function () {
+            Route::patch('/user.update', 'update')->name('user.update');
+            Route::post('/user.store', 'store')->name('user.store');
+        });
 
-    Route::post('/user.store', [APIUserController::class, 'store'])->name('api.user.store');
+        Route::patch('/test-api', 'test')->name('test');
+    });
 
     Route::patch('/ready.to.departure.update', [APIReadyToDepartureController::class, 'update'])->name('api.ready.to.departure.update');
-
-    Route::patch('/test-api', [APIUserController::class, 'test'])->name('test');
 
     Route::patch('/family.recommendation.update.bonus.payout.complete', [APIFamilyRecommendationController::class, 'update'])->name('family.recommendation.update.bonus.payout.complete');
 

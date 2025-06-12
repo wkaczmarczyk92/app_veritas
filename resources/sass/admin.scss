@@ -54,7 +54,7 @@
 
 th {
     .fa-trophy {
-        color: var(--color-gold)!important;
+        color: var(--color-gold) !important;
     }
 }
 
@@ -89,7 +89,7 @@ th {
         top: 0;
         width: 100%;
         height: 100%;
-        background-color: rgba(0,0,0,.6);
+        background-color: rgba(0, 0, 0, .6);
     }
 }
 
@@ -122,10 +122,11 @@ th {
 
 button {
     &.btn-bg {
-        background-color: var(--main-color)!important;
+        background-color: var(--main-color) !important;
+
         &:hover {
-                background-color: var(--main-hover-color)!important;
-            }
+            background-color: var(--main-hover-color) !important;
+        }
     }
 }
 
@@ -169,7 +170,7 @@ button {
 
 .ready-to-payout {
     i {
-        
+
         // box-shadow: 0px 0px 11px 0px rgb(22, 163, 74);
         // background-color: rgb(22, 163, 74);
         animation: scaleAnimation .8s infinite;
@@ -256,9 +257,9 @@ button {
 
 .alert-wrapper {
     position: fixed;
-    bottom: 3%;
-    left: 50%;
-    transform: translateX(-50%);
+    bottom: 15px;
+    right: 15px;
+    // transform: translateX(-50%);
 }
 
 .verify-checkbox {
@@ -267,12 +268,12 @@ button {
     right: 5%;
 
     &:focus {
-        outline: unset!important;
-        box-shadow: none!important;
+        outline: unset !important;
+        box-shadow: none !important;
     }
 }
 
-.floating-submit {  
+.floating-submit {
     position: fixed;
     bottom: 15px;
     left: 50%;
@@ -365,7 +366,15 @@ button {
 }
 
 @keyframes scaleAnimation {
-    0% { transform: scale(1); }
-    50% { transform: scale(1.1); }
-    100% { transform: scale(1); }
+    0% {
+        transform: scale(1);
+    }
+
+    50% {
+        transform: scale(1.1);
+    }
+
+    100% {
+        transform: scale(1);
+    }
 }

@@ -12,7 +12,13 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Inertia\Inertia;
 
+use App\Models\Land;
 use App\Services\Post\PostServiceGetter;
+use App\Models\Language;
+
+
+use App\Models\BonusStatus;
+use App\Models\Offer;
 
 // select user_profiles.first_name as imię, 
 // user_profiles.last_name as nazwisko, 
@@ -31,68 +37,39 @@ class HomePageController extends Controller
     public function index()
     {
         $post_service_getter = new PostServiceGetter;
-        // dd(app()->environment());
-
         $current_date = date('Y-m-d');
-        // $user = User::with(['user_profiles', 'user_points', 'ready_to_departure_dates', 'user_profile_image', 'user_has_bonus' => function ($query) {
-        //     // $query->where('completed', false)
-        //     //     ->where('in_progress', false);
-        // }])->find(Auth::user()->id);
 
         $user = Auth::user();
 
-        // dd($user->user_has_bonus);
-
         $recruiter_controller = new CRMRecruiterController;
         $recruiter = $recruiter_controller->show($user->user_profiles->crt_id_user_recruiter);
-        // // DB::enableQueryLog();
-
-        // $posts = Post::with('post_labels')
-        //     ->where('type', '=', 'publish')
-        //     ->where(function ($query) use ($current_date) {
-
-        //         $query->where(function ($query) {
-        //             $query->whereNull('start_at')
-        //                 ->whereNull('end_at');
-        //         });
-
-        //         $query->orWhere(function ($query) use ($current_date) {
-        //             $query->where('start_at', '<=', $current_date)
-        //                 ->where('end_at', '>=', $current_date);
-        //         });
-
-        //         $query->orWhere(function ($query) use ($current_date) {
-        //             $query->whereNull('start_at')
-        //                 ->where('end_at', '>=', $current_date);
-        //         });
-
-        //         $query->orWhere(function ($query) use ($current_date) {
-        //             $query->whereNull('end_at')
-        //                 ->where('start_at', '<=', $current_date);
-        //         });
-        //     })
-        //     ->orderBy('order')
-        //     ->get();
-        // $queries = DB::getQueryLog();
-        // dd($queries);
-
-        // $user_id = $user->id;
 
         return Inertia::render('User/Homepage/Homepage', [
-            // 'user' => $user,
             'levels' => Level::with(['checkpoints', 'multiplier', 'bonus_value'])->get(),
             'recruiter' => $recruiter->original,
             'posts' => $post_service_getter(true),
             'payout_active' => (bool) PayoutRequest::with('user_has_bonus')
                 ->whereHas('user_has_bonus', function ($query) use ($user) {
-                    $query->where('completed', false)
-                        ->where('in_progress', true)
-                        ->where('user_id', $user->id);
+                    $query->where('user_id', $user->id)
+                        ->whereIn('bonus_status_id', BonusStatus::whereIn('name', ['in_progress', 'for_approval'])->pluck('id')->toArray());
                 })->count(),
-            // 'bonus' => [
-            //     'family_recommendation' => Bonus::where('name', 'family_recommendation')->pluck('bonus_value')[0],
-            //     'caretaker_recommendation' => Bonus::where('name', 'caretaker_recommendation')->pluck('bonus_value')[0],
-            // ],
+        ]);
+    }
+
+    public function index_free_account(Request $request)
+    {
+        // $filters = [];
+        // $user_offers_id = Offer::where('user_id', auth()->id())->get()->pluck('crm_offer_id');
+        // dd($user_offers);
+
+        $post_service_getter = new PostServiceGetter;
+
+        return Inertia::render('User/Homepage/HomepageForNoCRMAccount', [
+            // 'lands' => Land::all(),
+            'posts' => $post_service_getter(true),
+            // 'languages' => Language::all(),
+            // 'filters' => $filters,
+            // 'user_offers_id' => $user_offers_id
         ]);
     }
 

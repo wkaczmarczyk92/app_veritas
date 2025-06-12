@@ -187,7 +187,8 @@ return [
             'integer' => 'Mnożnik musi być liczbą całkowitą.'
         ],
         'phone_number' => [
-            'numeric' => 'Numer telefonu musi składać się z samych cyfr.'
+            'numeric' => 'Numer telefonu musi składać się z samych cyfr.',
+            'unique' => 'Numer telefonu jest już przypisany do innego użytkownika.',
         ],
         'ready_to_departure_dates.departure_date' => [
             'date_format' => 'Format daty to RRR-MM-DD.',
@@ -222,7 +223,22 @@ return [
         ],
         'processing_personal_data' => [
             'accepted' => 'Zaznacz zgodę aby polecić rodzinę.'
-        ]
+        ],
+        'bank_account.owner_name' => [
+            'required_if' => 'Nazwa właściciela konta bankowego jest wymagana.'
+        ],
+        'bank_account.account_type_id' => [
+            'required_if' => 'Typ konta jest wymagany.'
+        ],
+        'bank_account.account_number' => [
+            'required_if' => 'Numer konta bankowego jest wymagany.'
+        ],
+        'bank_account.bank_name' => [
+            'required_if' => 'Nazwa banku jest wymagana.'
+        ],
+        'bank_account.swift' => [
+            'required_if' => 'Numer SWIFT jest wymagany.'
+        ],
     ],
 
     /*

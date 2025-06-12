@@ -18,15 +18,17 @@ const props = defineProps({
 </script>
 
 <template>
-    <section
-        class="tw-bg-gray-800 tw-overflow-hidden tw-shadow-xl tw-rounded-lg tw-px-6 sm:tw-px-20 tw-pt-16 tw-pb-8 sm:tw-pb-28 tw-mt-10 tw-relative">
-        <Header :center="true" color="tw-text-gray-100" h="2" value="Sprawdź swoje postępy">
-        </Header>
-        <div class="tw-grid tw-gap-4 tw-grid-cols-1 sm:tw-grid-cols-2 lg:tw-grid-cols-4 tw-mt-8">
-            <LevelInfo :levels="levels" :user="userStore.user" :index="0"></LevelInfo>
-            <LevelInfo :levels="levels" :user="userStore.user" :index="1"></LevelInfo>
-            <LevelInfo :levels="levels" :user="userStore.user" :index="2"></LevelInfo>
-            <LevelInfo :levels="levels" :user="userStore.user" :index="3"></LevelInfo>
-        </div>
-    </section>
+    <v-card class="!tw-mt-10 !tw-bg-gray-900 !tw-shadow-xl">
+        <template v-slot:title>
+            <div class="tw-text-center tw-text-4xl tw-text-gray-100">Sprawdź swoje postępy!</div>
+        </template>
+        <v-card-text>
+            <div class="tw-grid tw-gap-4 tw-grid-cols-1 sm:tw-grid-cols-2 lg:tw-grid-cols-4 tw-mt-8">
+                <LevelInfo :levels="levels" :user="userStore.user" :index="0"></LevelInfo>
+                <LevelInfo :levels="levels" :user="userStore.user" :index="1"></LevelInfo>
+                <LevelInfo :levels="levels" :user="userStore.user" :index="2"></LevelInfo>
+                <LevelInfo :levels="levels" :user="userStore.user" :index="3"></LevelInfo>
+            </div>
+        </v-card-text>
+    </v-card>
 </template>

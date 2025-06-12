@@ -16,6 +16,7 @@ use App\Http\Controllers\OneTimeSMSPasswordController;
 
 use App\Http\Controllers\LandController;
 use App\Http\Controllers\UserController;
+use App\Http\Controllers\Test\GermanTestController;
 
 /*
 |--------------------------------------------------------------------------
@@ -27,6 +28,10 @@ use App\Http\Controllers\UserController;
 | contains the "web" middleware group. Now create something great!
 |
 */
+
+Route::controller(GermanTestController::class)->group(function () {
+    Route::post('/testy-niemieckiego/sprawdz-wynik', 'check_result')->name('german.test.check-result');
+});
 
 Route::middleware(['auth', 'role:user|admin|super-admin'])->group(function () {
 
@@ -72,17 +77,21 @@ Route::middleware(['auth', 'role:user|admin|super-admin'])->group(function () {
 
     Route::post('/punkty', [UserPointController::class, 'index'])->name('points.index');
 
-
     Route::get('/land.index', [LandController::class, 'index'])->name('land.index');
 
-
-
     Route::get('/user.point.last.insert.date', [UserPointController::class, 'last_insert_date'])->name('user.point.last.insert.date');
+
+
+
+    // Route::get('/testowanie', [TestController::class, 'test_sms'])->name('test.sms');
 });
 
-Route::get('/test', [TestController::class, 'overdueCRON'])->name('test');
+// Route::get('/test/bonuse-status/update', [TestController::class, 'update_bonus_status'])->name('test.bonuse-status.update');
+// Route::get('/test', [TestController::class, 'manual_update'])->name('test');
 // Route::get('/svg-test', [TestController::class, 'svg_test']);
 // Route::get('/phpversion', [TestController::class, 'php_version'])->name('phpversion');
+
+// Route::get('/test/serwis', [TestController::class, 'test_service'])->name('test.service');
 
 Route::post('/password.store', [PasswordRequestController::class, 'store'])->name('password.store');
 Route::post('/one.time.sms.password.store', [OneTimeSMSPasswordController::class, 'store'])->name('one.time.sms.password.store');
@@ -97,6 +106,8 @@ require __DIR__ . '/cron.php';
 require __DIR__ . '/course_moderator.php';
 require __DIR__ . '/recruiter.php';
 require __DIR__ . '/common.php';
+require __DIR__ . '/test.php';
+require __DIR__ . '/admin_advance.php';
 
 
 

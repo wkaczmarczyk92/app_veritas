@@ -13,6 +13,13 @@ import { createVuetify } from 'vuetify'
 import * as components from 'vuetify/components'
 import * as directives from 'vuetify/directives'
 // import { aliases, fa } from 'vuetify/iconsets/fa'
+import { VFileUpload } from 'vuetify/labs/VFileUpload'
+
+import VueDatePicker from '@vuepic/vue-datepicker';
+import '@vuepic/vue-datepicker/dist/main.css'
+
+// import 'flowbite';
+// import 'flowbite/css/flowbite.css';
 
 import '@mdi/font/css/materialdesignicons.css'
 
@@ -21,7 +28,10 @@ import '@mdi/font/css/materialdesignicons.css'
 const pinia = createPinia();
 
 const vuetify = createVuetify({
-    components,
+    components: {
+        ...components,
+        VFileUpload
+    },
     directives,
     // icons: {
     //     defaultSet: 'fa',
@@ -41,6 +51,7 @@ createInertiaApp({
             .use(pinia)
             .use(ZiggyVue, Ziggy)
             .use(vuetify)
+            .component('VueDatePicker', VueDatePicker)
             .mount(el);
     },
     progress: {

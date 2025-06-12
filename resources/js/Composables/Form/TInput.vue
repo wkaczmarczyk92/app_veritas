@@ -14,7 +14,7 @@ import { ref, watch } from 'vue'
 
 const props = defineProps({
     model_value: {
-        type: [String, null],
+        type: [String, null, Date, Number, undefined],
         required: true
     },
     error: {
@@ -28,6 +28,10 @@ const props = defineProps({
     readonly: {
         type: Boolean,
         default: false
+    },
+    callback: {
+        type: [null, Function],
+        default: null
     }
 })
 
@@ -35,12 +39,24 @@ watch(() => props.error, (new_error) => {
     console.log(new_error)
 });
 
-const model_copy = ref(props.model_value)
+const get_model_value = () => {
+    if (props.callback != null) {
+        return props.callback(props.model_value)
+    } else {
+        return props.model_value
+    }
+}
+
+const model_copy = ref(get_model_value())
 
 defineEmits(['update:model_value'])
 
 watch(() => props.model_value, (new_value) => {
-    model_copy.value = new_value;
+    if (props.callback != null) {
+        model_copy.value = props.callback(new_value);
+    } else {
+        model_copy.value = new_value;
+    }
 });
 
 </script>

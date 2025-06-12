@@ -7,44 +7,98 @@ import Header from '@/Components/Templates/Header.vue';
 
 import { useModalStore } from '@/Pinia/ModalStore';
 import { useUserStore } from '@/Pinia/UserStore';
+import DisplayRow3 from '@/Components/HTML/DisplayRow3.vue';
+import { format } from '@/Components/Functions/DateFormat.vue';
 
-const userStore = useUserStore();
+const user_store = useUserStore();
 const modalStore = useModalStore();
 
-await userStore.set_user();
+await user_store.set_user();
 
 const url = ref(null);
-if (userStore.user.user_profile_image && userStore.user.user_profile_image.path) {
-    url.value = 'storage/user_profile_images/' + userStore.user.user_profile_image.path;
+if (user_store.user.user_profile_image && user_store.user.user_profile_image.path) {
+    url.value = 'storage/user_profile_images/' + user_store.user.user_profile_image.path;
 }
 
 </script>
 
 <template>
-    <section class="tw-bg-gray-100 tw-overflow-hidden tw-shadow-xl tw-rounded-lg tw-py-14 tw-px-10 sm:tw-px-20 tw-mt-10">
-        <Header h="2" value="Moje dane osobowe" :center="true"></Header>
+    <v-card class="!tw-border-t !tw-border-[#fc9003] !tw-border-t-8">
+        <v-card-text>
+            <div class="tw-mt-4 tw-flex tw-flex-row tw-justify-center tw-relative tw-group">
+                <ProfileImage :profile_image="user_store.user.user_profile_image" class="">
+                </ProfileImage>
+                <div
+                    class="tw-absolute tw-bottom-6 tw-left-[50%] -tw-translate-x-[50%]
+           tw-bg-[#1a1a1a] tw-text-white tw-flex tw-flex-row tw-gap-2 tw-text-base
+           tw-items-center tw-px-4 tw-py-1 tw-rounded-2xl
 
-        <hr class="tw-mt-8 tw-mb-12">
-        <div class="tw-flex tw-flex-col tw-text-center tw-mb-16">
-            <ProfileImage :profile_image="userStore.user.user_profile_image"></ProfileImage>
+           tw-opacity-0 tw-translate-y-2 tw-pointer-events-none
+           tw-transition-all tw-duration-300 tw-ease-in-out tw-delay-150
+           group-hover:tw-opacity-100 group-hover:tw-translate-y-0 group-hover:tw-pointer-events-auto hover:tw-cursor-pointer">
+                    <i class="fas fa-pen"></i>
+                    <div @click="modalStore.visibility.profile_image = true">Zmień zdjęcie</div>
+                </div>
+            </div>
 
-            <div class="username-wrapper tw-mt-8 tw-text-3xl sm:tw-text-4xl tw-font-bold tw-mb-10">
-                {{ `${userStore.user.user_profiles.first_name}` }} <span class="tw-text-blue-700">{{
-                    `${userStore.user.user_profiles.last_name}`
-                }}</span>
+            <div class="tw-bg-[#f8f9fa] tw-mt-10 tw-flex tw-flex-col tw-p-4 tw-rounded-2xl tw-text-base">
+                <div class="">Imię i nazwisko</div>
+                <div class="tw-font-bold tw-text-lg">{{ user_store.user.user_profiles.first_name }} {{
+                    user_store.user.user_profiles.last_name }}</div>
             </div>
-            <div class="phone-wrapper tw-mb-3 tw-text-lg sm:tw-text-2xl">
-                <i class="fa-sharp fa-solid fa-phone tw-text-green-700 tw-mr-2"></i> {{
-                    userStore.user.user_profiles.phone_number
-                }}
+
+            <div class="tw-grid tw-grid-cols-1 md:tw-grid-cols-2 tw-gap-4 tw-mt-4">
+                <div class="tw-bg-[#f8f9fa] tw-flex tw-flex-col tw-p-4 tw-rounded-2xl tw-text-base">
+                    <div class="">PESEL</div>
+                    <div class="tw-font-bold tw-text-lg">{{ user_store.user.pesel }}</div>
+                </div>
+                <div class="tw-bg-[#f8f9fa] tw-flex tw-flex-col tw-p-4 tw-rounded-2xl tw-text-base">
+                    <div class="">Numer telefonu</div>
+                    <div class="tw-font-bold tw-text-lg">{{ user_store.user.user_profiles.phone_number }}</div>
+                </div>
             </div>
-            <div class="email-wrapper tw-text-lg sm:tw-text-2xl">
-                <i class="fa-solid fa-envelope tw-text-sky-700 tw-mr-2"></i> {{ userStore.user.user_profiles.email }}
+
+            <div class="tw-bg-[#f8f9fa] tw-mt-4 tw-flex tw-flex-col tw-p-4 tw-rounded-2xl tw-text-base">
+                <div class="">Email</div>
+                <div class="tw-font-bold tw-text-lg">{{ user_store.user.user_profiles.email ?? 'brak' }}</div>
             </div>
-        </div>
-        <div class="tw-flex tw-flex-row tw-justify-center sm:tw-justify-end">
-            <p class="tw-text-blue-500 hover:tw-text-blue-800 hover:tw-cursor-pointer hover:tw-underline tw-w-fit"
-                @click="modalStore.visibility.profile_image = true">Zmień zdjęcie</p>
-        </div>
-    </section>
+
+            <div class="tw-bg-[#f8f9fa] tw-mt-4 tw-flex tw-flex-col tw-p-4 tw-rounded-2xl tw-text-base">
+                <div class="">Dyspozycyjność</div>
+                <div class="tw-font-bold tw-text-lg">{{ user_store.user?.ready_to_departure_dates?.departure_date ??
+                    'brak' }}</div>
+            </div>
+
+            <div class="tw-bg-[#f8f9fa] tw-mt-4 tw-flex tw-flex-col tw-p-4 tw-rounded-2xl tw-text-base">
+                <div class="tw-flex tw-flex-row tw-gap-2 tw-items-center">
+                    <i class="far fa-clock"></i>
+                    Konto aktywne od: {{ user_store.user.activated_at ? format(user_store.user.activated_at) : 'brak' }}
+                </div>
+                <div class="tw-flex tw-flex-row tw-gap-2 tw-items-center">
+                    <i class="far fa-calendar"></i>
+                    Konto utworzone: {{ format(user_store.user.created_at) }}
+                </div>
+            </div>
+        </v-card-text>
+    </v-card>
+    <!-- <v-card title="Moje dane osobowe">
+        <v-card-text>
+            <div class="tw-flex tw-flex-col tw-gap-2">
+                <DisplayRow3 name="Imię" :value="user_store.user.user_profiles.first_name" />
+                <DisplayRow3 name="Nazwisko" :value="user_store.user.user_profiles.last_name" />
+                <DisplayRow3 name="PESEL" :value="user_store.user.pesel" />
+                <DisplayRow3 name="Numer telefonu" :value="user_store.user.user_profiles.phone_number" />
+                <DisplayRow3 name="Adres e-mail" :value="user_store.user.user_profiles.email ?? 'brak'" />
+                <div class="tw-mt-8">
+                    <ProfileImage :profile_image="user_store.user.user_profile_image"></ProfileImage>
+                </div>
+            </div>
+        </v-card-text>
+        <v-card-actions>
+            <div class="tw-flex tw-flex-row tw-w-full">
+                <v-btn @click="modalStore.visibility.profile_image = true" variant="tonal" color="#2563eb">Zmień
+                    zdjęcie</v-btn>
+            </div>
+        </v-card-actions>
+    </v-card> -->
 </template>

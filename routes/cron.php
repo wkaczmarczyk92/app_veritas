@@ -8,9 +8,11 @@ use App\Console\Commands\CRONCaretakerProfileExists;
 use App\Console\Commands\CRONSendSMSWithPassword;
 use App\Console\Commands\CRONSendEmailWithOffers;
 
+use App\Console\Commands\Exports\CRONPayoutRequests;
+
 // CRON-y
 
-Route::middleware('cron_auth')->prefix('cron')->group(function() {
+Route::middleware('cron_auth')->prefix('cron')->group(function () {
 
     Route::get('/carer.profile.exists', [CRONCaretakerProfileExists::class, 'handle'])->name('carer.profile.exists');
 
@@ -22,4 +24,5 @@ Route::middleware('cron_auth')->prefix('cron')->group(function() {
 
     Route::get('/send.emails.with.offers', [CRONSendEmailWithOffers::class, 'handle'])->name('send.emails.with.offers');
 
+    Route::get('/generate.payout.requests.doc', [CRONPayoutRequests::class, 'handle'])->name('generate.payout.requests.doc');
 });

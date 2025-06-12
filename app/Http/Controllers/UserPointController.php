@@ -20,6 +20,7 @@ use App\Models\LevelBonusValue;
 use Database\Seeders\LevelSeeder;
 use Illuminate\Support\Facades\Redirect;
 
+use App\Models\PayoutRequest;
 use App\Services\UserPointService;
 
 class UserPointController extends Controller
@@ -30,7 +31,7 @@ class UserPointController extends Controller
     {
         $this->user_point_service = $user_point_service;
     }
-    
+
 
     public function index(Request $request)
     {
@@ -43,11 +44,11 @@ class UserPointController extends Controller
 
         $queries = DB::getQueryLog();
         // dd($queries);
-        
+
         return response()->json([
             'user_points' => $user_points,
             'queries' => $queries
-        ]); 
+        ]);
     }
 
     /**
@@ -86,7 +87,7 @@ class UserPointController extends Controller
                     return response()->json([
                         'success' => false,
                         'errors' => [
-                            'value' => [ "Różnica między aktualną a odejmowaną liczbą punktów nie może być mniejsza niż zero. Maksymalna ilość punktów do odjęcia - {$user_profile->current_points}." ]
+                            'value' => ["Różnica między aktualną a odejmowaną liczbą punktów nie może być mniejsza niż zero. Maksymalna ilość punktów do odjęcia - {$user_profile->current_points}."]
                         ]
                     ]);
                 }
@@ -94,7 +95,7 @@ class UserPointController extends Controller
 
             $user_profile->total_points = $request->type == 3 ? ($user_profile->total_points + $request->value) : ($user_profile->total_points - $request->value);
             $user_profile->current_points = $request->type == 3 ? ($user_profile->current_points + $request->value) : ($user_profile->current_points - $request->value);
-            
+
             $point_checkpoint = PointCheckpoint::all();
 
             $current_user_level_id = $user_profile->level;
@@ -107,7 +108,8 @@ class UserPointController extends Controller
                         $user_has_bonuse = UserHasBonus::create([
                             'user_id' => $request->user_id,
                             'level_id' => $user_profile->level,
-                            'bonus_value' => LevelBonusValue::where('level_id', $user_profile->level)->pluck('value')[0]
+                            'bonus_value' => LevelBonusValue::where('level_id', $user_profile->level)->pluck('value')[0],
+                            'bonus_status_id' => 5
                         ]);
                     }
                 }
@@ -130,16 +132,47 @@ class UserPointController extends Controller
         } catch (\Throwable $th) {
             DB::rollback();
             return back()->withErrors(['success' => false]);
-        }        
+        }
 
         return response()->json([
-            'success' => true, 
-            'record' => $user_point, 
+            'success' => true,
+            'record' => $user_point,
             'user_profiles' => $user_profile
         ]);
     }
-    
-    public function last_insert_date() {
+
+    public function last_insert_date()
+    {
         return response()->json(['last_insert_date' => $this->user_point_service->get_last_insert_date()]);
+    }
+
+    public function activate_by_admin(int $user_id)
+    {
+        try {
+            DB::beginTransaction();
+
+            $user_bonus = UserHasBonus::where('user_id', $user_id)->where('bonus_status_id', 5)->get();
+
+            foreach ($user_bonus as $bonus) {
+                $bonus->bonus_status_id = 1;
+                $bonus->save();
+
+                PayoutRequest::create([
+                    'user_has_bonus_id' => $bonus->id,
+                    'payout_value' => $bonus->bonus_value,
+                ]);
+            }
+
+            DB::commit();
+        } catch (Exception $e) {
+            DB::rollback();
+            return back()->withErrors(['success' => false]);
+        }
+
+        return response()->json([
+            'success' => true,
+            'msg' => 'Bonusy zostały aktywowane.',
+            'alert_type' => 'success'
+        ]);
     }
 }

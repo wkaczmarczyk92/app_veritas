@@ -25,17 +25,17 @@ class UserSeeder extends Seeder
     {
         $user = User::create([
             'pesel' => null,
-            'email' => 'w.kaczmarczyk@grupa-veritas.pl',
-            'password' => Hash::make('haslo'),
-            'created_at' => date('Y-m-d H:i:s'),
-            'updated_at' => date('Y-m-d H:i:s'),
+            'email' => 'k.chroma@grupa-veritas.pl',
+            'password' => Hash::make('bkj1439fj4rjfkl3%1s%%'),
+            'created_at' => now(),
+            'updated_at' => now(),
         ]);
 
         $user->assignRole('admin');
 
         $user_profile = new UserProfile([
-            'first_name' => 'Admin',
-            'last_name' => 'Admin',
+            'first_name' => 'Katarzyna',
+            'last_name' => 'Chroma',
             'level' => null,
         ]);
 

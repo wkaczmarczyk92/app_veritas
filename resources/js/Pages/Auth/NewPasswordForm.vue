@@ -5,6 +5,8 @@ import InputLabel from '@/Components/InputLabel.vue';
 import TextInput from '@/Components/TextInput.vue';
 import MButton from '@/Components/Buttons/MButton.vue';
 import InputError from '@/Components/InputError.vue';
+import TInput from '@/Composables/Form/TInput.vue';
+import Button from '@/Composables/Buttons/Button.vue';
 
 const props = defineProps({
     form: {
@@ -23,17 +25,12 @@ const emits = defineEmits([
 </script>
 
 <template>
-    <InputLabel for="password" value="Hasło" />
-    <TextInput id="password" type="password" class="tw-mt-1 tw-block tw-w-full" v-model="form.password" required
-        @change="$emit('update:form', form)" />
-    <InputError class="tw-mt-2" :message="form.errors && form.errors.password ? form.errors.password[0] : ''" />
+    <TInput label="Hasło" v-model:model_value="form.password" type="password"
+        :error="form.errors && form.errors.password ? form.errors.password[0] : ''" />
 
-    <InputLabel for="password_confirmation" value="Powtórz hasło" class="mt-10" />
-    <TextInput id="password_confirmation" type="password" class="tw-mt-1 tw-block tw-w-full"
-        v-model="form.password_confirmation" required />
-    <InputError class="tw-mt-2"
-        :message="form.errors && form.errors.password_confirmation ? form.errors.password_confirmation[0] : ''" />
+    <TInput label="Powtórz hasło" class="tw-mt-4" v-model:model_value="form.password_confirmation" type="password"
+        :error="form.errors && form.errors.password_confirmation ? form.errors.password_confirmation[0] : ''" />
 
-    <MButton add_class="tw-mt-4 disabled:tw-opacity-50" value="Zmień hasło" bg="tw-bg-amber-600"
-        :hover="form.btns.password.disabled ? '' : 'hover:tw-bg-amber-700'" @click="$emit('submit-new-password')"></MButton>
+    <Button class="tw-mt-4" value="Zmień hasło" :disabled="form.btns.password_form.disabled"
+        @click="$emit('submit-new-password')" />
 </template>

@@ -4,6 +4,7 @@ import { Head } from '@inertiajs/vue3';
 import { ref } from 'vue'
 import IncompletePayoutRequests from './Parts/View/IncompletePayoutRequests.vue';
 import CompletePayoutRequests from './Parts/View/CompletePayoutRequests.vue';
+import ForApprovalPayoutRequests from './Parts/View/ForApprovalPayoutRequests.vue';
 import Loader from '@/Components/Loader.vue';
 
 const payout_view = ref('pending');
@@ -32,6 +33,7 @@ const breadcrumbs = [
 </script>
 
 <template>
+
     <Head title="VeritasApp - wnioski o wypłatę" />
     <AdminLayout>
         <template #header>
@@ -47,9 +49,15 @@ const breadcrumbs = [
             <div class="tw-px-4 tw-mx-auto tw-max-w-8xl sm:tw-px-6 lg:tw-px-8">
                 <div class="tw-flex tw-flex-row tw-gap-6">
                     <div>
-                        <button :class="payout_view == 'pending' ? active_button : inactive_button" class="tw-border-solid"
-                            @click="payout_view = 'pending'">
+                        <button :class="payout_view == 'pending' ? active_button : inactive_button"
+                            class="tw-border-solid" @click="payout_view = 'pending'">
                             Oczekujące
+                        </button>
+                    </div>
+                    <div>
+                        <button :class="payout_view == 'for_approval' ? active_button : inactive_button"
+                            class="tw-border-solid" @click="payout_view = 'for_approval'">
+                            Do akceptacji
                         </button>
                     </div>
                     <div>
@@ -74,6 +82,15 @@ const breadcrumbs = [
                         <Suspense>
                             <CompletePayoutRequests #default :levels="levels">
                             </CompletePayoutRequests>
+                            <template #fallback>
+                                <Loader></Loader>
+                            </template>
+                        </Suspense>
+                    </div>
+                    <div v-else-if="payout_view == 'for_approval'">
+                        <Suspense>
+                            <ForApprovalPayoutRequests #default :levels="levels">
+                            </ForApprovalPayoutRequests>
                             <template #fallback>
                                 <Loader></Loader>
                             </template>

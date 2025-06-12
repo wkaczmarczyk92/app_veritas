@@ -78,9 +78,19 @@ const handleKeyUp = (event) => {
 
                     <div class="tw-my-auto">
                         <v-btn size="large" @click="modal_store.add({
-                name: 'search_model',
-                component: SearchModal,
-            })">
+                            name: 'search_model',
+                            component: SearchModal,
+                        })">
+                            <i class="fa-regular fa-magnifying-glass tw-mr-2"></i>
+                            Szukaj
+                            <v-btn size="small" variant="outlined" class="tw-ml-3 !tw-opacity-100" disabled="disabled">
+                                CTRL + K
+                            </v-btn>
+                        </v-btn>
+                        <v-btn class="tw-ml-2" size="large" @click="modal_store.add({
+                            name: 'search_model',
+                            component: SearchModal,
+                        })">
                             <i class="fa-regular fa-magnifying-glass tw-mr-2"></i>
                             Szukaj
                             <v-btn size="small" variant="outlined" class="tw-ml-3 !tw-opacity-100" disabled="disabled">

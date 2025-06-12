@@ -20,9 +20,10 @@ class CURL
         ]
     ];
 
-    private $_token = 'token: bearereyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJkYXRhIjp7ImlkIjoiOTcyMCIsInVzZXJuYW1lIjoic2NhbmRpY2FyZSIsImVtYWlsIjoiIiwicm9sZXMiOlsiIl0sInJvbGVfY3JlYXRpb24iOlsiMyJdLCJjb21wYW55X2NyZWF0aW9uIjoiVmVyaXRhcyIsInJlZ2lvbiI6IkNlbnRyYWxhIiwiY29tcGFueV9ncm91cHMiOlsiMSIsIjIiXSwiZnVsbFVzZXJOYW1lIjoiU2NhbmRpIENhcmUifX0.8BR4el7aoerDFzAWeegkxkANCPIWUwtT5wtm1Bia8Qc';
+    private $_token = 'token: bearereyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJleHAiOjE4MTAzODQ2MTQsImRhdGEiOnsiaWQiOiI5NzIwIiwidXNlcm5hbWUiOiJzY2FuZGljYXJlIiwiZnVsbFVzZXJOYW1lIjoiU2NhbmRpIENhcmUiLCJ1cnVfcmVkaXJlY3RfdXJsIjpudWxsLCJ0eXBlIjowfX0.OBAR4jJLQLn332nDD2ZWQk9dnbsq_06By9S-n-YZxcI';
 
-    public function send() {
+    public function send()
+    {
         $this->_check_data();
 
         $ch = curl_init();
@@ -30,10 +31,12 @@ class CURL
         curl_setopt($ch, CURLOPT_URL, $this->url);
         curl_setopt($ch, CURLOPT_POST, true);
         curl_setopt($ch, CURLOPT_HTTPHEADER, [
-            ...$this->headers[$this->content_type], 
+            ...$this->headers[$this->content_type],
             $this->_token
         ]);
-        curl_setopt($ch, CURLOPT_POSTFIELDS, 
+        curl_setopt(
+            $ch,
+            CURLOPT_POSTFIELDS,
             ($this->content_type == 'post' ? http_build_query($this->post_data) : $this->json_data)
         );
         curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
@@ -51,7 +54,8 @@ class CURL
         return $response;
     }
 
-    private function _check_data() {
+    private function _check_data()
+    {
         if (!empty($this->post_data) and !empty($this->json_data)) {
             throw new Exception('Invalid data.');
         }

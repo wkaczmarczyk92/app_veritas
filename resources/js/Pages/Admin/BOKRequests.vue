@@ -40,6 +40,7 @@ const breadcrumbs = [
 </script>
 
 <template>
+
     <Head title="VeritasApp - ustawienia punktów i kwoty wypłaty" />
     <AdminLayout>
         <template #header>
@@ -60,18 +61,37 @@ const breadcrumbs = [
                         <tr class="hover:bg-grey-lighter" v-for="(bok_request, index) in bok_requests.data">
                             <td class="tw-px-6 tw-py-4 tw-border-b tw-border-grey-light">{{ bok_request.id }}</td>
                             <td class="tw-px-6 tw-py-4 tw-border-b tw-border-grey-light">{{
-                                `${bok_request.user.user_profiles.first_name} ${bok_request.user.user_profiles.last_name}`
-                            }}</td>
+                                `${bok_request.user.user_profiles.first_name}
+                                ${bok_request.user.user_profiles.last_name}`
+                                }}</td>
                             <td class="tw-px-6 tw-py-4 tw-border-b tw-border-grey-light">
                                 <a class="edit-user" :href="`/uzytkownik/${bok_request.user.id}`">
                                     <i class="fa-solid fa-user-pen"></i>
                                 </a>
                             </td>
-                            <td class="tw-px-6 tw-py-4 tw-border-b tw-border-grey-light">{{ bok_request.subject.subject }}
+                            <td class="tw-px-6 tw-py-4 tw-border-b tw-border-grey-light">
+                                <span v-if="bok_request.bank_account.length"
+                                    class="tw-bg-orange-600 tw-px-2 tw-py-1 tw-rounded tw-text-gray-100">
+                                    {{ bok_request.subject.subject }}
+                                    <v-tooltip activator="parent" location="top">
+                                        <div calss="tw-flex tw-flex-col tw-gap-1">
+                                            <p>Właściciel konta - {{ bok_request.bank_account[0].owner_name }}</p>
+                                            <p>Typ konta - {{ bok_request.bank_account[0].account_type.type_pl }}</p>
+                                            <p>Numer konta - {{ bok_request.bank_account[0].bank_name }}</p>
+                                            <p>Nazwa banku - {{ bok_request.bank_account[0].account_number }}</p>
+                                            <p v-if="bok_request.bank_account[0].account_type_id == 1">SWIFT - {{
+                                                bok_request.bank_account[0].swift }}</p>
+                                        </div>
+                                    </v-tooltip>
+                                </span>
+                                <span v-else>
+                                    {{ bok_request.subject.subject }}
+                                </span>
                             </td>
                             <td class="tw-px-6 tw-py-4 tw-border-b tw-border-grey-light">{{ bok_request.msg }}</td>
-                            <td class="tw-px-6 tw-py-4 tw-border-b tw-border-grey-light">{{ format(bok_request.created_at)
-                            }}</td>
+                            <td class="tw-px-6 tw-py-4 tw-border-b tw-border-grey-light">{{
+                                format(bok_request.created_at)
+                                }}</td>
                         </tr>
                     </TableDefault>
                     <StaticInfoAlert v-else>Brak danych do wyświetlenia.</StaticInfoAlert>

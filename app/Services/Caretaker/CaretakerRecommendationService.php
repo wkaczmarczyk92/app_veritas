@@ -85,7 +85,6 @@ class CaretakerRecommendationService extends Service
                 }
             }
 
-
             $caretaker->crm_lead_id = $response->result->lead_id ?? 1;
             $caretaker->save();
 

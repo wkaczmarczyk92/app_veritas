@@ -19,9 +19,19 @@ const url = () => {
 <template>
     <div class="img-wrapper">
         <div v-if="profile_image && profile_image?.path && profile_image?.status == 3"
-            class="profile-img tw-border-2 tw-border-gray-800 tw-shadow-2xl" :style="`background-image: url(${url()});`">
+            class="profile-img tw-border-2 tw-border-gray-800 tw-shadow-2xl"
+            :style="`background-image: url(${url()});`">
         </div>
-        <i v-else class="fa-solid fa-circle-user img-default"></i>
+        <div v-else
+            class="tw-w-[160px] tw-h-[160px] tw-flex tw-flex-row tw-justify-center tw-items-center tw-bg-[#ffefdc] tw-rounded-full">
+            <svg width="60" height="60" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <path
+                    d="M12 12C14.2091 12 16 10.2091 16 8C16 5.79086 14.2091 4 12 4C9.79086 4 8 5.79086 8 8C8 10.2091 9.79086 12 12 12Z"
+                    fill="#fc9003" />
+                <path d="M12 14C7.58172 14 4 17.5817 4 22H20C20 17.5817 16.4183 14 12 14Z" fill="#fc9003" />
+            </svg>
+        </div>
+
     </div>
     <div v-if="profile_image && profile_image.status == 1" class="tw-mt-4 tw-flex tw-flex-row tw-justify-center">
         <MButton :disabled="true" bg="tw-bg-orange-600"

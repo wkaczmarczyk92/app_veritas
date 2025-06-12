@@ -18,6 +18,8 @@ use App\Models\PasswordForUser;
 
 use Illuminate\Support\Facades\Auth;
 
+use App\Services\CRM\ProfileImageService;
+
 class APIUserController extends Controller
 {
     // {
@@ -59,7 +61,6 @@ class APIUserController extends Controller
         $user->user_profiles->recruiter_last_name = $request->data['usr_last_name'] ?? $user->user_profiles->recruiter_last_name;
         $user->user_profiles->crt_id_user_recruiter = $request->data['usr_id_user'] ?? $user->user_profiles->crt_id_user_recruiter;
 
-        // dd('ssds');
         DB::beginTransaction();
 
         try {
@@ -103,17 +104,9 @@ class APIUserController extends Controller
 
     public function store(Request $request)
     {
-        // echo json_encode([
-        //     'success' => true,
-        //     'msg' => 'Przerwa w systemie lojalnościowym.'
-        // ]);
-        // return;
-
-
-        // ssg_arrival_date
         try {
             $validate = $request->validate([
-                'pesel' => 'required|numeric|digits:11',
+                'pesel' => 'required|string',
                 'ssg_arrival_date' => 'required|string|max:10',
                 'user_profiles.first_name' => 'required|string',
                 'user_profiles.last_name' => 'required|string',
@@ -137,8 +130,7 @@ class APIUserController extends Controller
 
             try {
                 $user = User::create([
-                    'pesel' => $request->pesel,
-                    // 'password' => Hash::make($password),
+                    'pesel' => $request->pesel
                 ]);
 
                 $user->assignRole('user');
@@ -156,10 +148,12 @@ class APIUserController extends Controller
                 ]);
 
                 $password_for_user = new PasswordForUser([
-                    // 'user_id' =>
                     'departure_date' => $request['ssg_arrival_date'],
                     'sent' => false
                 ]);
+
+                // $user_profile_image_service = new ProfileImageService;
+                // $user_profile_image = $user_profile_image_service->download($user->id);
 
                 $user->user_profiles()->save($user_profile);
                 $user->password_for_user()->save($password_for_user);
@@ -181,7 +175,6 @@ class APIUserController extends Controller
             DB::beginTransaction();
 
             try {
-
                 $user->user_profiles->save();
                 DB::commit();
             } catch (Exception $e) {

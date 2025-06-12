@@ -6,6 +6,7 @@ import { ref, toRef, onBeforeMount } from 'vue';
 import { useUserStore } from '@/Pinia/UserStore'
 
 import Post from './Parts/Post.vue';
+import PostNew from './Parts/PostNew.vue';
 import ImportantInfo from './Parts/ImportantInfo.vue';
 // import FilesToDownload from './Parts/FilesToDownload.vue';
 import OnlineCourses from './Parts/OnlineCourses.vue';
@@ -37,7 +38,7 @@ const props = defineProps({
     }
 });
 
-console.log(props.posts)
+console.log('payout active', props.payout_active)
 
 const user = toRef(props.user);
 
@@ -54,6 +55,7 @@ onBeforeMount(async () => {
 </script>
 
 <template>
+
     <Head title="VeritasApp - strona główna" />
 
     <UserLayout>
@@ -72,7 +74,7 @@ onBeforeMount(async () => {
                     <PayoutRequest :payout_active="payout_active" />
                 </Suspense>
 
-                <Post v-for="(post, index) in posts" class="tw-mt-10" :key="index" :post="post" />
+                <PostNew v-for="(post, index) in posts" class="tw-mt-10" :key="index" :post="post" />
 
                 <ImportantInfo :recruiter="recruiter" />
 

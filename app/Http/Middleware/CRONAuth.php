@@ -18,7 +18,7 @@ class CRONAuth
         if (isset($request->token) and $request->token == 'HbwAJytaY515nTG8fFjXjKNgbQZwIh') {
             return $next($request);
         } else {
-            die();
+            die('token missing');
         }
     }
 }

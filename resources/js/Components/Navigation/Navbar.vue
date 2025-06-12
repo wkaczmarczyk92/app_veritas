@@ -6,21 +6,22 @@ import DropdownLink from '@/Components/DropdownLink.vue';
 import NavLink from '@/Components/NavLink.vue';
 import ResponsiveNavLink from '@/Components/ResponsiveNavLink.vue';
 import { Link } from '@inertiajs/vue3';
-import { payoutRequestsStore } from '@/Pinia/StorePayoutRequest';
 import { storeToRefs } from 'pinia'
 import { PasswordRequestStore } from '@/Pinia/PasswordRequestStore';
 import { ProfileImageStore } from '@/Pinia/ProfileImageStore';
+import { payoutRequestsStore } from '@/Pinia/StorePayoutRequest';
 
 const usePayoutRequestStore = payoutRequestsStore();
 const usePasswordRequestStore = PasswordRequestStore();
 const useProfileImageStore = ProfileImageStore();
 // await usePasswordRequestStore.countPasswordRequests();
 
-const { count_incomplete_payout_request } = storeToRefs(usePayoutRequestStore);
+const { count_incomplete_payout_request, count_for_approval_payout_request } = storeToRefs(usePayoutRequestStore);
 const { password_request_count } = storeToRefs(usePasswordRequestStore);
 const { count_unverified } = storeToRefs(useProfileImageStore);
 await usePasswordRequestStore.countPasswordRequests();
 await usePayoutRequestStore.countIncomplete();
+await usePayoutRequestStore.countForApproval();
 await useProfileImageStore.countUnverified();
 
 console.log(count_unverified.value);
@@ -28,6 +29,8 @@ console.log(count_unverified.value);
 const showingNavigationDropdown = ref(false);
 
 console.log(showingNavigationDropdown.value)
+
+console.log('for_approval', count_incomplete_payout_request.value)
 
 </script>
 
@@ -46,26 +49,23 @@ console.log(showingNavigationDropdown.value)
                         <NavLink :href="route('dashboard')" :active="route().current('dashboard')">
                             Pulpit
                         </NavLink>
-                        <!-- <NavLink :href="route('users')" :active="route().current('users')">
-                            Użytkownicy
-                        </NavLink> -->
                         <div
                             class="dropdown-item tw-ml-3 tw-relative tw-items-center tw-inline-flex tw-items-center tw-px-1 tw-border-b-2 tw-border-transparent tw-text-sm tw-font-medium tw-leading-5 tw-text-gray-300 hover:tw-text-gray-400 hover:tw-border-gray-300 focus:tw-outline-none focus:tw-text-gray-700 focus:tw-border-gray-300 tw-transition tw-duration-150 tw-ease-in-out">
                             <Dropdown align="right" width="48">
                                 <template #trigger>
                                     Użytkownicy
-                                    <span v-if="password_request_count" class="password-request-count-info tw-text-white">{{
-                                        password_request_count }}</span>
-                                    <span v-if="count_unverified" class="image-request-count-info tw-text-white"
-                                        :class="password_request_count ? 'image-wp-count' : 'image-wop-count'">{{
-                                            count_unverified }}</span>
+                                    <v-badge :content="count_unverified" floating v-if="count_unverified"
+                                        color="#3b82f6">
+                                    </v-badge>
+                                    <v-badge :content="password_request_count" floating v-if="password_request_count"
+                                        color="#ef4444" class="ml-5">
+                                    </v-badge>
                                     <span class="tw-inline-flex tw-rounded-md">
                                         <button type="button"
                                             class="tw-inline-flex tw-items-center tw-px-3 tw-border tw-border-transparent tw-text-sm tw-leading-4 tw-font-medium tw-rounded-md tw-text-gray-300 tw-bg-gray-800 hover:tw-text-gray-400 focus:tw-outline-none tw-transition tw-ease-in-out tw-duration-150">
-                                            <!-- {{ $page.props.auth.user.name }} -->
-
-                                            <svg class="tw-ml-2 -tw-mr-0.5 tw-h-4 tw-w-4" xmlns="http://www.w3.org/2000/svg"
-                                                viewBox="0 0 20 20" fill="currentColor">
+                                            <svg class="tw-ml-2 -tw-mr-0.5 tw-h-4 tw-w-4"
+                                                xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20"
+                                                fill="currentColor">
                                                 <path fill-rule="evenodd"
                                                     d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z"
                                                     clip-rule="evenodd" />
@@ -77,18 +77,28 @@ console.log(showingNavigationDropdown.value)
                                 <template #content>
                                     <DropdownLink :href="route('users')"> Wszyscy użytkownicy </DropdownLink>
                                     <DropdownLink :href="route('last.login.index')"> Statystyka logowań </DropdownLink>
-                                    <DropdownLink :href="route('user.profiles.verify')" class="tw-relative"> Weryfikacja
-                                        zdjęć
-                                        profilowych
-                                        <span v-if="count_unverified"
-                                            class="image-request-count-info-in-dropdown tw-text-white">{{ count_unverified
-                                            }}</span>
+                                    <DropdownLink :href="route('user.profiles.verify')" class="tw-relative">
+                                        <v-badge :content="count_unverified" v-if="count_unverified" color="#3b82f6">
+                                            Weryfikacja
+                                            zdjęć
+                                            profilowych
+                                        </v-badge>
+                                        <span v-else>
+                                            Weryfikacja
+                                            zdjęć
+                                            profilowych
+                                        </span>
                                     </DropdownLink>
-                                    <DropdownLink :href="route('password.request.index')" class="tw-relative"> Zgłoszenia
-                                        zmiany hasła
-                                        <span v-if="password_request_count"
-                                            class="password-request-count-info-in-dropdown tw-text-white">{{
-                                                password_request_count }}</span>
+                                    <DropdownLink :href="route('password.request.index')" class="tw-relative">
+                                        <v-badge :content="password_request_count" floating
+                                            v-if="password_request_count" color="#ef4444">
+                                            Zgłoszenia
+                                            zmiany hasła
+                                        </v-badge>
+                                        <span v-else>
+                                            Zgłoszenia
+                                            zmiany hasła
+                                        </span>
                                     </DropdownLink>
                                 </template>
                             </Dropdown>
@@ -101,10 +111,11 @@ console.log(showingNavigationDropdown.value)
                                     <span class="tw-inline-flex tw-rounded-md">
                                         <button type="button"
                                             class="tw-inline-flex tw-items-center tw-px-3 tw-border tw-border-transparent tw-text-sm tw-leading-4 tw-font-medium tw-rounded-md tw-text-gray-300 tw-bg-gray-800 hover:tw-text-gray-400 focus:tw-outline-none tw-transition tw-ease-in-out tw-duration-150">
-                                            <!-- {{ $page.props.auth.user.name }} -->
 
-                                            <svg class="tw-ml-2 -tw-mr-0.5 tw-h-4 tw-w-4" xmlns="http://www.w3.org/2000/svg"
-                                                viewBox="0 0 20 20" fill="currentColor">
+
+                                            <svg class="tw-ml-2 -tw-mr-0.5 tw-h-4 tw-w-4"
+                                                xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20"
+                                                fill="currentColor">
                                                 <path fill-rule="evenodd"
                                                     d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z"
                                                     clip-rule="evenodd" />
@@ -127,10 +138,11 @@ console.log(showingNavigationDropdown.value)
                                     <span class="tw-inline-flex tw-rounded-md">
                                         <button type="button"
                                             class="tw-inline-flex tw-items-center tw-px-3 tw-border tw-border-transparent tw-text-sm tw-leading-4 tw-font-medium tw-rounded-md tw-text-gray-300 tw-bg-gray-800 hover:tw-text-gray-400 focus:tw-outline-none tw-transition tw-ease-in-out tw-duration-150">
-                                            <!-- {{ $page.props.auth.user.name }} -->
 
-                                            <svg class="tw-ml-2 -tw-mr-0.5 tw-h-4 tw-w-4" xmlns="http://www.w3.org/2000/svg"
-                                                viewBox="0 0 20 20" fill="currentColor">
+
+                                            <svg class="tw-ml-2 -tw-mr-0.5 tw-h-4 tw-w-4"
+                                                xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20"
+                                                fill="currentColor">
                                                 <path fill-rule="evenodd"
                                                     d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z"
                                                     clip-rule="evenodd" />
@@ -148,13 +160,14 @@ console.log(showingNavigationDropdown.value)
                                 </template>
                             </Dropdown>
                         </div>
-                        <!-- <NavLink :href="route('post.index')" :active="route().current('post.index')">
-                            Posty
-                        </NavLink> -->
                         <NavLink :href="route('payoutrequest.index')" :active="route().current('payoutrequest.index')">
                             Wnioski o wypłatę
-                            <span v-if="count_incomplete_payout_request" class="new-payout-request-info">{{
-                                count_incomplete_payout_request }}</span>
+                            <v-badge :content="count_incomplete_payout_request" floating
+                                v-if="count_incomplete_payout_request" color="#3b82f6">
+                            </v-badge>
+                            <v-badge :content="count_for_approval_payout_request" floating
+                                v-if="count_for_approval_payout_request" color="#ef4444" class="ml-5">
+                            </v-badge>
                         </NavLink>
                         <NavLink :href="route('offer.index')" :active="route().current('offer.index')">
                             Zgłoszenia na oferty
@@ -170,10 +183,11 @@ console.log(showingNavigationDropdown.value)
                                     <span class="tw-inline-flex tw-rounded-md">
                                         <button type="button"
                                             class="tw-inline-flex tw-items-center tw-px-3 tw-border tw-border-transparent tw-text-sm tw-leading-4 tw-font-medium tw-rounded-md tw-text-gray-300 tw-bg-gray-800 hover:tw-text-gray-400 focus:tw-outline-none tw-transition tw-ease-in-out tw-duration-150">
-                                            <!-- {{ $page.props.auth.user.name }} -->
 
-                                            <svg class="tw-ml-2 -tw-mr-0.5 tw-h-4 tw-w-4" xmlns="http://www.w3.org/2000/svg"
-                                                viewBox="0 0 20 20" fill="currentColor">
+
+                                            <svg class="tw-ml-2 -tw-mr-0.5 tw-h-4 tw-w-4"
+                                                xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20"
+                                                fill="currentColor">
                                                 <path fill-rule="evenodd"
                                                     d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z"
                                                     clip-rule="evenodd" />
@@ -183,9 +197,8 @@ console.log(showingNavigationDropdown.value)
                                 </template>
 
                                 <template #content>
-                                    <!-- <DropdownLink :href="route('multiplier_settings')"> Mnożnik punktów </DropdownLink> -->
-                                    <!-- <DropdownLink :href="route('settings.index')"> Minimalna ilość puntków i kwota </DropdownLink> -->
-                                    <DropdownLink :href="route('pointbreakpoints.index')"> Punkty kontrolne </DropdownLink>
+                                    <DropdownLink :href="route('pointbreakpoints.index')"> Punkty kontrolne
+                                    </DropdownLink>
                                     <DropdownLink :href="route('level.bonus.value.index')"> Bonus za wejście na poziom
                                     </DropdownLink>
                                 </template>
@@ -248,9 +261,6 @@ console.log(showingNavigationDropdown.value)
                 <ResponsiveNavLink :href="route('dashboard')" :active="route().current('dashboard')">
                     Pulpit
                 </ResponsiveNavLink>
-                <!-- <ResponsiveNavLink :href="route('users')" :active="route().current('users')">
-                    Użytkownicy
-                </ResponsiveNavLink> -->
                 <div
                     class="dropdown-item tw-relative tw-block tw-w-full tw-pl-3 tw-pr-4 tw-py-2 tw-border-l-4 tw-border-transparent tw-text-left tw-text-base tw-font-medium tw-text-gray-600 hover:tw-text-gray-800 hover:tw-bg-gray-50 hover:tw-border-gray-300 focus:tw-outline-none focus:tw-text-gray-800 focus:tw-bg-gray-50 focus:tw-border-gray-300 tw-transition tw-duration-150 tw-ease-in-out">
                     <Dropdown align="right" width="48">
@@ -327,13 +337,21 @@ console.log(showingNavigationDropdown.value)
                         <template #content>
                             <DropdownLink :href="route('caretaker.recommendations.index')"> Polecenia opiekunek
                             </DropdownLink>
-                            <DropdownLink :href="route('family.recommendations.index')"> Polecenia rodzin </DropdownLink>
+                            <DropdownLink :href="route('family.recommendations.index')"> Polecenia rodzin
+                            </DropdownLink>
                             <DropdownLink :href="route('bonus.index')"> Ustawienia bonusów </DropdownLink>
                         </template>
                     </Dropdown>
                 </div>
-                <ResponsiveNavLink :href="route('payoutrequest.index')" :active="route().current('payoutrequest.index')">
+                <ResponsiveNavLink :href="route('payoutrequest.index')"
+                    :active="route().current('payoutrequest.index')">
                     Wnioski o wypłatę
+                    <v-badge :content="count_incomplete_payout_request" floating v-if="count_incomplete_payout_request"
+                        color="#3b82f6">
+                    </v-badge>
+                    <v-badge :content="count_for_approval_payout_request" floating
+                        v-if="count_for_approval_payout_request" color="#ef4444" class="ml-5">
+                    </v-badge>
                 </ResponsiveNavLink>
                 <ResponsiveNavLink :href="route('bokrequest.index')" :active="route().current('bokrequest.index')">
                     Zgłoszenia BOK
@@ -359,8 +377,6 @@ console.log(showingNavigationDropdown.value)
                         </template>
 
                         <template #content>
-                            <!-- <DropdownLink :href="route('multiplier_settings')"> Mnożnik punktów </DropdownLink> -->
-                            <!-- <DropdownLink :href="route('settings.index')"> Minimalna ilość puntków i kwota </DropdownLink> -->
                             <DropdownLink :href="route('pointbreakpoints.index')"> Punkty kontrolne </DropdownLink>
                             <DropdownLink :href="route('level.bonus.value.index')"> Bonus za wejście na poziom
                             </DropdownLink>

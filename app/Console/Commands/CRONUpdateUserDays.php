@@ -15,12 +15,17 @@ use App\Models\UserPoint;
 use App\Models\UserHasBonus;
 use App\Models\LevelBonusValue;
 
+
+use App\Helpers\SMS;
+use App\Models\BonusStatus;
+
 class CRONUpdateUserDays extends Command
 {
     protected $signature = 'cron:update-user-days';
 
 
-    public function handle() {
+    public function handle()
+    {
         set_time_limit(0);
 
         $current_date = date('Y-m-d');
@@ -69,11 +74,20 @@ class CRONUpdateUserDays extends Command
                         $user->user_profiles->level = $checkpoint->level_id;
 
                         if ($current_user_level_id < $user->user_profiles->level) {
-                            $user_has_bonuse = UserHasBonus::create([
+                            $user_has_bonus = UserHasBonus::create([
                                 'user_id' => $user->id,
                                 'level_id' => $user->user_profiles->level,
-                                'bonus_value' => LevelBonusValue::where('level_id', $user->user_profiles->level)->pluck('value')[0]
+                                'bonus_value' => LevelBonusValue::where('level_id', $user->user_profiles->level)->pluck('value')[0],
+                                'bonus_status_id' => BonusStatus::where('name', 'available')->value('id')
                             ]);
+
+                            $sms = new SMS;
+                            $sms->set_time();
+                            $sms->params['to'] = $user->user_profiles->phone_number;
+                            $sms->params['message'] = "Gratulujemy! Osiągnąłeś/aś nowy poziom. Odbierz swój bonus w wysokości {$user_has_bonus->bonus_value}€ w aplikacji Veritas.";
+
+                            $sms->send();
+                            unset($sms);
                         }
                     }
                 }
@@ -83,7 +97,8 @@ class CRONUpdateUserDays extends Command
                     'points' => $days,
                     'days' => $days,
                     'auto' => true,
-                    'type' => 1
+                    'type' => 1,
+                    'comment' => "Punkty za $month-$year"
                 ]);
 
                 $user->user_profiles->save();
@@ -108,5 +123,4 @@ class CRONUpdateUserDays extends Command
             'exception' => ''
         ]);
     }
-
 }

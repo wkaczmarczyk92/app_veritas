@@ -11,6 +11,7 @@
     <UserFamilyRecommendationsModal v-if="modalStore.visibility.family_recommendations" />
 
     <ProfileImageModal v-if="modalStore.visibility.profile_image"></ProfileImageModal>
+    <MediaLibraryModal v-if="modalStore.visibility.media_library"></MediaLibraryModal>
 </template>
 
 <script setup>
@@ -22,6 +23,7 @@ import PointsHistoryModal from '@/Modals/PointsHistoryModal.vue';
 import UserCaretakerRecommendationModal from '@/Modals/UserCaretakerRecommendationModal.vue';
 import UserFamilyRecommendationsModal from '@/Modals/UserFamilyRecommendationsModal.vue';
 import ProfileImageModal from '@/Modals/ProfileImageModal.vue';
+import MediaLibraryModal from '@/Modals/MediaLibraryModal.vue';
 
 import { useUserStore } from '@/Pinia/UserStore'
 import { useModalStore } from '@/Pinia/ModalStore'

@@ -1,6 +1,6 @@
 <script setup>
 
-import { Head, router } from '@inertiajs/vue3'
+import { Head } from '@inertiajs/vue3'
 
 import CourseModeratorLayout from '@/Layouts/CourseModeratorLayout.vue'
 import MainContent from '@/Templates/HTML/MainContent.vue'
@@ -9,10 +9,12 @@ import { AlertStore } from '@/Pinia/AlertStore';
 import AlertInfo from '@/Components/Functions/AlertInfo.vue';
 
 import Processing from '@/Composables/Processing.vue';
-import { ref, onMounted, onUnmounted, watch, nextTick } from 'vue'
+import { ref, onMounted, onUnmounted, reactive } from 'vue'
 
 import TInput from '@/Composables/Form/TInput.vue';
 import InputError from '@/Components/InputError.vue';
+
+import FileHandler from '@/Composables/Files/FileHandler';
 
 const props = defineProps({
     opt_for: {
@@ -42,8 +44,13 @@ const alert_store = AlertStore()
 
 const current_files = ref([])
 
+const file_handler = reactive(new FileHandler(
+    alert_store,
+    files.value,
+))
+
 const remove_from_files = (index) => {
-    files.value.splice(index, 1)
+    file_handler.files.splice(index, 1)
 }
 
 function setActive() {
@@ -53,41 +60,15 @@ function setInactive() {
     active.value = false
 }
 
-const file_exists = (file) => {
-    return files.value.some(f => f.name === file.name)
-
-}
-
-const push_file = (file) => {
-    files.value.push({
-        name: file.name.replace(/\.[^/.]+$/, ''),
-        size: file.size,
-        file: file,
-        opt_for: null
-    })
-}
-
 async function onDrop(e) {
     progress.value = true
     console.log('progress', progress.value)
     setInactive()
 
-    if (e.dataTransfer.items) {
-        [...e.dataTransfer.items].forEach((item, i) => {
-            if (item.kind === "file") {
-                const file = item.getAsFile();
-
-                if (!file_exists(file)) {
-                    push_file(file)
-                }
-            }
-        });
+    if (e.dataTransfer) {
+        file_handler.drop(e)
     } else {
-        [...e.dataTransfer.files].forEach((file, i) => {
-            if (!file_exists(file)) {
-                push_file(file)
-            }
-        });
+        file_handler.file_change(e)
     }
 
     progress.value = false
@@ -126,25 +107,6 @@ onUnmounted(() => {
     })
 })
 
-const handle_file_change = async (e) => {
-    progress.value = true
-    await new Promise(r => setTimeout(r, 2000));
-    file_change(e)
-}
-
-const file_change = (e) => {
-    console.log('progress', progress.value)
-    let selected_files = e.target.files
-
-    for (let i = 0; i < selected_files.length; i++) {
-        if (!file_exists(selected_files[i])) {
-            push_file(selected_files[i])
-        }
-    }
-
-    progress.value = false
-}
-
 const breadcrumbs = [
     {
         title: 'VeritasApp',
@@ -162,7 +124,7 @@ const submit = async () => {
     errors.value = {}
 
     let form_data = new FormData()
-    files.value.forEach((file, i) => {
+    file_handler.files.forEach((file, i) => {
         form_data.append(`files_data[${i}][file]`, file.file, file.file.name)
         form_data.append(`files_data[${i}][name]`, file.name)
         form_data.append(`files_data[${i}][size]`, file.file.size)
@@ -186,7 +148,7 @@ const submit = async () => {
     }
 
     if (response.success) {
-        files.value = []
+        file_handler.files = []
         await get_list()
     }
 
@@ -253,14 +215,14 @@ const remove_file = async (id, index, arr = 'caretaker') => {
                                     tutaj...
                                 </div>
                             </label>
-                            <input class="tw-hidden" type="file" id="file" multiple
-                                @change="handle_file_change($event)">
+                            <input class="tw-hidden" type="file" id="file" multiple @change="onDrop($event)">
                         </div>
-                        <div v-if="files.length > 0" class="tw-mt-4">
-                            <div v-for="(file, index) in files" :key="index"
+                        <div v-if="file_handler.get().length > 0" class="tw-mt-4">
+                            <div v-for="(file, index) in file_handler.get()" :key="index"
                                 class="tw-grid tw-grid-cols-1 lg:tw-grid-cols-3 tw-gap-2 tw-mb-4">
                                 <div class="tw-col-span-2">
-                                    <TInput v-model="file.name" class="tw-col-span-2" :clearabl="false">
+                                    <TInput v-model:model_value="file.name" class="tw-col-span-2" :clearabl="false"
+                                        :error="''">
                                     </TInput>
                                     <InputError
                                         :message="errors[`files_data.${index}.name`] ? errors[`files_data.${index}.name`][0] : null">

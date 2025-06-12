@@ -28,32 +28,32 @@ class CRMCaretakerController extends Controller
 
         $caretakers = CRMCaretaker::on('crm_database')
             ->with(['crm_assignments', 'crm_assignments.crm_company'])
-            ->whereHas('crm_assignments', function($query) {
+            ->whereHas('crm_assignments', function ($query) {
                 $query->where('ssg_departure_date', '>=', '2023-01-01')
                     ->where('ssg_canceled', 0)
                     ->where('ssg_temporary_canceled', 0)
-                    ->whereHas('crm_company', function($query) {
+                    ->whereHas('crm_company', function ($query) {
                         $query->whereIn('cmp_id_company_group', [1, 2]);
                     });
             })
             ->whereNotNull('crt_last_name')
             ->whereNotNull('crt_first_name')
-            ->whereNotNull('crt_pesel')            
+            ->whereNotNull('crt_pesel')
             ->whereRaw('crt_pesel REGEXP "^[0-9]+$"')
             ->whereRaw('LENGTH(crt_pesel) = 11')
             ->whereRaw('crt_pesel != 00000000000')
             ->whereNotNull('crt_main_phone_number')
             ->whereNotNull('crt_main_email')
             ->whereNotNull('crt_id_user_recruiter')
-                ->get([
-                    'crt_last_name',
-                    'crt_first_name',
-                    'crt_pesel',
-                    'crt_main_phone_number',
-                    'crt_main_email',
-                    'crt_id_user_recruiter',
-                    'crt_id_caretaker'
-                ]);
+            ->get([
+                'crt_last_name',
+                'crt_first_name',
+                'crt_pesel',
+                'crt_main_phone_number',
+                'crt_main_email',
+                'crt_id_user_recruiter',
+                'crt_id_caretaker'
+            ]);
 
         $collection = [];
 
@@ -71,7 +71,7 @@ class CRMCaretakerController extends Controller
                 'updated_at' => date('Y-m-d H:i:s'),
                 'plain_password' => $password,
                 'pesel' => $caretaker->crt_pesel
-            ];            
+            ];
 
             $user->fill($data);
 
@@ -91,7 +91,7 @@ class CRMCaretakerController extends Controller
                     'created_at' => date('Y-m-d H:i:s'),
                     'updated_at' => date('Y-m-d H:i:s')
                 ]);
-    
+
                 $user->user_profiles()->save($user_profile);
             }
         }
@@ -99,7 +99,8 @@ class CRMCaretakerController extends Controller
         return Excel::download(new CaretakersExport($collection), 'users.xlsx');
     }
 
-    public function updateCaretakerId() {
+    public function updateCaretakerId()
+    {
         set_time_limit(0);
 
         $users = User::with('user_profiles')
@@ -113,8 +114,8 @@ class CRMCaretakerController extends Controller
         }
     }
 
-    public function downloadSingleCaretaker() {
-        
+    public function downloadSingleCaretaker()
+    {
     }
 
     /**

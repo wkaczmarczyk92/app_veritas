@@ -13,12 +13,14 @@ use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\MorphToMany;
+use Illuminate\Database\Eloquent\Relations\HasManyThrough;
 
 use Spatie\Permission\Traits\HasRoles;
 
 use App\Models\Courses\VideoFramed;
 
 use App\Models\Common\CompanyBranch;
+use App\Models\CRM\CaretakerBlackList;
 use Illuminate\Database\Eloquent\Relations\MorphTo;
 
 class User extends Authenticatable
@@ -34,6 +36,8 @@ class User extends Authenticatable
         'pesel',
         'email',
         'password',
+        'active',
+        'activated_at'
     ];
 
     /**
@@ -124,6 +128,23 @@ class User extends Authenticatable
     {
         return $this->morphToMany(CompanyBranch::class, 'model', 'model_has_company_branches', 'model_id', 'company_branch_id')->withPivot('model_type')->wherePivot('model_type', User::class);
     }
+
+    public function tokens(): MorphToMany
+    {
+        return $this->morphToMany(Token::class, 'model', 'model_has_tokens', 'model_id', 'token_id');
+    }
+
+    // public function black_list(): HasManyThrough
+    // {
+    //     return $this->hasManyThrough(
+    //         CaretakerBlackList::class,
+    //         UserProfile::class,
+    //         'user_id',
+    //         'cbh_id_caretaker',
+    //         'id',
+    //         'id'
+    //     );
+    // }
 
     // public function family_recomenndations() : HasMany
     // {

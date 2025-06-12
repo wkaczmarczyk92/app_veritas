@@ -60,9 +60,30 @@ const submit = async () => {
     disabled.value = false;
 }
 
-const btn_text = () => {
-    return disabled.value ? 'Przetwarzanie...' : 'Zaakceptuj wybrane';
+const remove = async () => {
+    disabled.value = true;
+    console.log(ids.value)
+
+    try {
+        let response = await useProfileImageStore.remove(ids.value)
+        useAlertStore.pushAlert(response);
+
+        if (response.success) {
+            ids.value = [];
+            profile_images.value = await useProfileImageStore.getNotVefiried();
+            useProfileImageStore.countUnverified();
+        }
+
+    } catch (error) {
+        console.log(error)
+    }
+
+    disabled.value = false;
 }
+
+// const btn_text = () => {
+//     return disabled.value ? 'Przetwarzanie...' : 'Zaakceptuj';
+// }
 
 const breadcrumbs = [
     {
@@ -83,13 +104,29 @@ const display_date = (updated_at, created_at) => {
 </script>
 
 <template>
+
     <Head :title="`VeritasApp - weryfikacja zdjęć profilowych`" />
     <AdminLayout>
         <Transition name="slide-fade">
-            <MButton v-if="ids.length > 0" :disabled="disabled" :value="btn_text()"
-                add_class="floating-submit tw-px-12 tw-py-4 tw-text-2xl tw-rounded tw-shadow-xl z-10" bg="tw-bg-green-700"
-                hover="hover:tw-bg-green-600" color="tw-text-white" icon="fa-sharp fa-regular fa-image" @click="submit()">
-            </MButton>
+            <div class="tw-flex tw-flex-row tw-gap-3 floating-submit" v-if="ids.length > 0">
+                <v-btn color="#16a34a" size="x-large" @click="submit()" :disabled="disabled">
+                    <template v-slot:prepend>
+                        <i class="fa-sharp fa-regular fa-image"></i>
+                    </template>
+                    Akceptuj
+                </v-btn>
+                <!-- <MButton :disabled="disabled" :value="btn_text()"
+                    add_class="tw-px-12 tw-py-4 tw-text-2xl tw-rounded tw-shadow-xl z-10" bg="tw-bg-green-700"
+                    hover="hover:tw-bg-green-600" color="tw-text-white" icon="fa-sharp fa-regular fa-image"
+                    @click="submit()">
+                </MButton> -->
+                <v-btn color="#dc2626" size="x-large" :disabled="disabled" @click="remove()">
+                    <template v-slot:prepend>
+                        <i class="far fa-times"></i>
+                    </template>
+                    Odrzuć
+                </v-btn>
+            </div>
         </Transition>
         <template #header>
             <!-- <h2 class="text-xl font-semibold leading-tight text-gray-200">Użytkownicy</h2> -->
@@ -110,7 +147,7 @@ const display_date = (updated_at, created_at) => {
                             <TransitionGroup tag="ul" name="list"
                                 class="tw-grid tw-grid-cols-1 tw-gap-4 sm:tw-grid-cols-2 md:tw-grid-cols-3 lg:tw-grid-cols-3 xl:tw-grid-cols-5">
                                 <li v-for="(user, index) in profile_images"
-                                    class="tw-relative tw-text-center tw-bg-gray-200 tw-border-2 tw-border-blue-500 tw-rounded-md"
+                                    class="tw-relative tw-text-center tw-bg-gray-200 tw-border-2 tw-border-blue-500 tw-rounded-md hover:tw-cursor-pointer"
                                     :key="index" @click="pushID(user.id)">
                                     <div :for="`item_${index}`" class="tw-py-8">
                                         <div class="tw-relative tw-mt-8 tw-border-2 tw-border-gray-800 tw-shadow-xl profile-img profile-img-md"
@@ -124,7 +161,9 @@ const display_date = (updated_at, created_at) => {
                                                 user.user_profiles.last_name }}</span>
                                         </div>
                                         <p class="tw-text-sm tw-font-bold">Dodano:</p>
-                                        <p class="tw-text-sm tw-font-bold">{{ display_date(user.user_profile_image.updated_at, user.user_profile_image.created_at) }}
+                                        <p class="tw-text-sm tw-font-bold">{{
+                                            display_date(user.user_profile_image.updated_at,
+                                                user.user_profile_image.created_at) }}
                                         </p>
                                     </div>
                                 </li>

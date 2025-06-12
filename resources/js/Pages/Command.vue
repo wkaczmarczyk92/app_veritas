@@ -1,4 +1,5 @@
 <template>
+
     <Head title="VeritasApp - konsola" />
     <AdminLayout>
         <template #header>
@@ -80,6 +81,8 @@ const down = async () => {
     let response = await axios.post(route('artisan.down'));
     response = response.data
     output.value.maintenance = response.msg
+
+    window.location.href = window.location.origin + '/1630542a-246b-4b66-afa1-dd72a4c43515'
 }
 
 const artisanCall = async () => {

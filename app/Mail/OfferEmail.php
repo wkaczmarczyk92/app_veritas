@@ -16,7 +16,7 @@ class OfferEmail extends Mailable
 
     public $data;
 
-    public static $email;
+    public static $email = 'callcenter@grupa-veritas.pl';
 
     /**
      * Create a new message instance.
@@ -24,7 +24,6 @@ class OfferEmail extends Mailable
     public function __construct($data = null)
     {
         $this->data = $data;
-        // dd($this->data);
     }
 
     /**

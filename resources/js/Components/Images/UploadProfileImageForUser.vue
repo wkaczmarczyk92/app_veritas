@@ -25,7 +25,9 @@ const props = defineProps({
 // console.log(props.user);
 
 const emit = defineEmits([
-    'update'
+    'update',
+    'show-processing',
+    'close-processing'
 ]);
 
 const submit = () => {
@@ -36,6 +38,7 @@ const submit = () => {
     }
 
     processing.value = true;
+    emit('show-processing')
     set_processing();
 
     axios.post(route('store.or.update.user.profile.image'), {
@@ -60,6 +63,8 @@ const submit = () => {
             // danger.value = 'Wystąpił błąd podczas połączenia. Spróbuj ponownie później lub skontaktuj się z administratorem.';
         }
 
+
+        emit('close-processing')
         clearInterval(interval.value);
         interval.value = null
         processing.value = false;

@@ -20,7 +20,7 @@ class BOKRequestController extends Controller
     public function __construct(
         MailService $mail_service,
         BOKRequestService $bok_request_service,
-        RecruiterService $recruiter_service
+        RecruiterService $recruiter_service,
     ) {
         $this->mail_service = $mail_service;
         $this->bok_request_service = $bok_request_service;
@@ -29,7 +29,7 @@ class BOKRequestController extends Controller
 
     public function index()
     {
-        $bok_reuqests = BOKRequest::with(['user.user_profiles', 'subject'])
+        $bok_reuqests = BOKRequest::with(['user.user_profiles', 'subject', 'bank_account', 'bank_account.account_type'])
             ->orderBy('created_at', 'desc')
             ->paginate(5);
 
@@ -42,11 +42,11 @@ class BOKRequestController extends Controller
     {
         return response()->json(
             $this->bok_request_service->store(
-                $request->validated('subject_id'),
-                $request->validated('msg'),
+                $request->all(),
                 Auth::user(),
                 $this->mail_service,
-                $this->recruiter_service
-            ));
+                $this->recruiter_service,
+            )
+        );
     }
 }

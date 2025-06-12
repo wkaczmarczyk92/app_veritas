@@ -63,14 +63,16 @@ const admin_name = (user) => {
                     <td class="tw-py-4 tw-px-6 tw-border-b tw-border-grey-light">{{ payout_request.id }}</td>
                     <td class="tw-py-4 tw-px-6 tw-border-b tw-border-grey-light">{{
                         `${payout_request.user_has_bonus.user.user_profiles.first_name}
-                                            ${payout_request.user_has_bonus.user.user_profiles.last_name}` }}</td>
-                    <td class="tw-py-4 tw-px-6 tw-border-b tw-border-grey-light">{{ payout_request.user_has_bonus.user.pesel }}</td>
+                        ${payout_request.user_has_bonus.user.user_profiles.last_name}` }}</td>
+                    <td class="tw-py-4 tw-px-6 tw-border-b tw-border-grey-light">{{
+                        payout_request.user_has_bonus.user.pesel }}</td>
                     <td class="tw-py-4 tw-px-6 tw-border-b tw-border-grey-light">
                         <a class="edit-user" :href="`/uzytkownik/${payout_request.user_has_bonus.user.id}`">
                             <i class="fa-solid fa-user-pen"></i>
                         </a>
                     </td>
-                    <td class="tw-py-4 tw-px-6 tw-border-b tw-border-grey-light">{{ payout_request.payout_value }} €</td>
+                    <td class="tw-py-4 tw-px-6 tw-border-b tw-border-grey-light">{{ payout_request.payout_value }} €
+                    </td>
                     <td class="tw-py-4 tw-px-6 tw-border-b tw-border-grey-light">
                         <span :class="levelColor(payout_request.user_has_bonus.level_id)"><b>{{ level(levels,
                             payout_request.user_has_bonus.level_id).toUpperCase() }}</b></span>

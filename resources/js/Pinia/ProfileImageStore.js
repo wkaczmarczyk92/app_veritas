@@ -29,6 +29,17 @@ export const ProfileImageStore = defineStore('ProfileImageStore', {
         },
         getUnverified() {
             return this.count_unverified;
+        },
+        async remove(ids) {
+            console.log('qweqweqwe')
+            console.log('inside', ids)
+            let response = await axios.delete(route('decline.user.profile.image.2'), {
+                data: {
+                    ids: ids
+                }
+            })
+            response = response.data
+            return response;
         }
     }
 });

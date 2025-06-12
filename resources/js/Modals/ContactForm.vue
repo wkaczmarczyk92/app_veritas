@@ -14,6 +14,11 @@ import SButton from '@/Components/SButton.vue';
 import { AlertStore } from '@/Pinia/AlertStore';
 import { useModalStore } from '@/Pinia/ModalStore';
 
+import TInput from '@/Composables/Form/TInput.vue';
+
+import Button from '@/Composables/Buttons/Button.vue';
+import Textarea from '@/Composables/Form/TextArea.vue';
+
 const modalStore = useModalStore();
 
 const init_form = {
@@ -24,7 +29,6 @@ const init_form = {
 const form = ref({ ...init_form });
 const errors = ref({});
 const useAlertStore = AlertStore();
-const sbutton_value = ref('Wyślij wiadomość');
 const disabled = ref(false);
 
 const reset_values = () => {
@@ -32,24 +36,28 @@ const reset_values = () => {
     errors.value = {};
 }
 
-const submit = () => {
-    sbutton_value.value = 'Wysyłanie...';
+const submit = async () => {
+    errors.value = {}
     disabled.value = true;
 
-    axios.post(route('contactform.store'), form.value)
-        .then(response => {
-            if (response.data?.errors) {
-                errors.value = response.data.errors;
-            }
+    let response = await axios.post(route('contactform.store'), form.value)
 
-            if (response.data?.success == true) {
-                useAlertStore.pushAlert('success', 'Twoja wiadomość została wysłana.');
-                reset_values();
-            }
+    console.log(response)
 
-            sbutton_value.value = 'Wyślij wiadomość';
-            disabled.value = false;
-        });
+    response = response.data
+
+    if (response.errors) {
+        errors.value = response.errors;
+    }
+
+    if (response.success == true) {
+        useAlertStore.pushAlert('success', 'Twoja wiadomość została wysłana.');
+        reset_values();
+
+        console.log(form.value)
+    }
+
+    disabled.value = false;
 }
 
 
@@ -57,22 +65,27 @@ const submit = () => {
 
 <template>
     <h2 class="tw-text-2xl tw-font-bold tw-text-gray-800 tw-mb-8">Skontaktuj się z nami!</h2>
-    <h3 class="tw-text-lg tw-mb-3 tw-text-gray-800">Formularz kontaktowy</h3>
+    <h3 class="tw-text-lg tw-mb-3 tw-text-gray-800 tw-mb-4">Formularz kontaktowy</h3>
     <div>
-        <InputLabel value="Temat wiadomości (opcjonalnie)" :text_color="'tw-text-gray-600'"></InputLabel>
-        <TextInput type="text" v-model="form.subject" class="tw-mt-1 tw-block tw-w-full tw-mb-3"
-            placeholder="Temat wiadomości...">
-        </TextInput>
-        <InputError class="tw-mt-2" :message="errors.subject ? errors.subject[0] : ''" />
+        <TInput class="tw-mb-4" label="Temat wiadomości (opcjonalnie)" v-model:model_value="form.subject" clearable
+            :error="errors.subject ? errors.subject[0] : ''" />
 
-        <InputLabel value="Wpisz tekst wiadomości..." :class="'tw-mt-4'" :text_color="'tw-text-gray-600'"></InputLabel>
-        <TextareaInput v-model="form.msg" :class="'tw-mt-2'" placeholder="Treść wiadomości..."></TextareaInput>
-        <InputError class="tw-mt-2" :message="errors.msg ? errors.msg[0] : ''" />
+        <Textarea v-model:model_value="form.msg" label="Wpisz tekst wiadomości..." clearable
+            :error="errors.msg ? errors.msg[0] : ''" />
     </div>
     <div class="tw-mt-6 tw-text-right tw-flex tw-flex-row tw-justify-end tw-gap-1">
-        <SButton class="tw-ml-4" :value="sbutton_value" :disabled="disabled" @click="submit()"></SButton>
-        <PrimaryButton id="closeModal" @click="modalStore.visibility.contact_form = false">
-            Zamknij
-        </PrimaryButton>
+
+        <Button :value="disabled ? 'Wysyłanie wiadomości...' : 'Wyślij wiadomość'" :disabled="disabled"
+            @click="submit()">
+            <template v-slot:icon>
+                <i class="fa-solid fa-paper-plane-top tw-text-2xl"></i>
+            </template>
+        </Button>
+        <Button value="Zamknij" :disabled="disabled" id="closeModal" @click="modalStore.visibility.contact_form = false"
+            color="red">
+            <template v-slot:icon>
+                <i class="fa-solid fa-xmark tw-text-2xl"></i>
+            </template>
+        </Button>
     </div>
 </template>

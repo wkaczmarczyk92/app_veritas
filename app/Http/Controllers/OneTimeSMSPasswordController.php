@@ -17,6 +17,8 @@ use Illuminate\Support\Facades\Hash;
 
 use App\Helpers\SMS;
 
+use App\Helpers\Response;
+
 class OneTimeSMSPasswordController extends Controller
 {
 
@@ -35,11 +37,23 @@ class OneTimeSMSPasswordController extends Controller
             return response()->json(['success' => false, 'errors' => $e->errors()]);
         }
 
+        $user = User::where('pesel', $request->pesel)->first();
+
+        if (OneTimeSMSPassword::where('user_id', $user->id)->whereDate('created_at', date('Y-m-d'))->exists()) {
+            $sms_password = OneTimeSMSPassword::where('user_id', $user->id)->whereDate('created_at', date('Y-m-d'))->first();
+
+            return Response::success('Sms został już dzisiaj do Ciebie wysłany.', [
+                'code' => $sms_password->password,
+                'replay' => true
+            ]);
+        }
+
         do {
             $password = random_int(100000, 999999);
         } while (OneTimeSMSPassword::where('password', $password)->first());
-        
-        $user = User::with('user_profiles')->where('pesel', $request->pesel)->first();
+
+        $user->load('user_profiles');
+        // $user = User::with('user_profiles')->where('pesel', $request->pesel)->first();
 
         DB::beginTransaction();
 
@@ -63,18 +77,22 @@ class OneTimeSMSPasswordController extends Controller
         } catch (Exception $e) {
             DB::rollback();
 
-            return response()->json([
-                'success' => false,
-                'msg' => 'Coś poszlo nie tak. Spróbuj ponownie później.',
-                'exception' => $e->getMessage()
-            ]);
+            return Response::danger('Coś poszło nie tak. Spróbuj ponownie później.', e: $e);
+            // return response()->json([
+            //     'success' => false,
+            //     'msg' => 'Coś poszlo nie tak. Spróbuj ponownie później.',
+            //     'exception' => $e->getMessage()
+            // ]);
         }
 
-        return response()->json([
-            'success' => true,
-            'msg' => '',
+        return Response::success('SMS został wysłany.', [
             'code' => $password
         ]);
+        // return response()->json([
+        //     'success' => true,
+        //     'msg' => '',
+        //     'code' => $password
+        // ]);
     }
 
     /**
@@ -96,8 +114,8 @@ class OneTimeSMSPasswordController extends Controller
 
         $one_time_password = OneTimeSMSPassword::where('user_id', $user->id)
             ->where('password', $request->code)
-                ->orderBy('created_at', 'desc')
-                ->first();
+            ->orderBy('created_at', 'desc')
+            ->first();
 
         if ($one_time_password->used) {
             return response()->json([

@@ -24,13 +24,18 @@ class PayoutRequest extends Model
     //     return $this->belongsTo(User::class, 'user_id');
     // }
 
-    public function user_has_bonus() : BelongsTo
+    public function user_has_bonus(): BelongsTo
     {
         return $this->belongsTo(UserHasBonus::class);
     }
 
-    public function admin_user() : BelongsTo
+    public function admin_user(): BelongsTo
     {
         return $this->belongsTo(User::class, 'user_id_completed_by');
+    }
+
+    public function approved_by(): BelongsTo
+    {
+        return $this->belongsTo(User::class, 'user_id_approved_by');
     }
 }

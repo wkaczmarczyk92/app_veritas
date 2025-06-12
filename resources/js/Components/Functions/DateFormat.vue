@@ -44,7 +44,7 @@ export function date_of_next_update() {
     let month = date.getMonth() + 1;
     let year = date.getFullYear();
 
-    if (day >= 10) {
+    if (day >= 16) {
         month++;
         if (month > 12) {
             month = 1;
@@ -54,7 +54,15 @@ export function date_of_next_update() {
 
     month = month < 10 ? '0' + month : month;
 
-    return `${year}-${month}-10`;
+    return `${year}-${month}-16`;
+}
+
+export function format_range(date_range) {
+    console.log(date_range);
+    date_range.forEach((date, index) => {
+        date_range[index] = format(date);
+    })
+    return date_range.join(' - ');
 }
 
 </script>

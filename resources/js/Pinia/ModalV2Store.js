@@ -3,12 +3,12 @@ import { defineStore } from 'pinia'
 export const useModalStore = defineStore('modals', {
     state: () => (
         {
-            active_modals: []
+            active_modals: [],
+            options: {
+                width: '!tw-w-10/12'
+            }
         }
     ),
-    getters: {
-        // get1
-    },
     actions: {
         add(modal) {
             console.log(modal)
@@ -47,6 +47,9 @@ export const useModalStore = defineStore('modals', {
                     this.active_modals.splice(founded_index, 1)
                 }, 200)
             }
+        },
+        set_option(value, name) {
+            this.options[name] = value
         }
     },
 })

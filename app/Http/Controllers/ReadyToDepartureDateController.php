@@ -68,7 +68,7 @@ class ReadyToDepartureDateController extends Controller
                     $email_data = [
                         'date' => $request->departure_date,
                         'username' => $user->user_profiles->first_name . ' ' . $user->user_profiles->last_name,
-                        'url' => "http://app.veritas.pl/uzytkownik/{$user->id}",
+                        'url' => "https://app.veritas.pl/uzytkownik/{$user->id}",
                         'url_crm' => "https://local.grupa-veritas.pl/#/opiekunki/{$user->user_profiles->crt_id_caretaker}"
                     ];
 

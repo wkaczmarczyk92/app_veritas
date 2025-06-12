@@ -51,10 +51,19 @@ class PasswordController extends Controller
 
     public function edit()
     {
-        return Inertia::render('User/PasswordChange');
+        $user = auth()->user();
+        $user->load('user_profiles');
+
+        $user_with_crm_account = $user->user_profiles->crt_id_caretaker;
+        $layout = $user_with_crm_account ? 'user' : 'free_account';
+
+        return Inertia::render('User/PasswordChange', [
+            'layout' => $layout
+        ]);
     }
 
-    public function generate() {
+    public function generate()
+    {
         return response()->json([
             'password' => Str::password()
         ]);

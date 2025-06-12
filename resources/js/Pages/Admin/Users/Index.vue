@@ -15,6 +15,8 @@ import StaticInfoAlert from '@/Components/Alerts/StaticInfoAlert.vue';
 
 import TableLink from '@/Templates/HTML/TableLink.vue';
 
+import Link from '@/Composables/Link.vue';
+
 const props = defineProps({
     users: {
         type: Object,
@@ -135,6 +137,7 @@ const breadcrumbs = [
 </script>
 
 <template>
+
     <Head title="VeritasApp - użytkownicy" />
     <AdminLayout>
         <template #header>
@@ -207,7 +210,9 @@ const breadcrumbs = [
                                 </tr>
                             </template>
                             <template v-slot:item="{ item }">
-                                <tr class="tw-text-xs">
+                                <tr class="tw-text-xs" @dblclick="router.visit(route('user', {
+                                    id: item.id
+                                }))">
                                     <td>#{{ item.id }}</td>
                                     <td class="!tw-py-1 tw-text-center">
                                         <div v-if="item.user_profile_image && item.user_profile_image.path && item.user_profile_image.status == 3"
@@ -218,9 +223,10 @@ const breadcrumbs = [
                                     </td>
                                     <td>{{ item.pesel }}</td>
                                     <td>
-                                        <TableLink :url="`/uzytkownik/${item.id}`">
+                                        <Link :value="item.full_name" :url="`/uzytkownik/${item.id}`" />
+                                        <!-- <TableLink :url="`/uzytkownik/${item.id}`">
                                             {{ item.full_name }}
-                                        </TableLink>
+                                        </TableLink> -->
                                     </td>
                                     <td class="tw-text-center">{{ item.user_profiles.current_points ?? '-' }}</td>
                                     <td class="tw-text-center">{{ item.user_profiles.total_days ?? '-' }}</td>
@@ -233,7 +239,7 @@ const breadcrumbs = [
                                     </td>
                                     <td>
                                         {{ `${item.user_profiles.recruiter_first_name ??
-                                            '-'}${item.user_profiles.recruiter_last_name ?? ''}` }}
+                                            '-'} ${item.user_profiles.recruiter_last_name ?? ''}` }}
                                     </td>
                                     <!-- <td class="tw-text-center">
                                         <a :href="`/uzytkownik/${item.id}`">

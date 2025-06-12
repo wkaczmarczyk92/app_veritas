@@ -13,7 +13,9 @@ const props = defineProps({
 });
 
 const emit = defineEmits([
-    'update'
+    'update',
+    'show-processing',
+    'close-processing'
 ]);
 
 const useAlertStore = AlertStore();
@@ -22,10 +24,13 @@ const btn_value = ref('Pobierz zdjęcie z CRM-a')
 
 const download = async () => {
     disabled.value = true;
+    emit('show-processing')
     btn_value.value = 'Pobieranie zdjecia z CRM-a'
     let response = await axios.post(route('download.crm.profile.image', {
         id: props.user.id
     }));
+
+    console.log(response.data)
 
     if (response.data.success) {
         emit('update', response.data.user_profile_image);
@@ -35,6 +40,7 @@ const download = async () => {
     }
 
     disabled.value = false;
+    emit('close-processing')
     btn_value.value = 'Pobierz zdjęcie z CRM-a'
 }
 

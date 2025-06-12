@@ -1,3 +1,72 @@
+<script setup>
+
+import MButton from '@/Components/Buttons/MButton.vue';
+
+import { toRef } from 'vue';
+
+const props = defineProps({
+    submitted: {
+        type: Array,
+        required: true
+    },
+    offers: {
+        type: Object,
+        required: true
+    },
+    btns: {
+        type: Object,
+        required: true
+    }
+})
+
+const btns = toRef(props.btns)
+
+const emit = defineEmits([
+    'update:submitted',
+    'search',
+    'clear-search',
+    'update-btns'
+])
+
+const form_init = () => {
+    return {
+        date: props.filters.date ?? [
+            new Date(new Date().setDate(new Date().getDate() + 7)),
+            new Date(new Date().setDate(new Date().getDate() + 21))
+        ],
+        salary: props.filters.salary ?? 1500,
+        lands_id: props.filters.lands_id ?? [],
+        languages_id: props.filters.languages_id ?? []
+    }
+}
+const form = ref(form_init())
+
+const show_sidebar = ref(false)
+
+const offer_store = async (offer, index) => {
+    btns.value[index]['disabled'] = true
+    btns.value[index]['text'] = 'Zgłaszam...'
+    let response = await axios.post(route('offer.store'), {
+        ...offer
+    })
+    response = response.data
+    console.log(response)
+
+    if (response.success) {
+        emit('update:submitted', index)
+
+    } else {
+
+        btns.value[index]['disabled'] = false
+        btns.value[index]['text'] = 'Zgłoś się'
+
+        emit('update-btns', btns.value)
+    }
+}
+
+</script>
+
+
 <template>
     <div class="tw-grid tw-grid-cols-1 lg:tw-grid-cols-3 tw-gap-4 tw-mt-8 tw-justify-items-stretch"
         v-if="Object.keys(offers).length > 0">
@@ -120,59 +189,3 @@
         </div>
     </div>
 </template>
-
-<script setup>
-
-import MButton from '@/Components/Buttons/MButton.vue';
-
-import { toRef } from 'vue';
-
-const props = defineProps({
-    submitted: {
-        type: Array,
-        required: true
-    },
-    offers: {
-        type: Object,
-        required: true
-    },
-    btns: {
-        type: Object,
-        required: true
-    }
-})
-
-const btns = toRef(props.btns)
-
-const emit = defineEmits([
-    'update:submitted',
-    'search',
-    'clear-search',
-    'update-btns'
-])
-
-
-
-const offer_store = async (offer, index) => {
-    btns.value[index]['disabled'] = true
-    btns.value[index]['text'] = 'Zgłaszam...'
-    let response = await axios.post(route('offer.store'), {
-        ...offer
-    })
-    response = response.data
-    console.log(response)
-
-    if (response.success) {
-        emit('update:submitted', index)
-
-    } else {
-
-        btns.value[index]['disabled'] = false
-        btns.value[index]['text'] = 'Zgłoś się'
-
-        emit('update-btns', btns.value)
-    }
-
-}
-
-</script>

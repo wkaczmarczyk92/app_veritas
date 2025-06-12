@@ -21,9 +21,12 @@ use App\Http\Requests\Test\TestStoreRequest;
 use App\Services\Test\TestStoreService;
 use App\Services\Test\TestDestroyService;
 use App\Models\Test\Test;
+use Illuminate\Support\Facades\Storage;
 
 class TestController extends Controller
 {
+
+
     public function course_moderator_index()
     {
         return Inertia::render('CourseModerator/Test/Index');

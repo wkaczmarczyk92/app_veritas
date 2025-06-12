@@ -6,6 +6,7 @@ use App\Models\Common\File;
 use Illuminate\Support\Facades\DB;
 
 use App\Helpers\Response;
+use Illuminate\Support\Facades\Storage;
 
 class FileDestroyService
 {
@@ -13,7 +14,10 @@ class FileDestroyService
     {
         try {
             DB::beginTransaction();
-            $file = File::find($id);
+            $file = File::with('type')->find($id);
+
+            $disk = $file->file_type_id == 1 ? 'public' : 'media_library';
+            Storage::disk($disk)->delete(str_replace('/uploads', '', $file->path));
 
             $file->opt_fors()->detach();
             $file->delete();

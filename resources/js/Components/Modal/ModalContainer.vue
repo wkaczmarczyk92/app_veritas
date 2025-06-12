@@ -1,12 +1,13 @@
 <template>
     <teleport to="body">
-        <div class="tw-backdrop tw-transition tw-duration-200 o-modal" v-for="(modal, index) in modal_store.active_modals"
-            @click="modal_store.close(modal.name, index)" :key="`modal_${index}`">
+        <div class="tw-backdrop tw-transition tw-duration-200 o-modal"
+            v-for="(modal, index) in modal_store.active_modals" @click="modal_store.close(modal.name, index)"
+            :key="`modal_${index}`">
             <dialog :id="`modal_id_${index}`"
                 class="tw-modal tw-transition tw-duration-200 tw-relative tw-min-h-[80vh] tw-max-h-[90vh] tw-overflow-auto"
-                :class="modal?.dialog?.class" open @click.stop>
-                <div class="tw-flex tw-flex-row tw-gap-4">
-                    <component :is="modal.component" />
+                :class="`${modal?.dialog?.class} ${modal_store.options.width}`" open @click.stop>
+                <div class="tw-flex tw-flex-col tw-gap-4">
+                    <component :is="modal.component" :data="modal.data ?? null" />
                 </div>
                 <!-- <div class="tw-flex tw-flex-row tw-gap-2 tw-justify-end tw-mt-20">
                     <Btn @click="modal_store.close(modal.name, index)">Zamknij</Btn>
@@ -19,7 +20,6 @@
 <script setup>
 
 import { useModalStore } from '@/Pinia/ModalV2Store'
-// import Btn from '@/Components/Form/Btn.vue'
 
 const modal_store = useModalStore()
 

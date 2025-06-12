@@ -12,6 +12,9 @@ use App\Models\Options\OptFor;
 use App\Http\Requests\File\CourseFilesStoreRequest;
 
 use App\Models\Common\File;
+use App\Models\Common\FileType;
+
+use App\Services\File\FileStoreService;
 
 class FileController extends Controller
 {
@@ -24,7 +27,8 @@ class FileController extends Controller
 
     public function course_moderator_update(CourseFilesStoreRequest $request)
     {
-        return (new CourseFileUploadService())->upload($request->files_data);
+        // return (new CourseFileUploadService())->upload($request->files_data);
+        return (new FileStoreService())->store($request->files_data, FileType::where('type', 'course_files_for_users')->value('id'));
     }
 
     public function course_moderator_list()
@@ -32,12 +36,16 @@ class FileController extends Controller
         $caretaker_files = File::with('opt_fors')
             ->whereHas('opt_fors', function ($query) {
                 $query->where('name', 'opiekunka');
-            })->get();
+            })
+            ->where('file_type_id', FileType::where('type', 'course_files_for_users')->value('id'))
+            ->get();
 
         $recruiter_files = File::with('opt_fors')
             ->whereHas('opt_fors', function ($query) {
                 $query->where('name', 'rekruter');
-            })->get();
+            })
+            ->where('file_type_id', FileType::where('type', 'course_files_for_users')->value('id'))
+            ->get();
 
         return response()->json([
             'caretaker' => $caretaker_files,

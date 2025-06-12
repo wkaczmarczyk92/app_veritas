@@ -31,7 +31,40 @@ const username_exists = () => {
 </script>
 
 <template>
-    <section
+    <v-card title="Ważne informacje" class="!tw-mt-10 !tw-shadow-xl">
+        <v-card-text>
+            <div class="tw-flex tw-flex-col tw-gap-2 tw-mt-6">
+                <div class="tw-flex tw-flex-row tw-items-center tw-gap-2 tw-text-lg">
+                    <i class="fa-solid fa-phone-volume"></i>
+                    <p>Telefon alarmowy - <a class="tw-text-blue-600 hover:underline hover:tw-text-blue-500"
+                            href="tel:+717242989">+48 71 72 42
+                            989</a></p>
+                </div>
+                <div v-if="username_exists()" class="tw-flex tw-flex-col tw-gap-2 tw-text-lg tw-mt-10">
+                    <span>Dane koordynatora:</span>
+                    <div class="tw-indent-4">
+                        <div class="tw-flex tw-flex-row tw-gap-2 tw-items-center tw-text-lg">
+                            <i class="fa-solid fa-user-tie"></i>
+                            <span>{{ recruiter?.usr_first_name + ' ' + recruiter?.usr_last_name }}</span>
+                        </div>
+                        <div class="tw-flex tw-flex-row tw-gap-2 tw-items-center tw-text-lg">
+                            <i class="fa-solid fa-envelope"></i>
+                            <a class="tw-text-blue-600 hover:tw-text-blue-500"
+                                :href="`mailto:${recruiter?.usr_email}`">{{ recruiter?.usr_email }}</a>
+                        </div>
+                        <div v-if="recruiter?.usr_phone"
+                            class="tw-flex tw-flex-row tw-gap-2 tw-items-center tw-text-lg">
+                            <i class="fa-solid fa-envelope"></i>
+                            <a class="tw-text-blue-600 hover:tw-text-blue-500" :href="`tel:${recruiter?.usr_phone}`">{{
+                                display_phone_number(recruiter?.usr_phone)
+                            }}</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </v-card-text>
+    </v-card>
+    <!-- <section
         class="tw-bg-gray-100 tw-overflow-hidden tw-shadow-xl tw-rounded-lg tw-px-6 sm:tw-px-20 tw-pt-16 tw-pb-8 sm:tw-pb-12 tw-mt-10 tw-relative">
         <h2 class="tw-text-2xl sm:tw-text-3xl tw-text-gray-800 tw-font-bold tw-relative tw-z-10">
             Ważne informacje
@@ -48,8 +81,9 @@ const username_exists = () => {
                     Dane koordynatora:
                 </h2>
                 <div class="tw-text-lg tw-ml-2 sm:tw-ml-6 tw-mt-2">
-                    <i class="fa-solid fa-user-tie"></i> <span class="tw-text-gray-800">{{ recruiter?.usr_first_name }} {{
-                        recruiter?.usr_last_name }}</span>
+                    <i class="fa-solid fa-user-tie"></i> <span class="tw-text-gray-800">{{ recruiter?.usr_first_name }}
+                        {{
+                            recruiter?.usr_last_name }}</span>
                 </div>
                 <div class="tw-text-lg tw-ml-2 sm:tw-ml-6 tw-mt-1">
                     <i class="fa-solid fa-envelope"></i> <a class="tw-text-blue-700 hover:tw-text-blue-900 phone_link"
@@ -61,5 +95,5 @@ const username_exists = () => {
                 </div>
             </div>
         </div>
-    </section>
+    </section> -->
 </template>

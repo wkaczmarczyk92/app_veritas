@@ -15,7 +15,8 @@ use Inertia\Inertia;
 
 class PasswordRequestController extends Controller
 {
-    public function count() {
+    public function count()
+    {
         return response()->json([
             'password_request_count' => PasswordRequest::where('active', true)->get()->count()
         ]);
@@ -46,6 +47,7 @@ class PasswordRequestController extends Controller
      */
     public function store(Request $request)
     {
+        // dd($request->all());
         try {
             $valiate = $request->validate([
                 'pesel' => 'required|numeric'
@@ -78,10 +80,9 @@ class PasswordRequestController extends Controller
 
         return response()->json([
             'success' => true,
-            'alert_type' => 'success', 
+            'alert_type' => 'success',
             'msg' => 'Jeśli wpisałeś prawidłowy PESEL nasz konsultant skontaktuje się z Tobą w sprawie zmiany hasła.'
         ]);
-
     }
 
     /**

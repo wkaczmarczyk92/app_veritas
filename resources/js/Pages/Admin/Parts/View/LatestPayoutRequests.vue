@@ -53,7 +53,8 @@ const headers = [
                             <td>
                                 <TableLink :url="`/uzytkownik/${item.user_has_bonus.user.id}`">
                                     {{
-                                        `${item.user_has_bonus.user.user_profiles.first_name}${item.user_has_bonus.user.user_profiles.last_name}`
+                                        `${item.user_has_bonus.user.user_profiles.first_name}
+                                    ${item.user_has_bonus.user.user_profiles.last_name}`
                                     }}
                                 </TableLink>
                             </td>

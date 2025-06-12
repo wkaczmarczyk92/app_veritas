@@ -1,10 +1,11 @@
 <script setup>
 
-import AlertInfo from '@/Components/Functions/AlertInfo.vue';
-import Header from '@/Templates/HTML/Header.vue';
-import Table from '@/Templates/HTML/Table.vue';
+import AlertInfo from '@/Components/Functions/AlertInfo.vue'
+import Header from '@/Templates/HTML/Header.vue'
+import Table from '@/Templates/HTML/Table.vue'
 
-import TableLink from '@/Templates/HTML/TableLink.vue';
+import TableLink from '@/Templates/HTML/TableLink.vue'
+import Link from '@/Composables/Link.vue'
 
 defineProps({
     users: {
@@ -27,12 +28,11 @@ const headers = [
                 <div class="tw-text-lg tw-font-bold tw-text-gray-800">
                     Ostatnio dodani użytkownicy
                 </div>
-                <a :href="route('users')" class="tw-text-sm tw-text-blue-500 hover:tw-underline hover:tw-text-blue-700">
-                    Zobacz wszystkich
-                    <span>
-                        <i class="fa-solid fa-user-magnifying-glass"></i>
-                    </span>
-                </a>
+                <Link value="Zobacz wszystkie" url="users" class="tw-text-sm">
+                <template #icon>
+                    <i class="fa-solid fa-user-magnifying-glass"></i>
+                </template>
+                </Link>
             </div>
 
         </template>
@@ -56,7 +56,7 @@ const headers = [
                             </td>
                             <td>
                                 {{ `${item.user_profiles.recruiter_first_name ??
-                                    '-'}${item.user_profiles.recruiter_last_name ??
+                                    '-'} ${item.user_profiles.recruiter_last_name ??
                                     ''}` }}
                             </td>
                         </tr>

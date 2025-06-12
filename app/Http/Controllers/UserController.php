@@ -28,6 +28,8 @@ use App\Models\CRMRecruiter;
 
 use Spatie\Permission\Models\Role;
 use App\Models\Common\CompanyBranch;
+// use App\Models\Bonus;
+use App\Models\UserHasBonus;
 
 use App\Http\Requests\User\CourseModerator\StoreRequest as CourseModeratorStoreRequest;
 
@@ -89,7 +91,7 @@ class UserController extends Controller
 
         $users = $users->paginate(10);
 
-        return Inertia::render('Admin/Users', [
+        return Inertia::render('Admin/Users/Index', [
             'users' => $users,
             'levels' => Level::all(),
             'search_string' => $request->search ?? '',
@@ -116,10 +118,13 @@ class UserController extends Controller
 
         $user_points_records_count =  UserPoint::where('user_id', $id)->count();
 
-        return Inertia::render('Admin/User', [
+        $user_bonuses = UserHasBonus::where('user_id', $user->id)->where('bonus_status_id', 5)->get();
+
+        return Inertia::render('Admin/Users/Show', [
             'user' => $user,
             'levels' => Level::all(),
-            'user_points_records_count' => $user_points_records_count
+            'user_points_records_count' => $user_points_records_count,
+            'user_bonus' => $user_bonuses
         ]);
     }
 

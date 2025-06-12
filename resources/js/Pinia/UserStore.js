@@ -34,7 +34,11 @@ export const useUserStore = defineStore('userStore', {
             await this.set_user();
         },
         username() {
-            return this.user.user_profiles.first_name;
+            return this?.user?.user_profiles.first_name ?? '-';
+        },
+        logout() {
+            this.user = null
+            // console.log('logout', this.user)
         }
     }
 });

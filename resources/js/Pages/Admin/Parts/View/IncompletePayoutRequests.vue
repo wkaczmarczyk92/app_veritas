@@ -65,7 +65,7 @@ const toggle_all = (select) => {
 async function set_as_complete() {
     spinner_visible.value = true;
     disabled.value = true;
-    await axios.patch(route('payoutrequests.update'), { to_update: payout_reuqests_for_action.value })
+    await axios.patch(route('payoutrequests.update'), { to_update: payout_reuqests_for_action.value, status: 'completed' })
         .then(response => {
             if (response.data.success) {
                 useAlertStore.pushAlert('success', 'Wybrane wnioski o wypłatę zostały oznaczone jako zrealizowane.');
@@ -140,8 +140,9 @@ const headers = [
                     <td class="tw-py-4 tw-px-6 tw-border-b tw-border-grey-light">{{ payout_request.id }}</td>
                     <td class="tw-py-4 tw-px-6 tw-border-b tw-border-grey-light">{{
                         `${payout_request.user_has_bonus.user.user_profiles.first_name}
-                                            ${payout_request.user_has_bonus.user.user_profiles.last_name}` }}</td>
-                    <td class="tw-py-4 tw-px-6 tw-border-b tw-border-grey-light">{{ payout_request.user_has_bonus.user.pesel }}</td>
+                        ${payout_request.user_has_bonus.user.user_profiles.last_name}` }}</td>
+                    <td class="tw-py-4 tw-px-6 tw-border-b tw-border-grey-light">{{
+                        payout_request.user_has_bonus.user.pesel }}</td>
                     <td class="tw-py-4 tw-px-6 tw-border-b tw-border-grey-light">
                         <a class="edit-user" :href="`/uzytkownik/${payout_request.user_has_bonus.user.id}`">
                             <i class="fa-solid fa-user-pen"></i>

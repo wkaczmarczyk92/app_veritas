@@ -150,6 +150,9 @@ console.log(showingNavigationDropdown.value)
                             :active="route().current('course_moderator.files.index')">
                             Pliki
                         </NavLink>
+                        <NavLink :href="route('media.library.index')" :active="route().current('media.library.index')">
+                            Biblioteka mediów
+                        </NavLink>
                     </div>
                 </div>
 

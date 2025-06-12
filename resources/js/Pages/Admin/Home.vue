@@ -58,6 +58,7 @@ const breadcrumbs = [
 </script>
 
 <template>
+
     <Head title="VeritasApp - pulpit" />
 
     <AdminLayout>

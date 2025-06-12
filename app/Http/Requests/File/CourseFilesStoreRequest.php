@@ -31,7 +31,7 @@ class CourseFilesStoreRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'files_data.*.name' => 'required|string|max:255',
+            'files_data.*.name' => 'required|string|max:255|unique:files,name',
             // 'files_data.*.size' => 'required|integer|max:2048',
             'files_data.*.opt_for' => 'required|integer|exists:opt_fors,id',
             // 'files_data.*.file' => 'required|extension:pdf,doc,docx,odt,txt,rtf,zip,rar,7z|max:2048',

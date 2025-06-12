@@ -2,8 +2,8 @@
 [type="number"]:focus,
 [type="email"]:focus,
 [type="password"]:focus {
-    outline: none!important;
-    box-shadow: none!important;
+    outline: none !important;
+    box-shadow: none !important;
 }
 
 
