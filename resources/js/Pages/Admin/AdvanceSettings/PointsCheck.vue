@@ -34,7 +34,7 @@ const submit = async () => {
     processing.value = true
 
     try {
-        let response = await axios.post(route('advance.settings.points.check.check'), {
+        let response = await axios.post(route('app.settings.points.check.check'), {
             ...form.value
         })
         response = response.data;
@@ -69,7 +69,7 @@ const update = async () => {
     processing.value = true
 
     try {
-        let response = await axios.post(route('advance.settings.points.check.update'), {
+        let response = await axios.post(route('app.settings.points.check.update'), {
             ...update_form.value
         })
         response = response.data;

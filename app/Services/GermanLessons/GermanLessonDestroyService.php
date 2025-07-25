@@ -14,8 +14,10 @@ class GermanLessonDestroyService
             function () use ($id) {
                 $lesson = Lesson::with('files')->find($id);
 
-                Storage::disk('lessons')->delete($lesson->files[0]->path);
-                $lesson->files[0]->delete();
+                if ($lesson->files->isNotEmpty()) {
+                    Storage::disk('lessons')->delete($lesson->files[0]->path);
+                    $lesson->files[0]->delete();
+                }
 
                 $lesson->delete();
             },

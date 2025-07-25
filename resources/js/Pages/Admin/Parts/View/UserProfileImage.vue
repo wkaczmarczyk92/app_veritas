@@ -62,7 +62,7 @@ const processing = ref(false)
 </script>
 
 <template>
-    <v-card class="tw-shadow-lg tw-rounded tw-p-10 tw-mt-6 tw-relative" :loading="processing">
+    <v-card class="tw-shadow-lg tw-rounded tw-p-10 tw-relative" :loading="processing">
         <!-- <Processing v-if="processing" msg="Przetwarzanie..." /> -->
         <template v-slot:title>
             <div class="tw-flex tw-flex-row tw-items-center tw-gap-2">

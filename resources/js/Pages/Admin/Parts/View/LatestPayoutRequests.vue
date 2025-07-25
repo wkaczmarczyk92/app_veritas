@@ -28,7 +28,7 @@ const headers = [
                 <div class="tw-text-lg tw-font-bold tw-text-gray-800">
                     Ostatnie wnioski o wypłatę
                 </div>
-                <a :href="route('payoutrequest.index')"
+                <a :href="route('payout.requests.index')"
                     class="tw-text-sm tw-text-blue-500 hover:tw-underline hover:tw-text-blue-700">
                     Zobacz wszystkie
                     <span>

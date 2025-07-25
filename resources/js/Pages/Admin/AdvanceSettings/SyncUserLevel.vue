@@ -29,7 +29,7 @@ const sync_all = async () => {
     if (confirm('Na pewno chcesz uruchomić synchronizację poziomów dla wszystkich użytkowników?')) {
         processing.value = true
         console.log('synchronizacja')
-        let response = await axios.post(route('advance.settings.sync.level.update'))
+        let response = await axios.post(route('app.settings.sync.level.update'))
         response = response.data
 
         console.log('sync all', response)

@@ -6,10 +6,13 @@ use App\Http\Controllers\Controller;
 use Inertia\Inertia;
 use App\Http\Requests\Lesson\LessonStoreRequest;
 use App\Models\Courses\Lesson;
-use App\Models\Courses\GermanLesson;
 use App\Services\GermanLessons\GermanLessonDestroyService;
 use App\Services\GermanLessons\GermanLessonStoreService;
 use App\Services\GermanLessons\GermanLessonIndexService;
+use App\Http\Requests\GermanLesson\UpdateVisibilityRequest;
+
+use App\Services\GermanLessons\GermanLessonShowService;
+use App\Services\GermanLessons\GermanLessonVisibilityUpdateService;
 
 class GermanLessonController extends Controller
 {
@@ -20,26 +23,7 @@ class GermanLessonController extends Controller
 
     public function show(int $id)
     {
-        $admin = auth()->user()->hasAnyRole(['admin', 'super-admin']);
-        $template = $admin ? 'Lessons/GermanLessons/Show' : 'Lessons/GermanLessons/User/Show';
-
-        $lesson = Lesson::with([
-            'visibility',
-            'files',
-            'files',
-            'files.user',
-            'files.type',
-            'user',
-            'test',
-            'test.questions',
-            'test.questions.type',
-            'test.questions.file',
-            'test.questions.closed_choices',
-        ])->find($id);
-
-        return Inertia::render($template, [
-            'lesson' => $lesson
-        ]);
+        return (new GermanLessonShowService())($id);
     }
 
     public function edit(int $id)
@@ -72,4 +56,10 @@ class GermanLessonController extends Controller
     {
         return (new GermanLessonStoreService())($request);
     }
+
+    public function update_visibility(UpdateVisibilityRequest $request)
+    {
+        return (new GermanLessonVisibilityUpdateService)($request->lesson_id, $request->visibility_id);
+    }
+
 }

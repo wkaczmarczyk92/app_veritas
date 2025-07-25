@@ -40,6 +40,9 @@ export const AlertStore = defineStore('alertStore', {
         },
         exception() {
             this.pushAlert('danger', 'Błąd systemu. Skontaktuj się z administratorem systemu.');
+        },
+        danger(msg) {
+            this.pushAlert('danger', msg);
         }
     }
 });

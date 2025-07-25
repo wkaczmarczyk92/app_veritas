@@ -8,6 +8,8 @@ import { AlertStore } from '@/Pinia/AlertStore';
 import Flex212 from '@/Templates/HTML/Data/Flex212.vue';
 import Spinner from '@/Components/Forms/Spinner.vue';
 import TestTry from '@/Pages/Lessons/GermanLessons/TestTry.vue'
+import { use_processing_store } from '@/Pinia/ProcessingStore';
+import { use_german_lesson_store } from '@/Pinia/Lessons/GermanLessonStore';
 
 const props = defineProps({
     lesson: {
@@ -42,54 +44,8 @@ const breadcrumbs = [
     },
 ]
 
-const destroy = async (id) => {
-    if (confirm('Na pewno chcesz usunąć wybraną lekcję?')) {
-        processing.value = true;
-
-        try {
-            let response = await axios.delete(route('german.lessons.destroy', {
-                id: lesson.value.id
-            }))
-
-            response = response.data
-            console.log('destroy response', response)
-
-            alert_store.pushAlert(response)
-
-            if (response.success) {
-                router.get(route('german.lessons.index'))
-            }
-        } catch (error) {
-            console.log(error)
-            alert_store.exception()
-        } finally {
-            processing.value = false;
-        }
-    }
-}
-
-const destroy_test = async () => {
-    if (confirm('Na pewno chcesz usunąć test?')) {
-        processing.value = true;
-
-        try {
-            let response = await axios.delete(route('german.tests.destroy', {
-                id: lesson.value.test[0].id
-            }))
-
-            response = response.data
-            alert_store.pushAlert(response)
-
-            if (response.success) {
-                lesson.value.test = []
-            }
-        } catch (error) {
-            console.error(error)
-        } finally {
-            processing.value = false;
-        }
-    }
-}
+const german_lesson_store = use_german_lesson_store()
+german_lesson_store.set_lesson(props.lesson)
 
 </script>
 
@@ -114,7 +70,7 @@ const destroy_test = async () => {
                             <div>
                                 {{ lesson.name }}
                             </div>
-                            <TestTry :lesson="lesson"></TestTry>
+                            <TestTry :lesson="german_lesson_store.lesson"></TestTry>
                             <!-- <div>
                                 <div class="tw-flex tw-flex-row tw-gap-2 tw-items-center">
                                     <v-btn :color="lesson.visibility.id == 1 ? '#ea580c' : '#16a34a'"

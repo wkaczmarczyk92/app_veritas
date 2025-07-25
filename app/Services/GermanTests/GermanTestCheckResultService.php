@@ -6,6 +6,8 @@ use App\Helpers\Transaction;
 use App\Models\Test\Test;
 use App\Models\Test\Question;
 
+use App\Models\Test\TestResult;
+
 class GermanTestCheckResultService
 {
     public $percent_needed_to_pass_test = 80;
@@ -22,7 +24,7 @@ class GermanTestCheckResultService
 
                     $questions = $test->questions;
                 } else {
-                    $questions_id = array_column($request->test_answer, 'question_id');
+                    $questions_id = array_column($request->test, 'id');
                     $questions = Question::with('closed_choices')->whereIn('id', $questions_id)->get();
                 }
 
@@ -41,6 +43,15 @@ class GermanTestCheckResultService
                 ));
 
                 $good_answers_percent = (100 * $count_good_answers) / count($questions);
+
+                if (!auth()->user()->hasAnyRole(['admin', 'super-admin', 'god_mode'])) {
+                    TestResult::create([
+                        'test_id' => Test::where('name', 'Test niemieckiego')->value('id'),
+                        'user_id' => auth()->id(),
+                        'is_passed' => $this->percent_needed_to_pass_test <= $good_answers_percent,
+                        'score' => number_format((float)$good_answers_percent, 0)
+                    ]);
+                }
 
                 return [
                     'good_answers' => $count_good_answers,

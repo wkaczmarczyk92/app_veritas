@@ -11,7 +11,11 @@ const props = defineProps({
     questions: {
         type: Object,
         requried: true
-    }
+    },
+    german_lesson: {
+        type: Object,
+        requried: true
+    },
 })
 
 const breadcrumbs = [
@@ -31,7 +35,12 @@ const breadcrumbs = [
 ]
 
 const test_store = useTestStore()
-test_store.init(props.questions)
+
+try {
+    test_store.init(props.questions)
+} catch (error) {
+    console.log(error)
+}
 
 </script>
 
@@ -47,10 +56,10 @@ test_store.init(props.questions)
                 </template>
             </v-breadcrumbs>
         </template>
-        <div class="tw-py-12">
-            <div class="tw-max-w-full tw-px-4 tw-mx-auto sm:tw-px-6 lg:tw-px-8">
-                <TestContent :questions="props.questions" :is_admin="true" />
-            </div>
+        <div class="tw-max-w-full tw-mx-auto">
+            <v-alert color="info" v-if="props.questions.length == 0">Brak aktywnych lekcji z któych można pobrać pytania
+                testowe.</v-alert>
+            <TestContent v-else :questions="props.questions" :german_lesson="german_lesson" :is_admin="true" />
         </div>
     </AdminLayout>
 

@@ -39,6 +39,7 @@ class CaretakerRecommendationService extends Service
 
     public function store($user_id)
     {
+        // dopisać wysyłke info na skrzynkę CC
         try {
             CaretakerRecommendation::create([
                 'user_id' => $user_id
@@ -77,8 +78,6 @@ class CaretakerRecommendationService extends Service
                 ];
 
                 $response = $curl_request->send_new_caretaker_recommendation_to_leads($arr);
-
-                // dd($response);
 
                 if (!$response->success) {
                     throw new \Exception($response->msg . ' - CRM');

@@ -23,11 +23,17 @@ class CaretakerRecommendation extends Model
         'bonus_payout_completed',
         'ready_to_payout',
         'locked',
-        'updated_by_user_id'
+        'updated_by_user_id',
+        'recruiter_first_name',
+        'recruiter_last_name',
+        'crt_id_user_recruiter'
     ];
 
     protected $casts = [
-        'language_id' => 'integer'
+        'language_id' => 'integer',
+        'bonus_payout_completed' => 'boolean',
+        'ready_to_payout' => 'boolean',
+        'locked' => 'boolean',
     ];
 
     public function user(): BelongsTo

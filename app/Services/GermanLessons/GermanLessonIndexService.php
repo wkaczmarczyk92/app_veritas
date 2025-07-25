@@ -14,7 +14,7 @@ class GermanLessonIndexService
         $german_lesson = GermanLesson::with([
             'lessons' => function ($query) use ($admin) {
                 if (!$admin) {
-                    $query->where('visibility_id', 3);
+                    $query->where('visibility_id', 3)->where('order', '!=', 999);
                 }
 
                 $query->orderBy('order', 'asc');

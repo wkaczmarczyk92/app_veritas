@@ -114,11 +114,11 @@ const showingNavigationDropdown = ref(false);
                                 </template>
                             </Dropdown>
                         </div>
-                        <!-- <div
+                        <div v-if="$page.props.test_user"
                             class="dropdown-item tw-ml-3 tw-relative tw-items-center tw-inline-flex tw-items-center tw-px-1 tw-border-b-2 tw-border-transparent tw-text-sm tw-font-medium tw-leading-5 tw-text-gray-300 hover:tw-text-gray-400 hover:tw-border-gray-300 focus:tw-outline-none focus:tw-text-gray-700 focus:tw-border-gray-300 tw-transition tw-duration-150 tw-ease-in-out">
                             <Dropdown align="right" width="48">
                                 <template #trigger>
-                                    Lekcje
+                                    Lekcje niemieckiego
                                     <span class="tw-inline-flex tw-rounded-md">
                                         <button type="button"
                                             class="tw-inline-flex tw-items-center tw-px-3 tw-border tw-border-transparent tw-text-sm tw-leading-4 tw-font-medium tw-rounded-md tw-text-gray-300 tw-bg-gray-800 hover:tw-text-gray-400 focus:tw-outline-none tw-transition tw-ease-in-out tw-duration-150">
@@ -134,13 +134,15 @@ const showingNavigationDropdown = ref(false);
                                 </template>
 
                                 <template #content>
-                                    <DropdownLink :href="route('user.german.lessons.index')"> Lekcje niemieckiego
+                                    <DropdownLink :href="route('user.german.lessons.index')"> Lekcje
                                     </DropdownLink>
-                                    <DropdownLink :href="route('my_offers_free_account')"> Rozwiąż test
+                                    <DropdownLink :href="route('user.german.test.show')"> Rozwiąż test
+                                    </DropdownLink>
+                                    <DropdownLink :href="route('user.german.lessons.become.mittel.program')"> Zasady programu "Zostań Mittelem"
                                     </DropdownLink>
                                 </template>
                             </Dropdown>
-                        </div> -->
+                        </div>
                         <!-- <NavLink :href="route('offer.user')" :active="route().current('offer.user')">
                             Szukaj ofert
                         </NavLink> -->

@@ -38,6 +38,7 @@ class AdminDashboardController extends Controller
     
     public function index()
     {
+        // dd(app() -> isDownForMaintenance());
         return Inertia::render('Admin/Home', [
             'users'                     => $this->user_service->latest(),
             'levels'                    => $this->level_service->get(),

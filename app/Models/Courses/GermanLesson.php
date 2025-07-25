@@ -16,7 +16,8 @@ class GermanLesson extends Model
 
     protected $fillable = [
         'name',
-        'test_time'
+        'test_time',
+        'question_count'
     ];
 
     public function lessons(): MorphMany

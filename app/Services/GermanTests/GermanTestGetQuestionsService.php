@@ -7,9 +7,12 @@ use App\Models\Courses\Lesson;
 
 class GermanTestGetQuestionsService
 {
-    public function __invoke()
+    public function __invoke($question_count)
     {
         $german_lesson = GermanLesson::with([
+            'lessons' => function ($query) {
+                $query->where('visibility_id', 3);
+            },
             'lessons.test.questions',
             'lessons.test.questions.type',
             'lessons.test.questions.file',
@@ -22,7 +25,7 @@ class GermanTestGetQuestionsService
             }
 
             return collect();
-        })->shuffle()->take(20);
+        })->shuffle()->take($question_count);
 
         return $questions;
     }

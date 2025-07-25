@@ -50,6 +50,12 @@ class Kernel extends HttpKernel
         ],
         'cron_auth' => [
             \App\Http\Middleware\CRONAuth::class
+        ],
+        'is_test_user' => [
+            \App\Http\Middleware\IsTestUser::class
+        ],
+        'seen_test_regulations' => [
+            \App\Http\Middleware\SeenTestRegulations::class
         ]
     ];
 

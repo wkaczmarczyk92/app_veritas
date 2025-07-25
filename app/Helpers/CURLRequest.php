@@ -65,6 +65,29 @@ class CURLRequest
         return $this->_responseJSON($this->curl->send());
     }
 
+    public function send_caretaker_that_applied_for_the_offer($arr, $user) {
+        $this->curl = new CURL;
+        $this->curl->url = 'https://local.grupa-veritas.pl/api/planer/addProposalFromCaretakersApp';
+        $this->curl->content_type = 'json';
+        $this->curl->json_data = json_encode([
+            'planer_id' => $arr->pnr_id_planer,
+            'phone_number' => $user->user_profiles->phone_number,
+            'arrival_date' => $arr->pnr_start_date,
+            'rate' => $arr->pnr_caretaker_rate,
+            'app' => 'Veritas',
+            'caretaker_data' => [
+                'personal_data' => [
+                    'first_name' => $user->user_profiles->first_name,
+                    'last_name' => $user->user_profiles->last_name,
+                    'phone_number' => $user->user_profiles->phone_number
+                ]
+            ]
+        ], JSON_UNESCAPED_UNICODE);
+
+        // dd($this->curl->json_data);
+        return $this->_responseJSON($this->curl->send());
+    }
+
     // public function get_caretaker_recruiter()
 
     private function _response($response)

@@ -32,6 +32,12 @@ class CaretakerRecommendationController extends Controller
         $this->recommendation_service = $recommendation_service;
     }
 
+    public function count_unlocked() {
+        return response()->json([
+            'unlocked' => CaretakerRecommendation::where('locked', false)->count()
+        ]);
+    }
+
     public function index(Request $request)
     {
         return Inertia::render('Admin/CaretakerRecommendations', [

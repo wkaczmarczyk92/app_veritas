@@ -70,7 +70,7 @@ const breadcrumbs = [
                                 format(password_request.created_at) }}</td>
                         </tr>
                     </TableDefault>
-                    <StaticInfoAlert v-else>Brak zgłoszeń o zmianę hasła.</StaticInfoAlert>
+                    <v-alert v-else color="info">Brak zgłoszeń o zmianę hasła.</v-alert>
                 </div>
             </div>
         </div>

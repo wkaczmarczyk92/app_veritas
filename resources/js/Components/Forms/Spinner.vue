@@ -6,6 +6,10 @@ defineProps({
     msg: {
         type: String,
         default: 'Przetwarzanie'
+    },
+    top_position: {
+        type: [Number, String],
+        default: '50'
     }
 })
 
@@ -26,9 +30,9 @@ handle_dots()
 </script>
 
 <template>
-    <div class="tw-absolute tw-w-full tw-h-full tw-bg-black tw-z-10 tw-opacity-70">
-        <div
-            class="tw-text-gray-300 tw-text-lg tw-absolute tw-top-[50%] tw-left-[50%] -tw-translate-x-[50%] -tw-translate-y-[50%] tw-flex tw-flex-row tw-items-center">
+    <div class="tw-absolute tw-w-full tw-h-full tw-bg-black tw-z-20 tw-opacity-80 tw-top-0 tw-left-0">
+        <div :class="`tw-top-[${top_position}%]`"
+            class="tw-text-gray-300 tw-text-lg tw-absolute tw-left-[50%] -tw-translate-x-[50%] -tw-translate-y-[50%] tw-flex tw-flex-row tw-items-center">
             <svg class="tw-animate-spin -tw-ml-1 tw-mr-3 tw-h-5 tw-w-5 tw-text-white" xmlns="http://www.w3.org/2000/svg"
                 fill="none" viewBox="0 0 24 24">
                 <circle class="tw-opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>

@@ -19,6 +19,10 @@ use App\Models\CRMPatientMobility;
 use App\Models\CRM\Language;
 use Illuminate\Support\Facades\Mail;
 use App\Mail\OfferEmail;
+use App\Helpers\CURLRequest;
+use App\Helpers\Response;
+use Illuminate\Support\Facades\DB;
+use App\Helpers\Transaction;
 
 
 class OfferController extends Controller
@@ -45,68 +49,90 @@ class OfferController extends Controller
         ]);
     }
 
+    public function destroy($id)
+    {
+        return Transaction::try(
+            function () use ($id) {
+                $offer = Offer::find($id);
+                $offer->delete();
+            },
+            'Oferta została usunięta.'
+        );
+    }
+
     public function store(Request $request)
     {
-        $user = Auth::user();
+        try {
+            DB::beginTransaction();
 
-        $offer = Offer::where('user_id', $user->id)
-            ->where('crm_offer_id', $request->pnr_id_planer)
-            ->whereDate('created_at', '>=', date('Y-m-d'))
-            ->firstOrNew([
-                'user_id' => $user->id,
-                'crm_offer_id' => $request->pnr_id_planer,
-                'hp_code' => $request->family['fml_code_HP'],
-                'start_date' => $request->pnr_start_date,
-                'crm_family_id' => $request->family['fml_id_family']
-            ]);
+            $user = Auth::user();
+            $user->load('user_profiles');
 
-        if (!$offer->exists) {
-            try {
-                $offer->save();
-            } catch (Exception $e) {
-                return response()->json([
-                    'success' => false,
-                    'msg' => 'Coś poszło nie tak.',
-                    'alert_type' => 'danger',
-                    'exception' => $e->getMessage()
+            $offer = Offer::where('user_id', $user->id)
+                ->where('crm_offer_id', $request->pnr_id_planer)
+                ->whereDate('created_at', '>=', date('Y-m-d'))
+                ->firstOrNew([
+                    'user_id' => $user->id,
+                    'crm_offer_id' => $request->pnr_id_planer,
+                    'hp_code' => $request->family['fml_code_HP'],
+                    'start_date' => $request->pnr_start_date,
+                    'crm_family_id' => $request->family['fml_id_family']
                 ]);
-            }
-        }
 
-        $user = Auth::user();
-        $user->load('user_profiles');
-
-        if (app()->environment() == 'production') {
-            $email_data = [
-                'first_name' => $user->user_profiles->first_name,
-                'last_name' => $user->user_profiles->last_name,
-                'offers' => [
-                    $offer
-                ],
-                'caretaker_crm_url' => 'https://local.grupa-veritas.pl/#/opiekunki/' . $user->user_profiles->crt_id_caretaker,
-                'caretaker_app_url' => 'https://app.veritas.pl/uzytkownik/' . $user->id,
-                'has_crm_account' => $user->user_profiles->crt_id_caretaker == null
-            ];
-
-            if ($user->user_profiles != null && $user->user_profiles->crt_id_user_recruiter != null) {
-                $recruiter_service = new RecruiterService();
-                $recruiter = $recruiter_service->get($user->user_profiles->crt_id_user_recruiter);
-
-                OfferEmail::$email = $recruiter->usr_email;
+            if (!$offer->exists) {
+                try {
+                    $offer->save();
+                } catch (Exception $e) {
+                    return Response::danger('Coś poszło nie tak. Spróbuj ponownie później.', e: $e);
+                }
             }
 
-            // OfferEmail::$email = 'w.kaczmarczyk@grupa-veritas.pl';
-            Mail::to(OfferEmail::$email)->send(
-                new OfferEmail($email_data)
-            );
+
+            $curl_request = new CURLRequest;
+            $curl_request->send_caretaker_that_applied_for_the_offer($request, $user);
+
+            if (app()->environment() == 'production') {
+                $email_data = [
+                    'first_name' => $user->user_profiles->first_name,
+                    'last_name' => $user->user_profiles->last_name,
+                    'offers' => [
+                        $offer
+                    ],
+                    'caretaker_crm_url' => 'https://local.grupa-veritas.pl/#/opiekunki/' . $user->user_profiles->crt_id_caretaker,
+                    'caretaker_app_url' => 'https://app.veritas.pl/uzytkownik/' . $user->id,
+                    'has_crm_account' => $user->user_profiles->crt_id_caretaker == null
+                ];
+
+                if ($user->user_profiles != null && $user->user_profiles->crt_id_user_recruiter != null) {
+                    $recruiter_service = new RecruiterService();
+                    $recruiter = $recruiter_service->get($user->user_profiles->crt_id_user_recruiter);
+
+                    OfferEmail::$email = $recruiter->usr_email;
+                }
+
+                // OfferEmail::$email = 'w.kaczmarczyk@grupa-veritas.pl';
+                Mail::to(OfferEmail::$email)->send(
+                    new OfferEmail($email_data)
+                );
+            }
+
+            DB::commit();
+        } catch (Exception $e) {
+            DB::rollback();
+            return Response::danger('Coś poszło nie tak. Spróbuj ponownie później.', e: $e);
         }
 
-        return response()->json([
-            'success' => true,
-            'msg' => 'Zgłoszenie zostało przyjęte.',
-            'alert_type' => 'success',
+        return Response::success('Zgłoszenie zostało przyjęte.', [
             'offer_id' => $offer->crm_offer_id
         ]);
+
+
+        // return response()->json([
+        //     'success' => true,
+        //     'msg' => 'Zgłoszenie zostało przyjęte.',
+        //     'alert_type' => 'success',
+        //     '
+        // ]);
     }
 
     public function user_offers(Request $request)

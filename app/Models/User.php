@@ -23,6 +23,8 @@ use App\Models\Common\CompanyBranch;
 use App\Models\CRM\CaretakerBlackList;
 use Illuminate\Database\Eloquent\Relations\MorphTo;
 
+use App\Models\Common\SeenInfo;
+
 class User extends Authenticatable
 {
     use HasApiTokens, HasFactory, Notifiable, HasRoles;
@@ -58,6 +60,13 @@ class User extends Authenticatable
     protected $casts = [
         'email_verified_at' => 'datetime',
     ];
+
+    protected $appends = ['is_admin'];
+
+    protected function getIsAdminAttribute()
+    {
+        return $this->hasAnyRole(['god_mode', 'admin', 'super-admin']);
+    }
 
     public function user_profiles(): HasOne
     {
@@ -132,6 +141,11 @@ class User extends Authenticatable
     public function tokens(): MorphToMany
     {
         return $this->morphToMany(Token::class, 'model', 'model_has_tokens', 'model_id', 'token_id');
+    }
+
+    public function seen_infos() : HasMany
+    {
+        return $this->hasMany(SeenInfo::class);
     }
 
     // public function black_list(): HasManyThrough

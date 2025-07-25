@@ -23,29 +23,42 @@ use App\Http\Controllers\UserProfileImageController;
 use App\Http\Controllers\PasswordRequestController;
 use App\Http\Controllers\DownloadCRMProfileImage;
 use App\Http\Controllers\PointCheckpointController;
-
 use App\Http\Controllers\OfferController;
-
-use App\Http\Controllers\CRMCaretakerController;
-
-use App\Models\BonusStatus;
-
 use App\Http\Controllers\LastLoginController;
-use App\Http\Controllers\Test\GermanTestController;
-use App\Http\Controllers\Test\TestController;
 
 use App\Http\Controllers\Lessons\GermanLessonController;
+
+use App\Http\Controllers\Test\GermanTestController;
 use App\Http\Controllers\Test\QuestionController;
+use App\Http\Controllers\Test\TestResultController;
 
-Route::middleware(['auth', 'role:admin|super-admin'])->group(function () {
-    Route::controller(GermanTestController::class)->prefix('testy-niemieckiego')->name('german.tests.')->group(function () {
-        Route::get('wczytaj-test-z-pliku-xml', 'load_from_xml')->name('load.from.xml');
-        Route::post('wrzuc-z-pliku', 'load_from_file')->name('upload.from.file');
-        Route::delete('usun-test/{id}', 'destroy')->name('destroy');
-        Route::get('ustawienia', 'settings')->name('settings');
-        Route::patch('ustawienia', 'update_settings')->name('settings.update');
+use App\Models\BonusStatus;
+use App\Http\Controllers\Settings\UpdateCaretakerDataController;
 
-        Route::get('test', 'show')->name('show');
+Route::middleware(['auth', 'role:super-admin|god_mode'])->group(function () {
+    Route::controller(UpdateCaretakerDataController::class)->prefix('ustawienia-zaawansowane')->name('advance.settings.')->group(function () {
+        Route::prefix('opiekunki')->name('caretakers.')->group(function () {
+            Route::post('aktualizacja-rekruterow', 'update_caretakers_recruiter')->name('update.recruiter');
+        });
+    });
+});
+
+Route::middleware(['auth', 'role:admin|super-admin|god_mode'])->group(function () {
+    Route::controller(GermanTestController::class)
+        ->prefix('testy-niemieckiego')
+        ->name('german.tests.')
+        ->group(function () {
+            Route::get('wczytaj-test-z-pliku-xml', 'load_from_xml')->name('load.from.xml');
+            Route::post('wrzuc-z-pliku', 'load_from_file')->name('upload.from.file');
+            Route::delete('usun-test/{id}', 'destroy')->name('destroy');
+            Route::get('ustawienia', 'settings')->name('settings');
+            Route::patch('ustawienia', 'update_settings')->name('settings.update');
+
+            Route::get('test', 'show')->name('show');
+        });
+
+    Route::controller(TestResultController::class)->prefix('wyniki-testow')->name('test.results.')->group(function () {
+        Route::delete('usun-wyniki-testowe', 'destroy_test_user_data')->name('destroy.test.user.data');
     });
 
     Route::controller(QuestionController::class)->prefix('pytania')->name('questions.')->group(function () {
@@ -64,11 +77,16 @@ Route::middleware(['auth', 'role:admin|super-admin'])->group(function () {
         Route::get('/lekcja/{id}', 'show')->name('show');
         Route::get('/lekcja/edytuj/{id}', 'edit')->name('edit');
         Route::delete('/lekcja/usun/{id}', 'destroy')->name('destroy');
+
+        Route::patch('lekcja/aktualizuj-widocznosc', 'update_visibility')->name('update.visibility');
     });
 
     Route::get('/pulpit', [AdminDashboardController::class, 'index'])->name('dashboard');
 
-    Route::get('/zgloszenia-na-oferty', [OfferController::class, 'index'])->name('offer.index');
+    Route::controller(OfferController::class)->name('offer.')->group(function () {
+        Route::get('/zgloszenia-na-oferty', 'index')->name('index');
+        Route::delete('/usun-oferte/{id}', 'destroy')->name('destroy');
+    });
 
     // USER
 
@@ -76,6 +94,11 @@ Route::middleware(['auth', 'role:admin|super-admin'])->group(function () {
         Route::get('/uzytkownicy', 'index')->name('users');
         Route::get('/uzytkownik/{id}', 'show')->name('user');
         Route::patch('/uzytkownik', 'update')->name('user.update');
+        Route::patch('uzytkownik/{user_id}/aktywacja-konta-premium', 'promote_to_premium')->name('user.promote.to.premium');
+
+        Route::post('pobierz-uzytkownikow', 'admin_search_index')->name('users.admin.search.index');
+
+
     });
     // Route::get('/uzytkownicy', [UserController::class, 'index'])->name('users');
 
@@ -110,60 +133,70 @@ Route::middleware(['auth', 'role:admin|super-admin'])->group(function () {
 
 
     // PAYOUT REQUEST
-    Route::controller(PayoutRequestController::class)->group(function () {
-        Route::get('/wnioski-o-wyplate', 'index')->name('payoutrequest.index');
-        Route::patch('/payoutrequests.update', 'update')->name('payoutrequests.update');
+    Route::controller(PayoutRequestController::class)
+        ->prefix('wnioski-o-wyplate')
+        ->name('payout.requests.')
+        ->group(function () {
 
-        Route::get('/payout-request-count', function () {
-            return PayoutRequest::with('user_has_bonus')
-                ->whereHas('user_has_bonus', function ($query) {
-                    $query->where('bonus_status_id', BonusStatus::where('name', 'in_progress')->value('id'));
-                })->count();
-        })->name('payout.count.incomplete');
+            Route::get('/', 'index')->name('index');
+            Route::patch('/aktualizuj', 'update')->name('update');
+            Route::patch('aktualizuj-status', 'change_payout_status')->name('update.status');
 
-        Route::get('/payout-request-count-for-approval', function () {
-            return PayoutRequest::with('user_has_bonus')
-                ->whereHas('user_has_bonus', function ($query) {
-                    $query->where('bonus_status_id', BonusStatus::where('name', 'for_approval')->value('id'));
-                })->count();
-        })->name('payout.count.for.approval');
+            Route::prefix('policz')
+                ->name('count.')
+                ->group(function () {
+                    Route::get('/w-trakcie-realizacji', function () {
+                        return PayoutRequest::with('user_has_bonus')
+                            ->whereHas('user_has_bonus', function ($query) {
+                                $query->where('bonus_status_id', BonusStatus::where('name', 'in_progress')->value('id'));
+                            })->count();
+                    })->name('in.progress');
 
-        Route::post('/load-payout-requests/{id}', function (int $id) {
-            return response()->json([PayoutRequest::with(['user_has_bonus.user.user_profiles'])
-                ->whereHas('user_has_bonus', function ($query) use ($id) {
-                    $query->where('user_id', $id);
-                })
-                ->orderBy('created_at', 'desc')
-                ->paginate(10)]);
-        })->name('load.payout.requests.for.user');
+                    Route::get('/do-akceptacji', function () {
+                        return PayoutRequest::with('user_has_bonus')
+                            ->whereHas('user_has_bonus', function ($query) {
+                                $query->where('bonus_status_id', BonusStatus::where('name', 'for_approval')->value('id'));
+                            })->count();
+                    })->name('for.approval');
+                });
 
-        Route::post('/load-incomplete-payout-requests', function (Request $request) {
-            return response()->json([PayoutRequest::with(['user_has_bonus.user.user_profiles'])
-                ->whereHas('user_has_bonus', function ($query) {
-                    $query->where('bonus_status_id', BonusStatus::where('name', 'in_progress')->value('id'));
-                })
-                ->orderBy('created_at', 'desc')
-                ->paginate(10, ['*'], 'incomplete_page')]);
-        })->name('load.incomplete.payout.requests');
+            Route::post('/uzytkownik/{id}', function (int $id) {
+                return response()->json([PayoutRequest::with([
+                    'user_has_bonus.user.user_profiles',
+                    'user_has_bonus.status',
+                    'user_has_bonus.level',
+                ])
+                    ->whereHas('user_has_bonus', function ($query) use ($id) {
+                        $query->where('user_id', $id);
+                    })
+                    ->orderBy('created_at', 'desc')
+                    ->paginate(10)]);
+            })->name('user');
 
-        Route::post('/load-complete-payout-requests', function (Request $request) {
-            return response()->json([PayoutRequest::with(['admin_user.user_profiles', 'user_has_bonus.user.user_profiles'])
-                ->whereHas('user_has_bonus', function ($query) {
-                    $query->where('bonus_status_id', BonusStatus::where('name', 'completed')->value('id'));
-                })
-                ->orderBy('updated_at', 'desc')
-                ->paginate(10, ['*'], 'complete_page')]);
-        })->name('load.complete.payout.requests');
+            Route::prefix('pobierz')
+                ->name('get.')
+                ->group(function () {
+                    Route::post('w-trakcie-realizacji/{bonus_status}', 'get')->name('in.progress');
 
-        Route::post('/load-for-approval-payout-requests', function (Request $request) {
-            return response()->json([PayoutRequest::with(['admin_user.user_profiles', 'user_has_bonus.user.user_profiles'])
-                ->whereHas('user_has_bonus', function ($query) {
-                    $query->where('bonus_status_id', BonusStatus::where('name', 'for_approval')->value('id'));
-                })
-                ->orderBy('updated_at', 'desc')
-                ->paginate(10, ['*'], 'for_approval_page')]);
-        })->name('load.for.approval.payout.requests');
-    });
+                    Route::post('/zrealizowane', function (Request $request) {
+                        return response()->json([PayoutRequest::with(['admin_user.user_profiles', 'user_has_bonus.user.user_profiles'])
+                            ->whereHas('user_has_bonus', function ($query) {
+                                $query->where('bonus_status_id', BonusStatus::where('name', 'completed')->value('id'));
+                            })
+                            ->orderBy('updated_at', 'desc')
+                            ->paginate(10, ['*'], 'complete_page')]);
+                    })->name('completed');
+
+                    Route::post('/do-akceptacji', function (Request $request) {
+                        return response()->json([PayoutRequest::with(['admin_user.user_profiles', 'user_has_bonus.user.user_profiles'])
+                            ->whereHas('user_has_bonus', function ($query) {
+                                $query->where('bonus_status_id', BonusStatus::where('name', 'for_approval')->value('id'));
+                            })
+                            ->orderBy('updated_at', 'desc')
+                            ->paginate(10, ['*'], 'for_approval_page')]);
+                    })->name('for.approval');
+                });
+        });
 
     // POSTY
     Route::controller(PostController::class)->group(function () {
@@ -223,10 +256,11 @@ Route::middleware(['auth', 'role:admin|super-admin'])->group(function () {
             Route::patch('/caretaker.recommendation.update', 'update')->name('update');
         });
 
-        Route::name('caretaker.recommendations.')->group(function () {
-            Route::get('/polecenia-opiekunek', 'index')->name('index');
-            Route::get('/polecenia-opiekunek/{id}', 'show')->name('show');
-            Route::patch('/polecenia-opiekunek/update-bonus-payout', 'updateBonusPayout')->name('update.bonus.payout');
+        Route::name('caretaker.recommendations.')->prefix('polecenia-opiekunek')->group(function () {
+            Route::get('/', 'index')->name('index');
+            Route::get('/{id}', 'show')->name('show');
+            Route::patch('/update-bonus-payout', 'updateBonusPayout')->name('update.bonus.payout');
+            Route::post('odblokowane', 'count_unlocked')->name('count.unlocked');
         });
     });
 

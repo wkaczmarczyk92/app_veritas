@@ -9,6 +9,10 @@ use App\Models\Level;
 use Illuminate\Support\Facades\Validator;
 
 use App\Models\PointCheckpoint;
+use Illuminate\Support\Facades\DB;
+use App\Helpers\Response;
+use Exception;
+use App\Http\Requests\Settings\CheckpointUpdateRequest;
 
 class PointCheckpointController extends Controller
 {
@@ -18,7 +22,7 @@ class PointCheckpointController extends Controller
     public function index()
     {
         // dd(Level::with('checkpoints')->get());
-        return Inertia::render('Admin/PointCheckpoints', [
+        return Inertia::render('Admin/Settings/Checkpoints', [
             'levels' => Level::with('checkpoints')->get()
         ]);
     }
@@ -26,23 +30,24 @@ class PointCheckpointController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request)
+    public function update(CheckpointUpdateRequest $request)
     {
-        $validator = Validator::make($request->levels, [
-            '*.checkpoints.checkpoint' => 'required|integer|min:0'
-        ]);
+        try {
+            DB::beginTransaction();
 
-        if ($validator->fails()) {
-            return back()->withErrors($validator->errors())->withInput();
+            foreach ($request->levels as $item) {
+                $checkpoint = PointCheckpoint::find($item['checkpoints']['id']);
+                $checkpoint->checkpoint = $item['checkpoints']['checkpoint'];
+
+                $checkpoint->save();
+            }
+
+            DB::commit();
+        } catch (Exception $e) {
+            DB::rollback();
+            return Response::danger('Coś poszło nie tak. Spróbuj ponownie później.', e: $e);
         }
 
-        foreach ($request->levels as $item) {
-            $checkpoint = PointCheckpoint::find($item['checkpoints']['id']);
-            $checkpoint->checkpoint = $item['checkpoints']['checkpoint'];
-
-            $checkpoint->save();
-        }
-
-        return back()->with('success_msg', 'Dane zostały zaktualizowane.');
+        return Response::success('Dane zostały zaktualizowane.');
     }
 }

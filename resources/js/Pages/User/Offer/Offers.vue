@@ -18,6 +18,7 @@ import UserLayoutNoCRMAccount from '@/Layouts/UserLayoutNoCRMAccount.vue';
 // import Offers from './Parts/Offers.vue';
 import { format, format_range } from '@/Components/Functions/DateFormat.vue';
 import { useIntersectionObserver } from '@vueuse/core'
+import { AlertStore } from '@/Pinia/AlertStore';
 
 
 const props = defineProps({
@@ -51,6 +52,8 @@ const props = defineProps({
 });
 
 console.log('user', props.user)
+
+const alert_store = AlertStore()
 
 const user_offers_id = ref(JSON.parse(JSON.stringify(props.user_offers_id)))
 console.log('user offers id', user_offers_id.value)
@@ -167,33 +170,44 @@ useIntersectionObserver(
 const offer_processing = ref(false)
 
 const offer_store = async (offer, index) => {
-
     offer_processing.value = true
-    // btns.value[index]['disabled'] = true
-    // btns.value[index]['text'] = 'Zgłaszam...'
-    let response = await axios.post(route('offer.store'), {
-        ...offer
-    })
-    response = response.data
-    console.log(response)
 
-    if (response.success) {
-        // emit('update:submitted', index)
-        alert(response.msg)
-        user_offers_id.value.push(response.offer_id)
-        console.log(user_offers_id.value)
+    try {
+        let response = await axios.post(route('offer.store'), {
+            ...offer
+        })
+        response = response.data
+        console.log(response)
 
-        todays_offers_count.value++
+        alert_store.pushAlert(response)
 
-    } else {
+        if (response.success) {
+            // emit('update:submitted', index)
+            // alert(response.msg)
 
-        // btns.value[index]['disabled'] = false
-        // btns.value[index]['text'] = 'Zgłoś się'
+            user_offers_id.value.push(response.offer_id)
+            console.log(user_offers_id.value)
 
-        // emit('update-btns', btns.value)
+            todays_offers_count.value++
+
+        } else {
+
+            // btns.value[index]['disabled'] = false
+            // btns.value[index]['text'] = 'Zgłoś się'
+
+            // emit('update-btns', btns.value)
+        }
+    } catch (error) {
+        alert_store.exception();
+        console.error(error)
+    } finally {
+        offer_processing.value = false
     }
 
-    offer_processing.value = false
+    // btns.value[index]['disabled'] = true
+    // btns.value[index]['text'] = 'Zgłaszam...'
+
+
 }
 
 </script>

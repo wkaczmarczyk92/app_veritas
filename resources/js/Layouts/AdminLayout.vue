@@ -1,27 +1,15 @@
 <script setup>
-import Navbar from '@/Components/Navigation/Navbar.vue'
 import AlertWrapper from '@/Components/Alerts/AlertWrapper.vue';
-import Spinner from '@/Composables/Spinner.vue';
-import ApplicationLogo from '@/Components/ApplicationLogo.vue';
-import Dropdown from '@/Components/Dropdown.vue';
-import DropdownLink from '@/Components/DropdownLink.vue';
-import NavLink from '@/Components/NavLink.vue';
-import ResponsiveNavLink from '@/Components/ResponsiveNavLink.vue';
-import { Link, router } from '@inertiajs/vue3';
-import { ref } from 'vue'
-import SidebarItem from '@/Components/Sidebar/SidebarItem.vue'
-import SidebarHeader from '@/Components/Sidebar/SidebarHeader.vue'
 import Sidebar from '@/Components/Sidebar/Sidebar.vue'
-
-const loader = ref(true)
+import AdminHeader from '@/Components/HTML/Nav/AdminHeader.vue';
 
 </script>
 
 <template>
     <div class="tw-relative">
-        <!-- <Spinner v-if="loader" /> -->
 
         <AlertWrapper></AlertWrapper>
+        <AdminHeader />
         <div class="tw-min-h-screen tw-flex tw-flex-row">
             <Sidebar />
 

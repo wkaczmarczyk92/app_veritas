@@ -38,14 +38,20 @@ use App\Http\Controllers\Test\GermanTestController;
 use App\Http\Controllers\Lessons\GermanLessonController;
 
 Route::middleware(['auth', 'role:user'])->group(function () {
-    Route::controller(GermanLessonController::class)->prefix('lekcje-niemieckiego')->name('user.german.lessons.')->group(function () {
-        Route::get('/', 'index')->name('index');
-        Route::get('/lekcja/{id}', 'show')->name('show');
-    });
+    Route::controller(GermanLessonController::class)
+        ->middleware(['seen_test_regulations', 'is_test_user'])
+        ->prefix('lekcje-niemieckiego')
+        ->name('user.german.lessons.')
+        ->group(function () {
+            Route::get('/', 'index')->name('index');
+            Route::get('/lekcja/{id}', 'show')->name('show');
+        });
+
+    Route::get('zasady-programy-zostan-mittelem', [GermanTestController::class, 'become_mittel_program'])->prefix('lekcje-niemieckiego')->name('user.german.lessons.become.mittel.program');
 
 
-    Route::controller(GermanTestController::class)->prefix('test-niemieckiego')->group(function () {
-        // Route::get('')
+    Route::controller(GermanTestController::class)->middleware(['seen_test_regulations', 'is_test_user'])->prefix('test-niemieckiego')->name('user.german.test.')->group(function () {
+        Route::get('/', 'show')->name('show');
     });
 
     Route::controller(BOKSubjectController::class)->group(function () {

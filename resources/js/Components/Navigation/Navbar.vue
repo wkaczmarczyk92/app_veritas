@@ -160,7 +160,7 @@ console.log('for_approval', count_incomplete_payout_request.value)
                                 </template>
                             </Dropdown>
                         </div>
-                        <NavLink :href="route('payoutrequest.index')" :active="route().current('payoutrequest.index')">
+                        <NavLink :href="route('payout.requests.index')" :active="route().current('payout.requests.index')">
                             Wnioski o wypłatę
                             <v-badge :content="count_incomplete_payout_request" floating
                                 v-if="count_incomplete_payout_request" color="#3b82f6">
@@ -343,8 +343,8 @@ console.log('for_approval', count_incomplete_payout_request.value)
                         </template>
                     </Dropdown>
                 </div>
-                <ResponsiveNavLink :href="route('payoutrequest.index')"
-                    :active="route().current('payoutrequest.index')">
+                <ResponsiveNavLink :href="route('payout.requests.index')"
+                    :active="route().current('payout.requests.index')">
                     Wnioski o wypłatę
                     <v-badge :content="count_incomplete_payout_request" floating v-if="count_incomplete_payout_request"
                         color="#3b82f6">

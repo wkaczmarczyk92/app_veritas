@@ -20,7 +20,7 @@ class CURL
         ]
     ];
 
-    private $_token = 'token: bearereyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJleHAiOjE4MTAzODQ2MTQsImRhdGEiOnsiaWQiOiI5NzIwIiwidXNlcm5hbWUiOiJzY2FuZGljYXJlIiwiZnVsbFVzZXJOYW1lIjoiU2NhbmRpIENhcmUiLCJ1cnVfcmVkaXJlY3RfdXJsIjpudWxsLCJ0eXBlIjowfX0.OBAR4jJLQLn332nDD2ZWQk9dnbsq_06By9S-n-YZxcI';
+    private $_token = 'token: bearereyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJleHAiOjE4NDM4ODg1OTAsImRhdGEiOnsiaWQiOiI5NzIwIiwidXNlcm5hbWUiOiJzY2FuZGljYXJlIiwiZnVsbFVzZXJOYW1lIjoiU2NhbmRpIENhcmUiLCJ0eXBlIjowfX0.kffFO8-JCDW0TRsvC9Ywl3wAHFP8zdypppQI4QgYWac';
 
     public function send()
     {
@@ -50,6 +50,7 @@ class CURL
         }
 
         curl_close($ch);
+        // dd($response);
 
         return $response;
     }

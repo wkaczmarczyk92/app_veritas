@@ -39,6 +39,7 @@ class CRMOfferDownloadController extends Controller
             'family.address'
         ])
             ->has('family.patient')
+            ->where('pnr_confirmed', 1)
             ->whereIn('pnr_id_status', [1, 11]);
 
         if (!empty($request->date)) {

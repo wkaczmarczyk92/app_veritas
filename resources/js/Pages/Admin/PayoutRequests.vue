@@ -6,6 +6,8 @@ import IncompletePayoutRequests from './Parts/View/IncompletePayoutRequests.vue'
 import CompletePayoutRequests from './Parts/View/CompletePayoutRequests.vue';
 import ForApprovalPayoutRequests from './Parts/View/ForApprovalPayoutRequests.vue';
 import Loader from '@/Components/Loader.vue';
+import Spinner from '@/Components/Forms/Spinner.vue';
+import { use_processing_store } from '@/Pinia/ProcessingStore';
 
 const payout_view = ref('pending');
 const active_button = ref('tw-text-white tw-bg-blue-600 hover:tw-bg-blue-900 tw-py-3 tw-px-6 tw-rounded-3xl tw-shadow-xl');
@@ -30,6 +32,9 @@ const breadcrumbs = [
     }
 ]
 
+const tab = ref('one')
+const processing_store = use_processing_store()
+
 </script>
 
 <template>
@@ -37,67 +42,62 @@ const breadcrumbs = [
     <Head title="VeritasApp - wnioski o wypłatę" />
     <AdminLayout>
         <template #header>
-            <!-- <h2 class="text-xl font-semibold leading-tight text-gray-200">Użytkownicy</h2> -->
             <v-breadcrumbs :items="breadcrumbs">
                 <template v-slot:divider>
                     <i class="fa-solid fa-chevron-right"></i>
                 </template>
             </v-breadcrumbs>
         </template>
+        <v-card rounded="0">
+            <Spinner v-if="processing_store.state" />
+            <v-tabs v-model="tab" bg-color="#94a3b8" slider-color="#111827" grow>
+                <v-tab value="one">W trakcie realizacji</v-tab>
+                <v-tab value="two">Do akceptacji</v-tab>
+                <v-tab value="three">Zrealizowane</v-tab>
+            </v-tabs>
 
-        <div class="tw-py-12">
-            <div class="tw-px-4 tw-mx-auto tw-max-w-8xl sm:tw-px-6 lg:tw-px-8">
-                <div class="tw-flex tw-flex-row tw-gap-6">
-                    <div>
-                        <button :class="payout_view == 'pending' ? active_button : inactive_button"
-                            class="tw-border-solid" @click="payout_view = 'pending'">
-                            Oczekujące
-                        </button>
-                    </div>
-                    <div>
-                        <button :class="payout_view == 'for_approval' ? active_button : inactive_button"
-                            class="tw-border-solid" @click="payout_view = 'for_approval'">
-                            Do akceptacji
-                        </button>
-                    </div>
-                    <div>
-                        <button :class="payout_view == 'completed' ? active_button : inactive_button"
-                            class="tw-border-solid" @click="payout_view = 'completed'">
-                            Zrealizowane
-                        </button>
-                    </div>
-                </div>
+            <v-card-text>
+                <v-tabs-window v-model="tab">
+                    <v-tabs-window-item value="one">
+                        <v-card title="W trakcie realizacji">
+                            <v-card-text class="tw-mt-4">
+                                <Suspense>
+                                    <IncompletePayoutRequests #default :levels="levels" />
+                                    <template #fallback>
+                                        <Loader />
+                                    </template>
+                                </Suspense>
+                            </v-card-text>
+                        </v-card>
+                    </v-tabs-window-item>
 
-                <Transition name="slide-fade" mode="out-in">
-                    <div v-if="payout_view == 'pending'">
-                        <Suspense>
-                            <IncompletePayoutRequests #default :levels="levels">
-                            </IncompletePayoutRequests>
-                            <template #fallback>
-                                <Loader></Loader>
-                            </template>
-                        </Suspense>
-                    </div>
-                    <div v-else-if="payout_view == 'completed'">
-                        <Suspense>
-                            <CompletePayoutRequests #default :levels="levels">
-                            </CompletePayoutRequests>
-                            <template #fallback>
-                                <Loader></Loader>
-                            </template>
-                        </Suspense>
-                    </div>
-                    <div v-else-if="payout_view == 'for_approval'">
-                        <Suspense>
-                            <ForApprovalPayoutRequests #default :levels="levels">
-                            </ForApprovalPayoutRequests>
-                            <template #fallback>
-                                <Loader></Loader>
-                            </template>
-                        </Suspense>
-                    </div>
-                </Transition>
-            </div>
-        </div>
+                    <v-tabs-window-item value="two">
+                        <v-card title="Do akceptacji">
+                            <v-card-text class="tw-mt-4">
+                                <Suspense>
+                                    <ForApprovalPayoutRequests #default :levels="levels" />
+                                    <template #fallback>
+                                        <Loader />
+                                    </template>
+                                </Suspense>
+                            </v-card-text>
+                        </v-card>
+                    </v-tabs-window-item>
+
+                    <v-tabs-window-item value="three">
+                        <v-card title="Zrealizowane">
+                            <v-card-text class="tw-mt-4">
+                                <Suspense>
+                                    <CompletePayoutRequests #default :levels="levels" />
+                                    <template #fallback>
+                                        <Loader />
+                                    </template>
+                                </Suspense>
+                            </v-card-text>
+                        </v-card>
+                    </v-tabs-window-item>
+                </v-tabs-window>
+            </v-card-text>
+        </v-card>
     </AdminLayout>
 </template>

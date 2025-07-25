@@ -22,7 +22,7 @@ class LevelBonusValueController extends Controller
     public function index()
     {
         // dd(Level::with('bonus_value')->get());
-        return Inertia::render('Admin/LevelBonusValue', [
+        return Inertia::render('Admin/Settings/Level', [
             'levels' => Level::with('bonus_value')->get()
         ]);
     }

@@ -21,6 +21,7 @@ import AlertDanger from '@/Components/Functions/AlertDanger.vue';
 import Loader from '@/Components/Loader.vue';
 
 import { AlertStore } from '@/Pinia/AlertStore';
+import { useUserStore } from '@/Pinia/UserStore';
 
 import MButton from '@/Components/Buttons/MButton.vue';
 
@@ -44,6 +45,8 @@ const props = defineProps({
 });
 
 console.log('bopnus', props.user_bonus)
+
+const user_store = useUserStore()
 
 const user = ref(props.user);
 const user_bonus = ref(props.user_bonus);
@@ -126,6 +129,8 @@ const activate_bonus = async () => {
     bonus_processing.value = false
 }
 
+const bok_and_payout_request_tab = ref('payout_request_tab')
+
 </script>
 
 <template>
@@ -159,42 +164,64 @@ const activate_bonus = async () => {
                                 <v-tab value="family_recommendations">Polecenia rodzin</v-tab>
                                 <v-tab value="caretaker_recommendations">Polecenia opiekunek</v-tab>
                                 <v-tab value="bonus">Bonusy</v-tab>
+                                <v-btn v-if="!user.user_profiles.crt_id_user_recruiter" color="#2563eb" class="!tw-mx-auto tw-mt-10" @click="user_store.set_premium_account(user.id)">
+                                    Aktywuj konto premium
+                                </v-btn>
                             </v-tabs>
 
-                            <v-card-text>
-                                <v-window v-model="tab" class="!tw-p-4">
+                            <v-card-text class="!tw-p-0">
+                                <v-window v-model="tab">
                                     <v-window-item value="bonus">
-                                        <div v-if="user_bonus.length <= 0">
-                                            <v-alert color="info">
-                                                Brak bonusów do aktywacji.
-                                            </v-alert>
-                                        </div>
-                                        <div v-else>
-                                            <v-btn color="primary" :disabled="bonus_processing"
-                                                @click="activate_bonus()">
-                                                Aktywuj bonusy
-                                            </v-btn>
+                                        <div class="tw-mt-4">
+                                            <div v-if="user_bonus.length <= 0">
+                                                <v-alert color="info">
+                                                    Brak bonusów do aktywacji.
+                                                </v-alert>
+                                            </div>
+                                            <div v-else>
+                                                <v-btn color="primary" :disabled="bonus_processing"
+                                                    @click="activate_bonus()">
+                                                    Aktywuj bonusy
+                                                </v-btn>
+                                            </div>
                                         </div>
                                     </v-window-item>
                                     <v-window-item value="change_password">
                                         <PasswordChange :user="user"></PasswordChange>
                                     </v-window-item>
                                     <v-window-item value="bok">
-                                        <div class="tw-grid tw-grid-cols-1 tw-gap-4 md:tw-grid-cols-2 sm:tw-gap-6">
-                                            <!-- <div class="grid grid-cols-1 gap-4 md:grid-cols-2"> -->
-                                            <Suspense>
-                                                <UserPayoutRequests #default :user="user"></UserPayoutRequests>
-                                                <template #fallback>
-                                                    <Loader class="tw-grow"></Loader>
-                                                </template>
-                                            </Suspense>
-                                            <Suspense>
-                                                <UserBOKRequests #default :user="user"></UserBOKRequests>
-                                                <template #fallback>
-                                                    <Loader class="tw-grow"></Loader>
-                                                </template>
-                                            </Suspense>
-                                        </div>
+                                        <v-card class="!tw-rounded-none">
+                                            <v-tabs v-model="bok_and_payout_request_tab" bg-color="#94a3b8"
+                                                slider-color="#111827" grow>
+                                                <v-tab value="payout_request_tab" class="!tw-rounded-none">Wnioski o
+                                                    wypłatę</v-tab>
+                                                <v-tab value="bok_tab">Zgłoszenia do BOK</v-tab>
+                                            </v-tabs>
+
+                                            <v-card-text class="!tw-p-0">
+                                                <v-tabs-window v-model="bok_and_payout_request_tab">
+                                                    <v-tabs-window-item value="payout_request_tab">
+                                                        <Suspense>
+                                                            <UserPayoutRequests #default :user="user">
+                                                            </UserPayoutRequests>
+                                                            <template #fallback>
+                                                                <Loader class="tw-grow"></Loader>
+                                                            </template>
+                                                        </Suspense>
+                                                    </v-tabs-window-item>
+
+                                                    <v-tabs-window-item value="bok_tab">
+                                                        <Suspense>
+                                                            <UserBOKRequests #default :user="user">
+                                                            </UserBOKRequests>
+                                                            <template #fallback>
+                                                                <Loader class="tw-grow"></Loader>
+                                                            </template>
+                                                        </Suspense>
+                                                    </v-tabs-window-item>
+                                                </v-tabs-window>
+                                            </v-card-text>
+                                        </v-card>
                                     </v-window-item>
                                     <v-window-item value="contact_forms">
                                         <Suspense>
@@ -228,7 +255,8 @@ const activate_bonus = async () => {
                                         </UserPointsHistory>
                                     </v-window-item>
                                     <v-window-item value="user_data">
-                                        <div class="tw-grid tw-grid-cols-1 tw-gap-4 lg:tw-grid-cols-2 md:tw-gap-6">
+                                        <div
+                                            class="tw-grid tw-grid-cols-1 tw-gap-4 lg:tw-grid-cols-2 md:tw-gap-6 tw-p-4">
                                             <Transition name="slide-fade" mode="out-in">
                                                 <UserData v-if="!edit_user" :user="user"
                                                     @toggle-user="toggle_user_edit">
@@ -240,9 +268,11 @@ const activate_bonus = async () => {
                                             <UserPoints :user="user" :levels="levels">
                                             </UserPoints>
                                         </div>
-                                        <UserProfileImage :user="user"
-                                            @update-user-profile-image="user.user_profile_image = $event">
-                                        </UserProfileImage>
+                                        <div class="tw-p-4">
+                                            <UserProfileImage :user="user"
+                                                @update-user-profile-image="user.user_profile_image = $event">
+                                            </UserProfileImage>
+                                        </div>
                                     </v-window-item>
                                 </v-window>
                             </v-card-text>
@@ -250,7 +280,7 @@ const activate_bonus = async () => {
                     </v-card>
                 </div>
 
-                <Transition name="slide-fade" mode="out-in">
+                <!-- <Transition name="slide-fade" mode="out-in">
                     <div v-if="view == 'user'" class="tw-grid tw-grid-cols-1 tw-gap-4 lg:tw-grid-cols-2 md:tw-gap-6">
                     </div>
                     <div v-else-if="view == 'password_change'">
@@ -258,7 +288,6 @@ const activate_bonus = async () => {
 
                     <div v-else-if="view == 'bokANDpayout'">
                         <div class="tw-grid tw-grid-cols-1 tw-gap-4 md:tw-grid-cols-2 sm:tw-gap-6">
-                            <!-- <div class="grid grid-cols-1 gap-4 md:grid-cols-2"> -->
                             <Suspense>
                                 <UserPayoutRequests #default :user="user"></UserPayoutRequests>
                                 <template #fallback>
@@ -290,9 +319,6 @@ const activate_bonus = async () => {
                         </Suspense>
                     </div>
                     <div v-else-if="view == 'points_history'">
-                        <!-- <UserPointsHistory #default v-model:user="user"
-                            :user_points_records_count="user_points_records_count">
-                        </UserPointsHistory> -->
                     </div>
                     <div v-else-if="view == 'caretaker_recommendations'">
                         <Suspense>
@@ -302,7 +328,7 @@ const activate_bonus = async () => {
                             </template>
                         </Suspense>
                     </div>
-                </Transition>
+                </Transition> -->
 
 
             </div>

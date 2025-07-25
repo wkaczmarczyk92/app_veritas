@@ -14,6 +14,11 @@ use Inertia\Inertia;
 
 use App\Helpers\Transaction;
 
+use App\Http\Requests\GermanLesson\UpdateTestTimeRequest;
+use App\Models\Test\TestResult;
+
+use App\Models\Common\SeenInfo;
+
 class GermanTestController extends Controller
 {
     public function load_from_file(Request $request)
@@ -30,13 +35,14 @@ class GermanTestController extends Controller
         ]);
     }
 
-    public function update_settings(Request $request)
+    public function update_settings(UpdateTestTimeRequest $request)
     {
         return Transaction::try(
             function () use ($request) {
                 $german_lesson = GermanLesson::find(1);
                 $german_lesson->update([
-                    'test_time' => $request->test_time
+                    'test_time' => $request->test_time,
+                    'question_count' => $request->question_count
                 ]);
             },
             'Ustawienia zostały zaktualizowane.'
@@ -53,12 +59,44 @@ class GermanTestController extends Controller
         return (new GermanTestDestroyService)($id);
     }
 
+    public function questions() {
+        $german_lesson = GermanLesson::find(1);
+        $questions = (new GermanTestGetQuestionsService)($german_lesson->question_count);
+        return response()->json(['questions' => $questions]);
+    }
+
     public function show()
     {
-        $questions = (new GermanTestGetQuestionsService)();
+        $german_lesson = GermanLesson::find(1);
+        $questions = (new GermanTestGetQuestionsService)($german_lesson->question_count);
 
-        return Inertia::render('Lessons/GermanLessons/Test', [
-            'questions' => $questions
+        $is_admin = auth()->user()->hasAnyRole(['admin', 'super-admin', 'god_mode']);
+
+        $view = $is_admin ? 'Lessons/GermanLessons/Test' : 'Lessons/GermanLessons/User/Test';
+        $test_attempts = TestResult::where('user_id', auth()->id())->whereDate('created_at', date('Y-m-d'))->count();
+        $can_take_test = $is_admin || $test_attempts < 2;
+
+        return Inertia::render($view, [
+            'questions' => $questions,
+            'german_lesson' => $german_lesson,
+            'can_take_test' => $can_take_test,
+            'test_attempts' => $test_attempts
         ]);
+    }
+
+    public function become_mittel_program() {
+        $user = auth()->user();
+        $user->load(['seen_infos' => function ($query) {
+            $query->where('info_type', 'become_mittel_program');
+        }]);
+
+        if ($user->seen_infos->isEmpty()) {
+            $user->seen_infos()->save(new SeenInfo([
+                'info_type' => 'become_mittel_program',
+                'seen' => true
+            ]));
+        }
+
+        return Inertia::render('Lessons/GermanLessons/User/BecomeMittel');
     }
 }

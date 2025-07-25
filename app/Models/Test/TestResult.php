@@ -14,6 +14,7 @@ class TestResult extends Model
     protected $fillable = [
         'test_id',
         'user_id',
-        'is_passed'
+        'is_passed',
+        'score'
     ];
 }

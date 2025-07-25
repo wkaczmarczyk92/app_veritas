@@ -121,6 +121,8 @@ class AuthenticatedSessionController extends Controller
                 $redirect_to = RouteServiceProvider::RECRUITER_HOME;
             } else if ($user->hasRole('course_moderator')) {
                 $redirect_to = RouteServiceProvider::COURSE_MODERATOR_HOME;
+            } else if ($user->hasRole('bok')) {
+                $redirect_to = RouteServiceProvider::ADMIN_HOME;
             }
         } else {
             $user->load('user_profiles');

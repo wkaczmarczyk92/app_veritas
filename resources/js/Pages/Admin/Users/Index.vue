@@ -2,20 +2,12 @@
 import AdminLayout from '@/Layouts/AdminLayout.vue';
 import { Head, router } from '@inertiajs/vue3';
 import { level, levelColor } from '@/Components/Functions/Level.vue';
-import { ref } from 'vue';
-import TableDefault from '@/Components/Templates/TableDefault.vue';
-import Pagination from '@/Components/Navigation/Pagination.vue';
-import NewPagination from '@/Components/Navigation/NewPagination.vue';
-
-import AlertInfo from '@/Components/Functions/AlertInfo.vue';
-
+import { computed, ref } from 'vue';
 import MainContent from '@/Templates/HTML/MainContent.vue';
-
-import StaticInfoAlert from '@/Components/Alerts/StaticInfoAlert.vue';
-
-import TableLink from '@/Templates/HTML/TableLink.vue';
-
-import Link from '@/Composables/Link.vue';
+import { format } from '@/Components/Functions/DateFormat.vue';
+import { use_processing_store } from '@/Pinia/ProcessingStore';
+import { use_users_store } from '@/Pinia/Admin/UsersStore.js';
+import Spinner from '@/Components/Forms/Spinner.vue';
 
 const props = defineProps({
     users: {
@@ -25,101 +17,51 @@ const props = defineProps({
     levels: {
         type: Object,
         required: true
-    },
-    search_string: {
-        type: String,
-        default: ''
-    },
-    search_current_points: {
-        type: [Number, String],
-        default: ''
-    },
-    search_total_days: {
-        type: [Number, String],
-        default: ''
-    },
-    order_by: {
-        type: String,
-        default: 'full_name'
-    },
-    order: {
-        type: String,
-        default: 'asc'
     }
 });
 
-const users = ref(props.users);
-const search_string = ref(props.search_string);
-const search_current_points = ref(props.search_current_points);
-const search_total_days = ref(props.search_total_days);
-const order_by = ref(props.order_by);
-const order = ref(props.order);
-
-const paramsHasValues = () => {
-    return search_string.value == '' && search_current_points.value == '' && search_total_days.value == ''
-        ? false
-        : true;
-}
-
-const order_icons = ref({
-    up: 'fa-regular fa-circle-up',
-    down: 'fa-regular fa-circle-down'
-})
-
-const changeOrder = (by) => {
-    order_by.value = by;
-    order.value = order.value == 'asc' ? 'desc' : 'asc';
-    search();
-}
-
-const search = () => {
-    let data = {};
-    if (search_string.value != '') {
-        data['search'] = search_string.value;
-    }
-
-    if (search_current_points.value != '') {
-        data['current_points'] = search_current_points.value;
-    }
-
-    if (search_total_days.value != '') {
-        data['total_days'] = search_total_days.value;
-    }
-
-    data['order_by'] = order_by.value;
-    data['order'] = order.value;
-
-    router.visit(route('users'), { method: 'get', data: data });
-}
-
-const url_params = () => {
-    let url_params = [];
-
-    if (search_string.value != '') {
-        url_params.push(`search=${search_string.value}`);
-    }
-
-    if (search_current_points.value != '') {
-        url_params.push(`current_points=${search_current_points.value}`);
-    }
-
-    if (search_total_days.value != '') {
-        url_params.push(`total_days=${search_total_days.value}`);
-    }
-
-    url_params.push(`order_by=${order_by.value}`);
-    url_params.push(`order=${order.value}`);
-
-    return url_params.length == 0 ? '' : '&' + url_params.join('&');
-}
+const processing_store = use_processing_store();
+const users_store = use_users_store();
+users_store.set_users(props.users)
+const users = computed(() => users_store.get_users);
+const search = ref('')
 
 const headers = [
-    '#',
-    '',
-    'PESEL',
-    'Imię i nazwisko',
-    'punkty'
+    {
+        title: '#',
+        value: 'id',
+        sortable: true
+    },
+    {
+        title: 'Użytkownik',
+        value: 'user'
+    },
+    {
+        title: 'Typ konta',
+        value: 'account_type'
+    },
+    {
+        title: 'Nr tel',
+        value: 'user_profiles.phone_number'
+    },
+    {
+        title: 'Poziom i punkty',
+        value: 'level_and_points',
+        sortable: true
+    },
+    {
+        title: 'Rekruter',
+        value: 'recruiter',
+        sortable: true
+    },
+    {
+        title: 'Utworzono',
+        value: 'created_at',
+        sortable: true
+    }
 ];
+
+
 
 const breadcrumbs = [
     {
@@ -150,115 +92,105 @@ const breadcrumbs = [
         </template>
 
         <MainContent>
-
-            <div class="tw-flex tw-flex-col tw-items-center tw-gap-4 tw-mb-4 md:tw-flex-row">
-                <v-text-field label="Szukaj" variant="solo-filled" placeholder="wpisz szukaną frazę" hide-details
-                    class="tw-w-full" v-model="search_string" @keydown.enter="search()"></v-text-field>
-
-                <v-text-field label="Punkty" variant="solo-filled" placeholder="wpisz ilość punktów" hide-details
-                    class="tw-w-full focus:tw-ring-0" v-model="search_current_points" @keydown.enter="search()">
-                    <template v-slot:prepend-inner><i class="tw-text-gray-400 fa-solid fa-trophy"></i></template>
-                </v-text-field>
-
-                <v-text-field label="Ilość dni" variant="solo-filled" placeholder="wpisz ilość punktów" hide-details
-                    class="tw-w-full" v-model="search_total_days" @keydown.enter="search()">
-                    <template v-slot:prepend-inner><i class="tw-text-gray-400 fa-solid fa-cloud-sun"></i></template>
-                </v-text-field>
-
-                <!-- <Transition mode="out-in">
-                    <v-btn v-if="paramsHasValues()" variant="outlined"
-                        @click="router.visit(route('users'), { method: 'get' })" class="shadow-lg" color="#991b1b">
-                        <template v-slot:prepend><i class="w-4 h-4 fas fa-times-circle"></i></template>
-                        Usuń filtry
-                    </v-btn>
-                    <v-btn v-else variant="outlined" @click="router.visit(route('users'), { method: 'get' })"
-                        class="shadow-lg" color="#991b1b">
-                        <template v-slot:prepend><i class="w-4 h-4 fas fa-times-circle"></i></template>
-                        Usuń filtry
-                    </v-btn>
-                </Transition> -->
-            </div>
-            <div class="tw-flex tw-flex-row tw-justify-end tw-gap-2 tw-mb-4">
-                <v-btn variant="outlined" @click="search()" class="tw-shadow-lg" color="#22c55e">
-                    <template v-slot:prepend><i class="fa-solid fa-magnifying-glass"></i></template>
-                    Szukaj
-                </v-btn>
-                <v-btn variant="outlined" @click="router.visit(route('users'), { method: 'get' })" class="tw-shadow-lg"
-                    color="#991b1b" :disabled="!paramsHasValues()">
-                    <template v-slot:prepend><i class="tw-w-4 tw-h-4 fas fa-times-circle"></i></template>
-                    Usuń filtry
-                </v-btn>
-            </div>
-
-            <NewPagination :pagination="users" :url_params_string="url_params()"></NewPagination>
-
-            <v-card variant="tonal" :color="'white'" class="tw-mb-4 tw-shadow-2xl">
-                <v-card-text class="!tw-p-0">
-                    <div class="tw-overflow-x-auto" v-if="users.data.length > 0">
-                        <v-data-table :items="users.data" height="auto" item-value="id">
-                            <template #headers>
-                                <tr class="tw-bg-gray-200">
-                                    <th>#ID</th>
-                                    <th class="!tw-text-center">AV</th>
-                                    <th>PESEL</th>
-                                    <th>Imię i nazwisko</th>
-                                    <th class="!tw-text-center">Punkty</th>
-                                    <th class="!tw-text-center">Łącznie dni</th>
-                                    <th>Poziom</th>
-                                    <th>Rekruter</th>
-                                    <!-- <th class="!tw-text-center">Przedź do użytkownika</th> -->
-                                </tr>
-                            </template>
-                            <template v-slot:item="{ item }">
-                                <tr class="tw-text-xs" @dblclick="router.visit(route('user', {
-                                    id: item.id
-                                }))">
-                                    <td>#{{ item.id }}</td>
-                                    <td class="!tw-py-1 tw-text-center">
-                                        <div v-if="item.user_profile_image && item.user_profile_image.path && item.user_profile_image.status == 3"
-                                            class="tw-relative tw-border-2 tw-border-gray-800 tw-shadow-xl profile-img profile-img-sm"
-                                            :style="`background-image: url(user_profile_images/${item.user_profile_image.path});`">
-                                        </div>
-                                        <i v-else class="fa-solid fa-circle-user img-default img-default-sm"></i>
-                                    </td>
-                                    <td>{{ item.pesel }}</td>
-                                    <td>
-                                        <Link :value="item.full_name" :url="`/uzytkownik/${item.id}`" />
-                                        <!-- <TableLink :url="`/uzytkownik/${item.id}`">
-                                            {{ item.full_name }}
-                                        </TableLink> -->
-                                    </td>
-                                    <td class="tw-text-center">{{ item.user_profiles.current_points ?? '-' }}</td>
-                                    <td class="tw-text-center">{{ item.user_profiles.total_days ?? '-' }}</td>
-                                    <td>
-                                        <span :class="levelColor(item.user_profiles.level)">
-                                            <b>
-                                                {{ level(levels, item.user_profiles.level).toUpperCase() }}
-                                            </b>
-                                        </span>
-                                    </td>
-                                    <td>
-                                        {{ `${item.user_profiles.recruiter_first_name ??
-                                            '-'} ${item.user_profiles.recruiter_last_name ?? ''}` }}
-                                    </td>
-                                    <!-- <td class="tw-text-center">
-                                        <a :href="`/uzytkownik/${item.id}`">
-                                            <i
-                                                class="tw-text-lg tw-text-blue-500 fa-solid fa-user-pen hover:tw-text-blue-700"></i>
-                                        </a>
-                                    </td> -->
-                                </tr>
-                            </template>
-                            <template #bottom></template>
-                        </v-data-table>
+            <v-card title="Filtruj uzytkowników">
+                <v-card-text class="!tw-pb-8">
+                    <div class="tw-flex tw-gap-2 tw-items-center">
+                        <div class="tw-w-full md:tw-w-1/3">
+                            <v-text-field v-model="search" variant="outlined" label="Szukaj..." hide-details
+                                @keyup.enter="users_store.search(search)" />
+                        </div>
+                        <div class="tw-flex tw-gap-2">
+                            <v-btn size="x-large" color="#2563eb" @click="users_store.search(search)">Szukaj</v-btn>
+                            <v-btn v-if="search" size="x-large" color="#dc2626"
+                                @click="search = ''; users_store.destroy_search(search)">Usuń</v-btn>
+                        </div>
                     </div>
-                    <AlertInfo v-else title="" :show_icon="false">
-                        Brak nowych wniosków o wypłatę
-                    </AlertInfo>
                 </v-card-text>
             </v-card>
+            <div class="tw-relative">
+                <Spinner v-if="processing_store.state" top_position="10" msg="Filtrowanie użytkowników" />
+                <v-card variant="tonal" :color="'white'" class="tw-mb-4 tw-shadow-2xl !tw-mt-4" id="searchable">
+                    <v-card-text class="!tw-p-0">
+                        <div class="tw-overflow-x-auto" v-if="users">
+                            <v-data-table :items="users" height="auto" item-value="id" :headers="headers"
+                                items-per-page="50">
 
-            <NewPagination :pagination="users" :url_params_string="url_params()"></NewPagination>
+                                <!-- TYP KONTA -->
+                                <template #item.account_type="{ item }">
+                                    <div v-if="item.is_admin" class="tw-flex tw-flex-col tw-gap-1">
+                                        <div v-for="(role, role_index) in item.roles" :key="role_index">
+                                            <v-chip color="#e11d48" variant="tonal" rounded="lg">
+                                                {{ role.name_pl }}
+                                            </v-chip>
+                                        </div>
+                                    </div>
+                                    <div v-else>
+                                        <div v-if="item.user_profiles.crt_id_user_recruiter">
+                                            <v-chip color="#2563eb" variant="outlined" rounded="lg">
+                                                Premium
+                                            </v-chip>
+                                        </div>
+                                        <div v-else>
+                                            <v-chip color="#ea580c" variant="outlined" rounded="lg">
+                                                Darmowe
+                                            </v-chip>
+                                        </div>
+                                    </div>
+                                </template>
+
+                                <!-- POZIOM I PUNKTY -->
+                                <template #item.level_and_points="{ item }">
+                                    <span :class="levelColor(item.user_profiles.level)">
+                                        <b>
+                                            {{ level(levels, item.user_profiles.level).toUpperCase() }} - {{
+                                            item.user_profiles.current_points }}
+                                        </b>
+                                    </span>
+                                </template>
+
+                                <!-- REKRUTER -->
+                                <template #item.recruiter="{ item }">
+                                    <div v-if="item.user_profiles.crt_id_user_recruiter">
+                                        {{ item.user_profiles.recruiter_first_name }} {{
+                                            item.user_profiles.recruiter_last_name }}
+                                    </div>
+                                    <div v-else class="tw-text-red-600">BRAK</div>
+                                </template>
+
+                                <!-- UŻYTKOWNIK -->
+                                <template #item.user="{ item }">
+                                    <div class="tw-flex tw-felx-row tw-gap-4 tw-items-center">
+                                        <div>
+                                            <div v-if="item.user_profile_image && item.user_profile_image.path && item.user_profile_image.status == 3"
+                                                class="tw-relative tw-border-2 tw-border-gray-800 tw-shadow-xl profile-img profile-img-sm"
+                                                :style="`background-image: url(user_profile_images/${item.user_profile_image.path});`">
+                                            </div>
+                                            <i v-else class="fa-solid fa-circle-user img-default img-default-sm"></i>
+                                        </div>
+                                        <div class="tw-flex tw-flex-col tw-gap-1">
+                                            <a :href="route('user', { id: item.id })"
+                                                class="tw-text-blue-600 hover:tw-underline hover:tw-text-blue-800">{{
+                                                    item.user_profiles.full_name }}</a>
+                                            <div v-if="item.pesel" href="">PESEL: <span class="tw-font-bold">{{ item.pesel ?? '-'
+                                                    }}</span></div>
+                                            <a v-else class="tw-text-purple-600 hover:tw-underline hover:tw-text-purple-800" :href="`mailto:${item.email}`">{{ item.email }}</a>
+                                        </div>
+                                        
+                                    </div>
+                                </template>
+                                <template #item.created_at="{ value }">
+                                    {{ format(value) }}
+                                </template>
+                            </v-data-table>
+                        </div>
+                        <v-alert color="info" v-else>
+                            Brak użytkowników do wyświetlenia.
+                        </v-alert>
+                    </v-card-text>
+                </v-card>
+            </div>
+
+
         </MainContent>
     </AdminLayout>
 </template>

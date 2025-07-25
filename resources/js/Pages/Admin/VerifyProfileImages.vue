@@ -170,7 +170,7 @@ const display_date = (updated_at, created_at) => {
                             </TransitionGroup>
                         </div>
                         <div v-else>
-                            <StaticInfoAlert>Brak zdjęć profilowych do weryfikacji.</StaticInfoAlert>
+                            <v-alert color="info">Brak zdjęć profilowych do weryfikacji.</v-alert>
                         </div>
                     </Transition>
                 </div>

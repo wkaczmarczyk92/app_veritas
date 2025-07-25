@@ -31,7 +31,21 @@ onBeforeMount(async () => {
     await usePayoutRequestStore.countIncomplete();
     await usePayoutRequestStore.countForApproval();
     await useProfileImageStore.countUnverified();
+    await count_unlocked()
 })
+
+const count_unlocked_caretaker_recommendations = ref(0)
+const count_unlocked = async () => {
+    try {
+        let response = await axios.post(route('caretaker.recommendations.count.unlocked'))
+        response = response.data
+
+        console.log('unlocked', response)
+        count_unlocked_caretaker_recommendations.value = response.unlocked
+    } catch (error) {
+        console.log('unlocked error', error)
+    }
+}
 
 const is_sidebar_open = () => {
     let is_open = localStorage.getItem('sidebar_open');
@@ -151,6 +165,15 @@ console.log('page', page.props)
                                 </v-badge>
                             </template>
                         </SidebarItem>
+                        <SidebarItem v-if="$page.props.god_mode" class="" :href="route('users.create')"
+                            :active="route().current('users.create')">
+                            <template v-slot:icon>
+                                <i class="fa-solid fa-user-plus"></i>
+                            </template>
+                            <template v-slot:title>
+                                Utwórz uzytkownika
+                            </template>
+                        </SidebarItem>
                     </div>
                 </div>
 
@@ -198,6 +221,12 @@ console.log('page', page.props)
                             <template v-slot:title>
                                 Polecenia opiekunek
                             </template>
+                            <template v-slot:badges
+                                v-if="count_unlocked_caretaker_recommendations > 0">
+                                <v-badge inline :content="count_unlocked_caretaker_recommendations" color="#16a34a">
+                                    <v-tooltip activator="parent" location="top">Nowe</v-tooltip>
+                                </v-badge>
+                            </template>
                         </SidebarItem>
                     </div>
                 </div>
@@ -206,8 +235,8 @@ console.log('page', page.props)
                 <div>
                     <SidebarHeader>Zgłoszenia</SidebarHeader>
                     <div class="tw-space-y-2">
-                        <SidebarItem class="" :href="route('payoutrequest.index')"
-                            :active="route().current('payoutrequest.index')">
+                        <SidebarItem class="" :href="route('payout.requests.index')"
+                            :active="route().current('payout.requests.index')">
                             <template v-slot:icon>
                                 <i class="fas fa-envelope-open-dollar"></i>
                             </template>
@@ -325,8 +354,8 @@ console.log('page', page.props)
                             </template>
                         </SidebarItem>
                         <SidebarItem v-if="$page.props.god_mode" class=""
-                            :href="route('advance.settings.sync.level.index')"
-                            :active="route().current('advance.settings.sync.level.index')">
+                            :href="route('app.settings.sync.level.index')"
+                            :active="route().current('app.settings.sync.level.index')">
                             <template v-slot:icon>
                                 <i class="fas fa-sync"></i>
                             </template>
@@ -334,8 +363,8 @@ console.log('page', page.props)
                                 Synchronizacja poziomu
                             </template>
                         </SidebarItem>
-                        <SidebarItem class="" :href="route('advance.settings.points.check.index')"
-                            :active="route().current('advance.settings.points.check.index')">
+                        <SidebarItem class="" :href="route('app.settings.points.check.index')"
+                            :active="route().current('app.settings.points.check.index')">
                             <template v-slot:icon>
                                 <i class="far fa-money-check-edit-alt"></i>
                             </template>
@@ -344,8 +373,8 @@ console.log('page', page.props)
                             </template>
                         </SidebarItem>
                         <SidebarItem v-if="$page.props.god_mode" class=""
-                            :href="route('advance.settings.manual.payout.request.index')"
-                            :active="route().current('advance.settings.manual.payout.request.index')">
+                            :href="route('app.settings.manual.payout.request.index')"
+                            :active="route().current('app.settings.manual.payout.request.index')">
                             <template v-slot:icon>
                                 <i class="fa-solid fa-file-check"></i>
                             </template>

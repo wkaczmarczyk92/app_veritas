@@ -31,8 +31,16 @@ class Handler extends ExceptionHandler
 
     public function render($request, Throwable $exception)
     {
-        if ($exception instanceof UnauthorizedException) {
-            return redirect('/');
+        if (auth()->check() && $exception instanceof UnauthorizedException) {
+            $user = auth()->user();
+
+            if ($user->hasAnyRole(['admin', 'super-admin', 'god_mode'])) {
+                return redirect('/pulpit');
+            }
+
+            if ($user->hasRole('user')) {
+                return redirect('/');
+            }
         }
 
         return parent::render($request, $exception);

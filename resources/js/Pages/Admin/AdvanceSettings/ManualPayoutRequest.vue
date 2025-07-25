@@ -28,7 +28,7 @@ const submit = async () => {
     processing.value = true;
     output.value = '';
     try {
-        let response = await axios.post(route('advance.settings.manual.payout.request.update'));
+        let response = await axios.post(route('app.settings.manual.payout.request.update'));
         response = response.data;
 
         if (response.success) {

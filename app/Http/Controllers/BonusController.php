@@ -6,6 +6,7 @@ use Inertia\Inertia;
 use App\Http\Requests\Settings\BonusRequest;
 
 use App\Models\Bonus;
+use App\Helpers\Response;
 
 use App\Services\SettingsService;
 
@@ -18,7 +19,7 @@ class BonusController extends Controller
     }
 
     public function index() {
-        return Inertia::render('Admin/BonusSettings', [
+        return Inertia::render('Admin/Recommendations/Settings/Bonus', [
             'bonus' => [
                 'family_recommendation'     => Bonus::where('name', '=', 'family_recommendation')->first(),
                 'caretaker_recommendation'  =>  Bonus::where('name', '=', 'caretaker_recommendation')->first()
@@ -27,6 +28,7 @@ class BonusController extends Controller
     }
 
     public function update(BonusRequest $request) {
-        return response()->json($this->settings_service->update_bonuses($request->family_bonus, $request->caretaker_bonus));
+
+        return $this->settings_service->update_bonuses($request->family_bonus, $request->caretaker_bonus);
     }
 }

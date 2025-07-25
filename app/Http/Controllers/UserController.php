@@ -31,10 +31,20 @@ use App\Models\Common\CompanyBranch;
 // use App\Models\Bonus;
 use App\Models\UserHasBonus;
 
+use App\Http\Requests\User\UserStoreRequest;
+use App\Services\User\UserStoreService;
+
 use App\Http\Requests\User\CourseModerator\StoreRequest as CourseModeratorStoreRequest;
+use App\Services\User\SyncUserProfileWithCRMAccountService;
+use App\Services\User\Admin\UsersSearchService;
 
 class UserController extends Controller
 {
+    public function admin_search_index(Request $request) {
+        return (new UsersSearchService)->index($request);
+    }
+
+
     public function get()
     {
         $user = User::with(['user_profiles', 'user_points', 'ready_to_departure_dates', 'user_profile_image', 'user_has_bonus' => function ($query) {
@@ -50,7 +60,7 @@ class UserController extends Controller
         $order_by = $request->order_by ?? 'full_name';
         $order = $request->order ?? 'asc';
 
-        $users = User::with(['user_profiles', 'user_profile_image'])
+        $users = User::with(['user_profiles', 'user_profile_image', 'roles'])
             ->join('user_profiles', 'users.id', '=', 'user_profiles.user_id')
             ->select('users.*', DB::raw("CONCAT(user_profiles.last_name, ' ', user_profiles.first_name) as full_name"))
             ->whereHas('roles', function ($query) {
@@ -58,47 +68,42 @@ class UserController extends Controller
             });
 
 
-        if ($request->search != '') {
-            $users->whereHas('user_profiles', function ($query) use ($request) {
-                $query->where('first_name', 'like', "%{$request->search}%")
-                    ->orWhere('last_name', 'like', "%{$request->search}%")
-                    ->orWhere('email', 'like', "%{$request->search}%")
-                    ->orWhere('phone_number', 'like', "%{$request->search}%")
-                    ->orWhere('recruiter_first_name', 'like', "%{$request->search}%")
-                    ->orWhere('recruiter_last_name', 'like', "%{$request->search}%")
-                    ->orWhereRaw("CONCAT(first_name, ' ', last_name) LIKE '%{$request->search}%'")
-                    ->orWhereRaw("CONCAT(last_name, ' ', first_name) LIKE '%{$request->search}%'")
-                    ->orWhereRaw("CONCAT(recruiter_first_name, ' ', recruiter_last_name) LIKE '%{$request->search}%'")
-                    ->orWhereRaw("CONCAT(recruiter_last_name, ' ', recruiter_first_name) LIKE '%{$request->search}%'");
-            });
+        // if ($request->search != '') {
+        //     $users->whereHas('user_profiles', function ($query) use ($request) {
+        //         $query->where('first_name', 'like', "%{$request->search}%")
+        //             ->orWhere('last_name', 'like', "%{$request->search}%")
+        //             ->orWhere('email', 'like', "%{$request->search}%")
+        //             ->orWhere('phone_number', 'like', "%{$request->search}%")
+        //             ->orWhere('recruiter_first_name', 'like', "%{$request->search}%")
+        //             ->orWhere('recruiter_last_name', 'like', "%{$request->search}%")
+        //             ->orWhereRaw("CONCAT(first_name, ' ', last_name) LIKE '%{$request->search}%'")
+        //             ->orWhereRaw("CONCAT(last_name, ' ', first_name) LIKE '%{$request->search}%'")
+        //             ->orWhereRaw("CONCAT(recruiter_first_name, ' ', recruiter_last_name) LIKE '%{$request->search}%'")
+        //             ->orWhereRaw("CONCAT(recruiter_last_name, ' ', recruiter_first_name) LIKE '%{$request->search}%'");
+        //     });
 
-            $users->orWhere('pesel', 'like', "%{$request->search}%");
-        }
+        //     $users->orWhere('pesel', 'like', "%{$request->search}%");
+        // }
 
-        if ($request->current_points != '') {
-            $users->whereHas('user_profiles', function ($query) use ($request) {
-                $query->where('current_points', '>=', $request->current_points);
-            });
-        }
+        // if ($request->current_points != '') {
+        //     $users->whereHas('user_profiles', function ($query) use ($request) {
+        //         $query->where('current_points', '>=', $request->current_points);
+        //     });
+        // }
 
-        if ($request->total_days != '') {
-            $users->whereHas('user_profiles', function ($query) use ($request) {
-                $query->where('total_days', '>=', $request->total_days);
-            });
-        }
+        // if ($request->total_days != '') {
+        //     $users->whereHas('user_profiles', function ($query) use ($request) {
+        //         $query->where('total_days', '>=', $request->total_days);
+        //     });
+        // }
 
-        $users->orderBy($order_by, $order);
+        $users->orderBy('id', 'asc');
 
-        $users = $users->paginate(10);
+        $users = $users->take(3000)->get();
 
         return Inertia::render('Admin/Users/Index', [
             'users' => $users,
-            'levels' => Level::all(),
-            'search_string' => $request->search ?? '',
-            'search_current_points' => $request->current_points ?? '',
-            'search_total_days' => $request->total_days ?? '',
-            'order_by' => $order_by,
-            'order' => $order
+            'levels' => Level::all()
         ]);
     }
 
@@ -258,6 +263,16 @@ class UserController extends Controller
         ]);
     }
 
+    public function create() {
+        return Inertia::render('Admin/Users/Create', [
+            'roles' => Role::all()
+        ]);
+    }
+
+    public function store(UserStoreRequest $request) {
+        return (new UserStoreService)($request->validated());
+    }
+
     public function store_as_course_moderator(CourseModeratorStoreRequest $request)
     {
         // dd($request->all());
@@ -332,5 +347,9 @@ class UserController extends Controller
         } else {
             return Response::danger('Nie znaleziono rekrutera o podanym adresie email.');
         }
+    }
+
+    public function promote_to_premium(int $user_id) {
+        return (new SyncUserProfileWithCRMAccountService)($user_id);
     }
 }

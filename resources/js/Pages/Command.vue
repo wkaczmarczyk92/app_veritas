@@ -75,6 +75,7 @@ const up = async () => {
     let response = await axios.post(route('artisan.up'));
     response = response.data
     output.value.maintenance = response.msg
+    window.location.href = window.location.origin + '/pulpit'
 }
 
 const down = async () => {

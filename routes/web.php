@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\FamilyRecommendationController;
 use Symfony\Component\HttpFoundation\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -31,15 +32,43 @@ use App\Http\Controllers\Test\GermanTestController;
 
 Route::controller(GermanTestController::class)->group(function () {
     Route::post('/testy-niemieckiego/sprawdz-wynik', 'check_result')->name('german.test.check-result');
+    Route::post('/testy-niemieckiego/pytania', 'questions')->name('german.test.questions');
 });
 
 Route::middleware(['auth', 'role:user|admin|super-admin'])->group(function () {
+    // Route::post('/count.user.family.recommendations/{user_id}', function (int $id) {
+    //     return response()->json(
+    //         FamilyRecommendation::where('user_id', $id)->count()
+    //     );
+    // })->name('count.user.family.recommendations');
+
+    // Route::post('/user.family.recommendations/{user_id}', function (Request $request, int $id) {
+    //     return response()->json(
+    //         FamilyRecommendation::where('user_id', '=', $id)
+    //             ->orderBy('created_at', 'desc')
+    //             ->paginate(10)
+    //     );
+    // })->name('user.family.recommendations');
+
+    Route::prefix('rekomendacje-rodzin')->name('family.recommendations.')->group(function () {
+        Route::post('/dodane-przez/policz/{user_id}', function (int $id) {
+            return response()->json(
+                FamilyRecommendation::where('user_id', $id)->count()
+            );
+        })->name('created_by.count');
+
+        Route::post('/dodane-przez/{user_id}', function (Request $request, int $id) {
+            return response()->json(
+                FamilyRecommendation::where('user_id', '=', $id)
+                    ->orderBy('created_at', 'desc')
+                    ->paginate(10)
+            );
+        })->name('created_by');
+    });
 
 
-    Route::get('/user', [UserController::class, 'get'])->name('user.get');
-
-
-    Route::post('/store.or.update.user.profile.image', [UserProfileImageController::class, 'storeOrUpdate'])->name('store.or.update.user.profile.image');
+    Route::get('/pobierz-uzytkownika', [UserController::class, 'get'])->name('user.get');
+    Route::post('/wgraj-lub-zaktualizuj-zdjecie-profilowe', [UserProfileImageController::class, 'storeOrUpdate'])->name('store.or.update.user.profile.image');
 
     Route::post('/count.user.points.records/{user_id}', function (int $id) {
         return response()->json(
@@ -55,13 +84,7 @@ Route::middleware(['auth', 'role:user|admin|super-admin'])->group(function () {
         );
     })->name('user.caretaker.recommendations');
 
-    Route::post('/user.family.recommendations/{user_id}', function (Request $request, int $id) {
-        return response()->json(
-            FamilyRecommendation::where('user_id', '=', $id)
-                ->orderBy('created_at', 'desc')
-                ->paginate(10)
-        );
-    })->name('user.family.recommendations');
+
 
     Route::post('/count.user.caretaker.recommendations/{user_id}', function (int $id) {
         return response()->json(
@@ -69,29 +92,15 @@ Route::middleware(['auth', 'role:user|admin|super-admin'])->group(function () {
         );
     })->name('count.user.caretaker.recommendations');
 
-    Route::post('/count.user.family.recommendations/{user_id}', function (int $id) {
-        return response()->json(
-            FamilyRecommendation::where('user_id', $id)->count()
-        );
-    })->name('count.user.family.recommendations');
+
 
     Route::post('/punkty', [UserPointController::class, 'index'])->name('points.index');
 
     Route::get('/land.index', [LandController::class, 'index'])->name('land.index');
 
     Route::get('/user.point.last.insert.date', [UserPointController::class, 'last_insert_date'])->name('user.point.last.insert.date');
-
-
-
-    // Route::get('/testowanie', [TestController::class, 'test_sms'])->name('test.sms');
 });
 
-// Route::get('/test/bonuse-status/update', [TestController::class, 'update_bonus_status'])->name('test.bonuse-status.update');
-// Route::get('/test', [TestController::class, 'manual_update'])->name('test');
-// Route::get('/svg-test', [TestController::class, 'svg_test']);
-// Route::get('/phpversion', [TestController::class, 'php_version'])->name('phpversion');
-
-// Route::get('/test/serwis', [TestController::class, 'test_service'])->name('test.service');
 
 Route::post('/password.store', [PasswordRequestController::class, 'store'])->name('password.store');
 Route::post('/one.time.sms.password.store', [OneTimeSMSPasswordController::class, 'store'])->name('one.time.sms.password.store');

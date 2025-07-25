@@ -20,7 +20,7 @@ const count = ref(0);
 const data = ref({});
 
 const load = async () => {
-    let response = await axios.post(route('user.family.recommendations', {
+    let response = await axios.post(route('family.recommendations.created_by', {
         user_id: userStore.user.id
     }), {
         page: page.value
@@ -34,7 +34,7 @@ watch(page, async (new_page, old_page) => {
 })
 
 const count_family_recommendations = async () => {
-    let response = await axios.post(route('count.user.family.recommendations', {
+    let response = await axios.post(route('family.recommendations.created_by.count', {
         user_id: userStore.user.id
     }));
 

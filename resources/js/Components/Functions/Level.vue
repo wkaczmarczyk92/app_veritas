@@ -2,7 +2,7 @@
 
 export function level(levels, user_level) {
     return levels.filter((value, index) => {
-        return value.id == user_level;
+        return Number(value.id) == Number(user_level);
     })[0].name;
 }
 

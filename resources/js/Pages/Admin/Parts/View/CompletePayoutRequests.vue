@@ -17,40 +17,81 @@ const props = defineProps({
 })
 
 const payout_requests = ref({});
-const usePayoutRequestStore = payoutRequestsStore();
-payout_requests.value = await usePayoutRequestStore.loadRequestsData({ page_name: 'complete_page', route_name: 'load.complete.payout.requests' });
+const payout_request_store = payoutRequestsStore();
 
-async function reloadRequestsByURL(url) {
-    payout_requests.value = await usePayoutRequestStore.loadRequestsData({ page_name: 'complete_page', full_route: url });
-}
+payout_requests.value = await payout_request_store.load('completed');
+payout_request_store.payout_requests_completed = payout_requests.value[0]
 
-async function reloadRequestsByPageNumber(page) {
-    payout_requests.value = await usePayoutRequestStore.loadRequestsData({ page: page, page_name: 'complete_page', route_name: 'load.complete.payout.requests' });
-}
 
 const headers = [
-    '#ID',
-    'Imię i nazwisko opiekunki',
-    'PESEL',
-    'Przejdź do użytkownika',
-    'Kwota bonusu',
-    'Za poziom',
-    'Zrealizowany przez',
-    'Zrealizowano (data)'
+    {
+        title: '#ID',
+        value: 'id'
+    },
+    {
+        title: 'Imię i nazwisko opiekunki',
+        value: 'username'
+    },
+    {
+        title: 'PESEL',
+        value: 'user_has_bonus.user.pesel'
+    },
+    {
+        title: 'Kwota bonusu',
+        value: 'user_has_bonus.bonus_value'
+    },
+    {
+        title: 'Za poziom',
+        value: 'user_has_bonus.level_id'
+    },
+    {
+        title: 'Zrealizowany przez',
+        value: 'admin'
+    },
+    {
+        title: 'Ostatnia aktualizacja (data)',
+        value: 'updated_at',
+        sortable: true
+    },
 ];
-
-const admin_name = (user) => {
-    return user && user.user_profiles ? `${user.user_profiles.first_name} ${user.user_profiles.last_name}` : '-';
-}
 
 </script>
 
 <template>
-    <div v-if="payout_requests.data.length <= 0">
+    <div v-if="payout_request_store.payout_requests_completed.length <= 0">
         <StaticInfoAlert class="tw-mt-10">Brak zrealizowanych wniosków o wypłatę.</StaticInfoAlert>
     </div>
     <div v-else>
-        <PaginationNoReload class="tw-mt-10" :pagination="payout_requests" @reload-request-by-url="reloadRequestsByURL"
+        <v-data-table
+            v-if="payout_request_store.payout_requests_completed && payout_request_store.payout_requests_completed.length"
+            :headers="headers" :items="payout_request_store.payout_requests_completed" item-value="id"
+            items-per-page="50">
+            <template #item.username="{ item }">
+                <a :href="route('user', item.user_has_bonus.user.id)"
+                    class="tw-text-blue-600 hover:tw-underline hover:tw-text-blue-900">{{
+                        item.user_has_bonus.user.user_profiles.full_name }}</a>
+            </template>
+            <!-- <template #item.level="{ item }">
+                {{ item }}
+            </template> -->
+            <template #item.user_has_bonus.bonus_value="{ value }">
+                {{ value }} €
+            </template>
+            <template #item.updated_at="{ value }">
+                {{ format(value) }}
+            </template>
+            <template #item.admin="{ item }">
+                <div v-if="item.admin_user" class="tw-flex tw-flex-col tw-gap-1">
+                    <div>{{ item.admin_user.user_profiles.first_name }} {{ item.admin_user.user_profiles.last_name }}</div>
+                    <a class="tw-text-blue-600 hover:tw-underline" target="_blank" :href="`mailto:${item.admin_user.email}`">{{ item.admin_user.email }}</a>
+                </div>
+                <div v-else>brak</div>
+            </template>
+            <template #item.user_has_bonus.level_id="{ value }">
+                <span :class="levelColor(value)"><b>{{ level(levels, value).toUpperCase() }}</b></span>
+            </template>
+        </v-data-table>
+        <!-- <PaginationNoReload class="tw-mt-10" :pagination="payout_requests" @reload-request-by-url="reloadRequestsByURL"
             @reload-request-by-page-number="reloadRequestsByPageNumber"></PaginationNoReload>
         <div class="tw-bg-gray-100 tw-shadow-xl tw-rounded tw-mb-6"
             :class="payout_requests.total > payout_requests.per_page ? '' : 'tw-mt-10'">
@@ -85,6 +126,6 @@ const admin_name = (user) => {
             </TableDefault>
         </div>
         <PaginationNoReload class="tw-mt-6" :pagination="payout_requests" @reload-request-by-url="reloadRequestsByURL"
-            @reload-request-by-page-number="reloadRequestsByPageNumber"></PaginationNoReload>
+            @reload-request-by-page-number="reloadRequestsByPageNumber"></PaginationNoReload> -->
     </div>
 </template>

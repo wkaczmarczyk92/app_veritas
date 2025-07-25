@@ -1,5 +1,7 @@
 <script setup>
 
+import { router } from '@inertiajs/vue3'
+
 const props = defineProps({
     german_lesson: {
         type: Object,
@@ -30,20 +32,20 @@ const set_route = (lesson_id) => {
 <template>
     <div class="tw-grid tw-grid-cols-1 tw-gap-4" :class="set_grid()" v-if="german_lesson.lessons.length > 0">
         <v-card v-for="(lesson, index) in german_lesson.lessons" :key="lesson.id"
-            :title="(index + 1) + '. ' + lesson.name">
+            :title="(index + 1) + '. ' + lesson.name" @click="!admin_view ? router.get(set_route(lesson.id)) : null">
             <template v-slot:title>
-                <div class="tw-flex tw-flex-row tw-justify-between">
+                <div class="tw-flex tw-flex-row tw-justify-between tw-items-center">
                     <div class="tw-break-all">
                         {{ index + 1 }}. {{ lesson.name }}
                     </div>
                     <div class="tw-flex tw-flex-row tw-gap-2 tw-items-center">
 
-                        <i class="fas fa-circle"
+                        <i class="fas fa-circle tw-text-base" v-if="admin_view"
                             :class="lesson.visibility.id == 1 ? 'tw-text-[#ea580c]' : 'tw-text-[#16a34a]'">
                             <v-tooltip activator="parent" location="top">{{ lesson.visibility.name_pl
                                 }}</v-tooltip>
                         </i>
-                        <v-menu>
+                        <v-menu v-if="admin_view">
                             <template v-slot:activator="{ props }">
                                 <v-btn v-bind="props" icon variant="text">
                                     <i
