@@ -25,7 +25,7 @@ export const use_users_store = defineStore("users_store", {
                         .toLowerCase()
                         .includes(search);
 
-                    const match_pesel = (user.user_profiles.pesel || "")
+                    const match_pesel = (user.pesel || "")
                         .toLowerCase()
                         .includes(search);
 

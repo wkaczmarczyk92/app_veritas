@@ -35,12 +35,59 @@ use App\Http\Controllers\Test\TestResultController;
 use App\Models\BonusStatus;
 use App\Http\Controllers\Settings\UpdateCaretakerDataController;
 
-Route::middleware(['auth', 'role:super-admin|god_mode'])->group(function () {
-    Route::controller(UpdateCaretakerDataController::class)->prefix('ustawienia-zaawansowane')->name('advance.settings.')->group(function () {
-        Route::prefix('opiekunki')->name('caretakers.')->group(function () {
-            Route::post('aktualizacja-rekruterow', 'update_caretakers_recruiter')->name('update.recruiter');
-        });
+use App\Http\Controllers\Admin\AuthMimicController;
+use App\Http\Controllers\Test\OralExamController;
+
+Route::middleware(['auth', 'role:user|super-admin|god_mode|admin'])
+    ->group(function () {
+        Route::controller(AuthMimicController::class)
+            ->prefix('imitacja-uwierzytelnienia')
+            ->name('auth.mimic.')
+            ->group(function () {
+                Route::post('powrot-do-panelu-admina', 'back_to_admin_panel')
+                    ->name('back.to.admin.panel');
+            });
+
+        Route::controller(OralExamController::class)
+            ->prefix('egzamin-ustny')
+            ->name('oral.exam.')
+            ->group(function () {
+                Route::post('harmonogram', 'download_selected_date')->name('download.selected.date');
+                Route::post('zapisz-termin', 'store')->name('store');
+                Route::delete('usun-terminy', 'destroy')->name('destroy');
+                Route::post('zalicz-test', 'set_as_passed')->name('set.as.passed');
+                Route::post('oblej-test', 'set_as_failure')->name('set.as.failure');
+            });
     });
+
+Route::middleware(['auth', 'role:super-admin|god_mode'])->group(function () {
+    Route::controller(UpdateCaretakerDataController::class)
+        ->prefix('ustawienia-zaawansowane')
+        ->name('advance.settings.')
+        ->group(function () {
+            Route::prefix('opiekunki')
+                ->name('caretakers.')
+                ->group(function () {
+                    Route::post('aktualizacja-rekruterow', 'update_caretakers_recruiter')
+                        ->name('update.recruiter');
+                });
+        });
+
+    Route::controller(OralExamController::class)
+        ->prefix('egzamin-ustny')
+        ->name('oral.exam.')
+        ->group(function () {
+            Route::get('harmonogram', 'index_create')->name('index.create');
+            Route::get('wyniki', 'index')->name('index');
+        });
+
+    Route::controller(AuthMimicController::class)
+        ->prefix('imitacja-uwierzytelnienia')
+        ->name('auth.mimic.')
+        ->group(function () {
+            Route::post('zaloguj-sie-jako-uzytkownik', 'login_as_user')
+                ->name('login.as.user');
+        });
 });
 
 Route::middleware(['auth', 'role:admin|super-admin|god_mode'])->group(function () {
@@ -48,58 +95,117 @@ Route::middleware(['auth', 'role:admin|super-admin|god_mode'])->group(function (
         ->prefix('testy-niemieckiego')
         ->name('german.tests.')
         ->group(function () {
-            Route::get('wczytaj-test-z-pliku-xml', 'load_from_xml')->name('load.from.xml');
-            Route::post('wrzuc-z-pliku', 'load_from_file')->name('upload.from.file');
-            Route::delete('usun-test/{id}', 'destroy')->name('destroy');
-            Route::get('ustawienia', 'settings')->name('settings');
-            Route::patch('ustawienia', 'update_settings')->name('settings.update');
+            Route::get('wczytaj-test-z-pliku-xml', 'load_from_xml')
+                ->name('load.from.xml');
 
-            Route::get('test', 'show')->name('show');
+            Route::post('wrzuc-z-pliku', 'load_from_file')
+                ->name('upload.from.file');
+
+            Route::delete('usun-test/{id}', 'destroy')
+                ->name('destroy');
+
+            Route::get('ustawienia', 'settings')
+                ->name('settings');
+
+            Route::patch('ustawienia', 'update_settings')
+                ->name('settings.update');
+
+            Route::get('test', 'show')
+                ->name('show');
         });
 
-    Route::controller(TestResultController::class)->prefix('wyniki-testow')->name('test.results.')->group(function () {
-        Route::delete('usun-wyniki-testowe', 'destroy_test_user_data')->name('destroy.test.user.data');
-    });
+    // Route::controller(TestResultController::class)
+    //     ->prefix('harmonogram-egzaminow-ustnych')
+    //     ->name('test.results.')
+    //     ->group(function () {
 
-    Route::controller(QuestionController::class)->prefix('pytania')->name('questions.')->group(function () {
-        Route::post('dodaj-audio', 'upload_audio')->name('upload.audio');
-        Route::delete('usun-audio/{file_id}', 'destroy_audio')->name('audio.destroy');
-    });
+    //         Route::get('', '')
+    //             ->name('');
+    //     });
+
+    Route::controller(TestResultController::class)
+        ->prefix('wyniki-testow')
+        ->name('test.results.')
+        ->group(function () {
+            Route::delete('usun-wyniki-testowe', 'destroy_test_user_data')
+                ->name('destroy.test.user.data');
+
+            Route::get('testy-niemieckiego', 'index')
+                ->name('index');
+        });
+
+    Route::controller(QuestionController::class)
+        ->prefix('pytania')
+        ->name('questions.')
+        ->group(function () {
+            Route::post('dodaj-audio', 'upload_audio')
+                ->name('upload.audio');
+            Route::delete('usun-audio/{file_id}', 'destroy_audio')
+                ->name('audio.destroy');
+        });
 
     // Route::controller(TestController::class)->prefix('kursy/testy')->name('test.controller.')->group(function () {
 
     // });
 
-    Route::controller(GermanLessonController::class)->prefix('admin/lekcje-niemieckiego')->name('german.lessons.')->group(function () {
-        Route::get('/', 'index')->name('index');
-        Route::get('/dodaj-lekcje', 'create')->name('create');
-        Route::post('/dodaj-lekcje', 'store')->name('store');
-        Route::get('/lekcja/{id}', 'show')->name('show');
-        Route::get('/lekcja/edytuj/{id}', 'edit')->name('edit');
-        Route::delete('/lekcja/usun/{id}', 'destroy')->name('destroy');
+    Route::controller(GermanLessonController::class)
+        ->prefix('admin/lekcje-niemieckiego')
+        ->name('german.lessons.')
+        ->group(function () {
+            Route::get('/', 'index')
+                ->name('index');
 
-        Route::patch('lekcja/aktualizuj-widocznosc', 'update_visibility')->name('update.visibility');
-    });
+            Route::get('/dodaj-lekcje', 'create')
+                ->name('create');
 
-    Route::get('/pulpit', [AdminDashboardController::class, 'index'])->name('dashboard');
+            Route::post('/dodaj-lekcje', 'store')
+                ->name('store');
 
-    Route::controller(OfferController::class)->name('offer.')->group(function () {
-        Route::get('/zgloszenia-na-oferty', 'index')->name('index');
-        Route::delete('/usun-oferte/{id}', 'destroy')->name('destroy');
-    });
+            Route::get('/lekcja/{id}', 'show')
+                ->name('show');
+
+            Route::get('/lekcja/edytuj/{id}', 'edit')
+                ->name('edit');
+
+            Route::delete('/lekcja/usun/{id}', 'destroy')
+                ->name('destroy');
+
+            Route::patch('lekcja/aktualizuj-widocznosc', 'update_visibility')
+                ->name('update.visibility');
+        });
+
+    Route::get('/pulpit', [AdminDashboardController::class, 'index'])
+        ->name('dashboard');
+
+    Route::controller(OfferController::class)
+        ->name('offer.')
+        ->group(function () {
+            Route::get('/zgloszenia-na-oferty', 'index')
+                ->name('index');
+
+            Route::delete('/usun-oferte/{id}', 'destroy')
+                ->name('destroy');
+        });
 
     // USER
 
-    Route::controller(UserController::class)->group(function () {
-        Route::get('/uzytkownicy', 'index')->name('users');
-        Route::get('/uzytkownik/{id}', 'show')->name('user');
-        Route::patch('/uzytkownik', 'update')->name('user.update');
-        Route::patch('uzytkownik/{user_id}/aktywacja-konta-premium', 'promote_to_premium')->name('user.promote.to.premium');
+    Route::controller(UserController::class)
+        ->group(function () {
+            Route::get('/uzytkownicy', 'index')
+                ->name('users');
 
-        Route::post('pobierz-uzytkownikow', 'admin_search_index')->name('users.admin.search.index');
+            Route::get('/uzytkownik/{id}', 'show')
+                ->name('user');
 
+            Route::patch('/uzytkownik', 'update')
+                ->name('user.update');
 
-    });
+            Route::patch('uzytkownik/{user_id}/aktywacja-konta-premium', 'promote_to_premium')
+                ->name('user.promote.to.premium');
+
+            Route::post('pobierz-uzytkownikow', 'admin_search_index')
+                ->name('users.admin.search.index');
+        });
     // Route::get('/uzytkownicy', [UserController::class, 'index'])->name('users');
 
     // Route::get('/uzytkownik/{id}', [UserController::class, 'show'])->name('user');
@@ -108,19 +214,26 @@ Route::middleware(['auth', 'role:admin|super-admin|god_mode'])->group(function (
 
 
     // PUNKTY
-    Route::post('/userpoints.store', [UserPointController::class, 'store'])->name('userpoints.store');
-    Route::post('/userpoints.activate/{user_id}', [UserPointController::class, 'activate_by_admin'])->name('userpoints.activate.by.admin');
+    Route::post('/userpoints.store', [UserPointController::class, 'store'])
+        ->name('userpoints.store');
+    Route::post('/userpoints.activate/{user_id}', [UserPointController::class, 'activate_by_admin'])
+        ->name('userpoints.activate.by.admin');
 
 
     // CHECKPOINTS
 
-    Route::controller(PointCheckpointController::class)->group(function () {
-        Route::get('/ustawienia-punktow-kontrolnych', 'index')->name('pointbreakpoints.index');
-        Route::patch('/checkpoints.update', 'update')->name('checkpoints.update');
-    });
+    Route::controller(PointCheckpointController::class)
+        ->group(function () {
+            Route::get('/ustawienia-punktow-kontrolnych', 'index')
+                ->name('pointbreakpoints.index');
+
+            Route::patch('/checkpoints.update', 'update')
+                ->name('checkpoints.update');
+        });
 
     // BOK REQUEST
-    Route::get('/zgloszenia-do-boku', [BOKRequestController::class, 'index'])->name('bokrequest.index');
+    Route::get('/zgloszenia-do-boku', [BOKRequestController::class, 'index'])
+        ->name('bokrequest.index');
 
     Route::post('/load-bok-requests/{id}', function (int $id) {
         return response()->json([
@@ -138,9 +251,14 @@ Route::middleware(['auth', 'role:admin|super-admin|god_mode'])->group(function (
         ->name('payout.requests.')
         ->group(function () {
 
-            Route::get('/', 'index')->name('index');
-            Route::patch('/aktualizuj', 'update')->name('update');
-            Route::patch('aktualizuj-status', 'change_payout_status')->name('update.status');
+            Route::get('/', 'index')
+                ->name('index');
+
+            Route::patch('/aktualizuj', 'update')
+                ->name('update');
+
+            Route::patch('aktualizuj-status', 'change_payout_status')
+                ->name('update.status');
 
             Route::prefix('policz')
                 ->name('count.')

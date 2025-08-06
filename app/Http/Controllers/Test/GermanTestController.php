@@ -13,6 +13,7 @@ use App\Models\Courses\GermanLesson;
 use Inertia\Inertia;
 
 use App\Helpers\Transaction;
+use App\Models\Test\OralExam;
 
 use App\Http\Requests\GermanLesson\UpdateTestTimeRequest;
 use App\Models\Test\TestResult;
@@ -71,16 +72,25 @@ class GermanTestController extends Controller
         $questions = (new GermanTestGetQuestionsService)($german_lesson->question_count);
 
         $is_admin = auth()->user()->hasAnyRole(['admin', 'super-admin', 'god_mode']);
+        $user = auth()->user();
+        $user->load('test_results');
 
         $view = $is_admin ? 'Lessons/GermanLessons/Test' : 'Lessons/GermanLessons/User/Test';
         $test_attempts = TestResult::where('user_id', auth()->id())->whereDate('created_at', date('Y-m-d'))->count();
         $can_take_test = $is_admin || $test_attempts < 2;
+        $test_passed = $user->test_results->contains('is_passed', true);
+        $oral_exam_passed = OralExam::where('is_passed', true)->where('user_id', auth()->id())->count();
+        $has_any_oral_exam = OralExam::whereNull('is_passed')->where('user_id', auth()->id())->count();
+        // dd($oral_exam_passed);
 
         return Inertia::render($view, [
             'questions' => $questions,
             'german_lesson' => $german_lesson,
             'can_take_test' => $can_take_test,
-            'test_attempts' => $test_attempts
+            'test_attempts' => $test_attempts,
+            'test_passed' => $test_passed,
+            'oral_exam_passed' => (bool)$oral_exam_passed,
+            'has_any_oral_exam' => (bool)$has_any_oral_exam
         ]);
     }
 

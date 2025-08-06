@@ -50,7 +50,8 @@ Route::middleware(['auth', 'role:user'])->group(function () {
     Route::get('zasady-programy-zostan-mittelem', [GermanTestController::class, 'become_mittel_program'])->prefix('lekcje-niemieckiego')->name('user.german.lessons.become.mittel.program');
 
 
-    Route::controller(GermanTestController::class)->middleware(['seen_test_regulations', 'is_test_user'])->prefix('test-niemieckiego')->name('user.german.test.')->group(function () {
+    // Route::controller(GermanTestController::class)->middleware(['seen_test_regulations', 'is_test_user'])->prefix('test-niemieckiego')->name('user.german.test.')->group(function () {
+    Route::controller(GermanTestController::class)->middleware(['seen_test_regulations'])->prefix('test-niemieckiego')->name('user.german.test.')->group(function () {
         Route::get('/', 'show')->name('show');
     });
 

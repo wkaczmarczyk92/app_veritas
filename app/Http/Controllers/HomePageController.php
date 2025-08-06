@@ -47,7 +47,7 @@ class HomePageController extends Controller
         return Inertia::render('User/Homepage/Homepage', [
             'levels' => Level::with(['checkpoints', 'multiplier', 'bonus_value'])->get(),
             'recruiter' => $recruiter->original,
-            'posts' => $post_service_getter(true),
+            'posts' => $post_service_getter(),
             'payout_active' => (bool) PayoutRequest::with('user_has_bonus')
                 ->whereHas('user_has_bonus', function ($query) use ($user) {
                     $query->where('user_id', $user->id)
@@ -61,6 +61,8 @@ class HomePageController extends Controller
         // $filters = [];
         // $user_offers_id = Offer::where('user_id', auth()->id())->get()->pluck('crm_offer_id');
         // dd($user_offers);
+
+        // dd(session('auth_mimic_uuid'));
 
         $post_service_getter = new PostServiceGetter;
 

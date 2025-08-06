@@ -21,9 +21,11 @@ use App\Models\Courses\VideoFramed;
 
 use App\Models\Common\CompanyBranch;
 use App\Models\CRM\CaretakerBlackList;
+use App\Models\Test\TestResult;
 use Illuminate\Database\Eloquent\Relations\MorphTo;
 
 use App\Models\Common\SeenInfo;
+use App\Models\Test\OralExam;
 
 class User extends Authenticatable
 {
@@ -62,6 +64,16 @@ class User extends Authenticatable
     ];
 
     protected $appends = ['is_admin'];
+
+    public function test_results(): HasMany
+    {
+        return $this->hasMany(TestResult::class, 'user_id', 'id');
+    }
+
+    public function oral_exams() :HasMany
+    {
+        return $this->hasMany(OralExam::class, 'user_id', 'id');
+    }
 
     protected function getIsAdminAttribute()
     {

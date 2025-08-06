@@ -24,18 +24,18 @@ class PostServiceGetter
                 });
 
                 $query->orWhere(function ($query) use ($current_date) {
-                    $query->where('start_at', '<=', $current_date)
-                        ->where('end_at', '>=', $current_date);
+                    $query->whereDate('start_at', '<=', $current_date)
+                        ->whereDate('end_at', '>=', $current_date);
                 });
 
                 $query->orWhere(function ($query) use ($current_date) {
                     $query->whereNull('start_at')
-                        ->where('end_at', '>=', $current_date);
+                        ->whereDate('end_at', '>=', $current_date);
                 });
 
                 $query->orWhere(function ($query) use ($current_date) {
                     $query->whereNull('end_at')
-                        ->where('start_at', '<=', $current_date);
+                        ->whereDate('start_at', '<=', $current_date);
                 });
             })
             ->orderBy('order')

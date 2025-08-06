@@ -297,6 +297,33 @@ console.log('page', page.props)
                                 Test niemieckiego
                             </template>
                         </SidebarItem>
+                        <SidebarItem class="" :href="route('test.results.index')"
+                            :active="route().current('test.results.index')">
+                            <template v-slot:icon>
+                                <i class="fal fa-poll-people"></i>
+                            </template>
+                            <template v-slot:title>
+                                Wyniki testów WWW
+                            </template>
+                        </SidebarItem>
+                        <SidebarItem class="" :href="route('oral.exam.index.create')"
+                            :active="route().current('oral.exam.index.create')">
+                            <template v-slot:icon>
+                                <i class="far fa-calendar-alt"></i>
+                            </template>
+                            <template v-slot:title>
+                                Harmonogram testów ustnych
+                            </template>
+                        </SidebarItem>
+                        <SidebarItem class="" :href="route('oral.exam.index')"
+                            :active="route().current('oral.exam.index')">
+                            <template v-slot:icon>
+                                <i class="far fa-user-graduate"></i>
+                            </template>
+                            <template v-slot:title>
+                                Wyniki testów ustnych
+                            </template>
+                        </SidebarItem>
                         <SidebarItem class="" :href="route('german.tests.settings')"
                             :active="route().current('german.tests.settings')">
                             <template v-slot:icon>

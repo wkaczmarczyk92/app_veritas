@@ -5,12 +5,33 @@ import Dropdown from '@/Components/Dropdown.vue';
 import DropdownLink from '@/Components/DropdownLink.vue';
 import NavLink from '@/Components/NavLink.vue';
 import ResponsiveNavLink from '@/Components/ResponsiveNavLink.vue';
-import { Link } from '@inertiajs/vue3';
+import { Link, usePage } from '@inertiajs/vue3';
+
+import AdminHeaderOnUserLayout from '../Admin/AdminHeaderOnUserLayout.vue';
 
 const showingNavigationDropdown = ref(false);
+
+const oral_exam_dialog = ref(true)
+
 </script>
 
 <template>
+    <AdminHeaderOnUserLayout />
+    <v-dialog v-model="oral_exam_dialog" max-width="500" v-if="$page.props.user_test.test_passed && !$page.props.user_test.has_oral_exam && !$page.props.user_test.oral_exam_passed && !$page.props.user_test.is_month_passed && $page.url != '/test-niemieckiego'">
+        <template v-slot:default>
+            <v-card title="Zapisz się na test ustny!">
+                <v-card-text>
+                    Zaliczyłeś/aś już test na stronie WWW. Teraz kolej na test ustny. Przejdź <a :href="route('user.german.test.show')" class="tw-text-blue-600 hover:tw-underline tw-font-bold">na tę stronę</a> i wybierz termin.
+                </v-card-text>
+
+                <v-card-actions>
+                    <v-spacer></v-spacer>
+
+                    <v-btn text="Zamknij" @click="oral_exam_dialog = false"></v-btn>
+                </v-card-actions>
+            </v-card>
+        </template>
+    </v-dialog>
     <nav class="tw-bg-gray-800 tw-border-b tw-border-gray-500">
         <!-- Primary Navigation Menu -->
         <div class="tw-w-full tw-mx-auto tw-p-4 sm:tw-px-6 lg:tw-px-8">
@@ -138,7 +159,8 @@ const showingNavigationDropdown = ref(false);
                                     </DropdownLink>
                                     <DropdownLink :href="route('user.german.test.show')"> Rozwiąż test
                                     </DropdownLink>
-                                    <DropdownLink :href="route('user.german.lessons.become.mittel.program')"> Zasady programu "Zostań Mittelem"
+                                    <DropdownLink :href="route('user.german.lessons.become.mittel.program')"> Zasady
+                                        programu "Zostań Mittelem"
                                     </DropdownLink>
                                 </template>
                             </Dropdown>

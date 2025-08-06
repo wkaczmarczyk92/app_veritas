@@ -72,7 +72,7 @@ const accept_user_image = async () => {
                 <div class="tw-grow">Numer telefonu</div>
                 <div class="tw-grow tw-text-right">{{ user.user_profiles.phone_number ?? '-' }}</div>
             </div>
-            <div class="tw-flex tw-flex-row tw-mt-6">
+            <div class="tw-flex tw-flex-row tw-mt-6" v-if="user.user_profiles.crt_id_caretaker">
                 <div class="tw-grow">Przejdź do profilu w CRM</div>
                 <div class="tw-grow tw-text-right">
                     <a :href="`https://local.grupa-veritas.pl/#/opiekunki/${user.user_profiles.crt_id_caretaker}`">

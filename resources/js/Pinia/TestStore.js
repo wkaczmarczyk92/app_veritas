@@ -21,7 +21,8 @@ export const useTestStore = defineStore("test_store", {
             current_time: null,
             timer_interval: null,
             test_attempts: null,
-            disable_next_question_button: false
+            disable_next_question_button: false,
+            oral_exam_set: false
         };
     },
     actions: {
@@ -71,6 +72,8 @@ export const useTestStore = defineStore("test_store", {
             this.set_questions(questions);
             this.set_e1();
             this.set_test_id(test_id);
+
+            this.disable_next_question_button = false;
 
             this.test = [];
 

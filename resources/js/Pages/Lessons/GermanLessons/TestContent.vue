@@ -141,12 +141,13 @@ test_store.init(props.questions, props.test_id)
                         </div>
                     </Transition>
                 </div>
+                <slot></slot>
             </v-card-text>
 
             <v-card-actions>
                 <v-spacer></v-spacer>
 
-                <v-btn v-if="is_admin || test_store.result" text="Spróbuj ponownie" @click="test_store.reset()"
+                <v-btn v-if="is_admin || test_store.result == null" text="Spróbuj ponownie" @click="test_store.reset()"
                     color="#9333ea"></v-btn>
                 <v-btn v-if="props.is_admin" text="Zamknij" @click="$emit('close-dialog')" color="red"></v-btn>
             </v-card-actions>

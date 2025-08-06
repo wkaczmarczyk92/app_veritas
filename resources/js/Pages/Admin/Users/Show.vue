@@ -15,10 +15,12 @@ import UserFamilyRecommendations from '@/Pages/Admin/Parts/View/UserFamilyRecomm
 import UserCaretakerRecommendations from '@/Pages/Admin/Parts/View/UserCaretakerRecommendations.vue';
 import UserProfileImage from '@/Pages/Admin/Parts/View/UserProfileImage.vue';
 import PasswordChange from '@/Pages/Admin/Parts/View/PasswordChange.vue';
+import { use_auth_mimic_store } from '@/Pinia/Admin/AuthMimicStore';
 
 import AlertDanger from '@/Components/Functions/AlertDanger.vue';
 
 import Loader from '@/Components/Loader.vue';
+import Settings from './Templates/Settings.vue';
 
 import { AlertStore } from '@/Pinia/AlertStore';
 import { useUserStore } from '@/Pinia/UserStore';
@@ -47,6 +49,7 @@ const props = defineProps({
 console.log('bopnus', props.user_bonus)
 
 const user_store = useUserStore()
+user_store.set_user(props.user);
 
 const user = ref(props.user);
 const user_bonus = ref(props.user_bonus);
@@ -131,6 +134,8 @@ const activate_bonus = async () => {
 
 const bok_and_payout_request_tab = ref('payout_request_tab')
 
+const auth_mimic_store = use_auth_mimic_store()
+
 </script>
 
 <template>
@@ -151,8 +156,13 @@ const bok_and_payout_request_tab = ref('payout_request_tab')
                         {{ `${user.user_profiles.first_name} ${user.user_profiles.last_name}` }}
                     </div> -->
                     <v-card class="!tw-rounded-none">
-                        <v-toolbar color="primary"
-                            :title="user.user_profiles.first_name + ' ' + user.user_profiles.last_name">
+                        <v-toolbar color="primary">
+                            <template v-slot:title>
+                                <div class="tw-flex tw-flex-row tw-gap-2 tw-items-center">
+                                    <div>{{ user.user_profiles.first_name + ' ' + user.user_profiles.last_name }}</div>
+                                    <v-btn>asd</v-btn>
+                                </div>
+                            </template>
                         </v-toolbar>
                         <div class="d-flex flex-row">
                             <v-tabs v-model="tab" color="#2563eb" direction="vertical">
@@ -164,13 +174,24 @@ const bok_and_payout_request_tab = ref('payout_request_tab')
                                 <v-tab value="family_recommendations">Polecenia rodzin</v-tab>
                                 <v-tab value="caretaker_recommendations">Polecenia opiekunek</v-tab>
                                 <v-tab value="bonus">Bonusy</v-tab>
-                                <v-btn v-if="!user.user_profiles.crt_id_user_recruiter" color="#2563eb" class="!tw-mx-auto tw-mt-10" @click="user_store.set_premium_account(user.id)">
+                                <v-tab value="settings">Ustawienia</v-tab>
+                                <!-- <v-btn v-if="!user.user_profiles.crt_id_caretaker" color="#2563eb"
+                                    class="!tw-mr-auto tw-ml-1 tw-mt-10"
+                                    @click="user_store.set_premium_account(user.id)">
                                     Aktywuj konto premium
                                 </v-btn>
+                                <v-btn v-if="$page.props.god_mode" color="#a21caf" class="!tw-mr-auto tw-ml-1 tw-mt-1"
+                                    @click="auth_mimic_store.login_as_user(user.id)">
+                                    Zaloguj się jako użytkownik
+                                </v-btn> -->
                             </v-tabs>
 
                             <v-card-text class="!tw-p-0">
                                 <v-window v-model="tab">
+
+                                    <v-window-item value="settings">
+                                        <Settings />
+                                    </v-window-item>
                                     <v-window-item value="bonus">
                                         <div class="tw-mt-4">
                                             <div v-if="user_bonus.length <= 0">

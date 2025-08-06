@@ -35,7 +35,7 @@ Route::controller(GermanTestController::class)->group(function () {
     Route::post('/testy-niemieckiego/pytania', 'questions')->name('german.test.questions');
 });
 
-Route::middleware(['auth', 'role:user|admin|super-admin'])->group(function () {
+Route::middleware(['auth', 'role:user|admin|super-admin|god_mode'])->group(function () {
     // Route::post('/count.user.family.recommendations/{user_id}', function (int $id) {
     //     return response()->json(
     //         FamilyRecommendation::where('user_id', $id)->count()

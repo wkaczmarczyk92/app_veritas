@@ -78,7 +78,13 @@ export const useUserStore = defineStore("userStore", {
 
                     response = response.data;
 
-                    this.alert_store.pushAlert(resonse);
+                    if (response.success) {
+                        this.user.user_profiles.crt_id_caretaker = response.user.user_profiles.crt_id_caretaker
+                        this.user.user_profiles.recruiter_first_name = response.user.user_profiles.recruiter_first_name
+                        this.user.user_profiles.recruiter_last_name = response.user.user_profiles.recruiter_last_name
+                    }
+
+                    this.alert_store.pushAlert(response);
                 }, this);
             }
         },

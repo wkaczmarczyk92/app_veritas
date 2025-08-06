@@ -6,11 +6,13 @@ import DropdownLink from '@/Components/DropdownLink.vue';
 import NavLink from '@/Components/NavLink.vue';
 import ResponsiveNavLink from '@/Components/ResponsiveNavLink.vue';
 import { Link } from '@inertiajs/vue3';
+import AdminHeaderOnUserLayout from '../Admin/AdminHeaderOnUserLayout.vue';
 
 const showingNavigationDropdown = ref(false);
 </script>
 
 <template>
+    <AdminHeaderOnUserLayout v-if="$page.props.mimic_uuid" />
     <nav class="tw-bg-gray-800 tw-border-b tw-border-gray-500">
         <!-- Primary Navigation Menu -->
         <div class="tw-w-full tw-mx-auto tw-p-4 sm:tw-px-6 lg:tw-px-8">

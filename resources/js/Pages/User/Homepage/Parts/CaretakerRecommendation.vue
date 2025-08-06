@@ -20,7 +20,7 @@ defineEmits([
 ]);
 
 const useAlertStore = AlertStore();
-const button_value = ref('Zgłoś chęć polecenia opiekunki');
+const button_value = ref('Zgłoś opiekunkę');
 const success_msg = ref(false);
 const danger_msg = ref(false);
 const disabled = ref(false);
@@ -58,8 +58,8 @@ const submit = async () => {
             <hr class="tw-my-6 tw-px-6">
             <div class="tw-text-gray-800 tw-px-6 tw-text-lg">
                 Znasz kogoś kto byłby zainteresowany współpracą z nami jako opiekun/opiekunka? Poleć nam taką osobę i
-                zyskaj
-                dodatkowe <span class="tw-text-blue-600 tw-font-bold">{{ bonus.caretaker_recommendation }}€</span>!<br>
+                zyskaj aż
+                do <span class="tw-text-blue-600 tw-font-bold">150€</span>!<br>
                 Możesz sprawdzić swoje aktualne polecenia <a href="#" class="tw-underline tw-text-blue-600"
                     @click.prevent="modalStore.visibility.caretaker_recommendations = true">TUTAJ</a>.
             </div>
@@ -72,7 +72,7 @@ const submit = async () => {
                 </v-btn>
             </div>
             <div>
-                <img src="images/image5.png" class="tw-w-1/2 tw-ml-auto tw-mr-auto">
+                <img src="images/polop.png" class="tw-w-full lg:tw-w-2/3 tw-ml-auto tw-mr-auto">
             </div>
         </v-card-text>
     </v-card>

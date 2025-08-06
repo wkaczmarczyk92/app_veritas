@@ -61,8 +61,6 @@ const headers = [
     }
 ];
 
-
-
 const breadcrumbs = [
     {
         title: 'VeritasApp',
@@ -125,7 +123,7 @@ const breadcrumbs = [
                                         </div>
                                     </div>
                                     <div v-else>
-                                        <div v-if="item.user_profiles.crt_id_user_recruiter">
+                                        <div v-if="item.user_profiles.crt_id_caretaker">
                                             <v-chip color="#2563eb" variant="outlined" rounded="lg">
                                                 Premium
                                             </v-chip>
@@ -159,7 +157,7 @@ const breadcrumbs = [
 
                                 <!-- UŻYTKOWNIK -->
                                 <template #item.user="{ item }">
-                                    <div class="tw-flex tw-felx-row tw-gap-4 tw-items-center">
+                                    <div class="tw-flex tw-flex-row tw-gap-4 tw-items-center">
                                         <div>
                                             <div v-if="item.user_profile_image && item.user_profile_image.path && item.user_profile_image.status == 3"
                                                 class="tw-relative tw-border-2 tw-border-gray-800 tw-shadow-xl profile-img profile-img-sm"

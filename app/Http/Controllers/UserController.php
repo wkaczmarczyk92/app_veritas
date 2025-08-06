@@ -47,7 +47,12 @@ class UserController extends Controller
 
     public function get()
     {
-        $user = User::with(['user_profiles', 'user_points', 'ready_to_departure_dates', 'user_profile_image', 'user_has_bonus' => function ($query) {
+        $user = User::with([
+            'user_profiles', 
+            'user_points', 
+            'ready_to_departure_dates', 
+            'user_profile_image', 
+            'user_has_bonus' => function ($query) {
             // $query->where('completed', false)
             //     ->where('in_progress', false);
         }])->find(Auth::user()->id);
@@ -97,7 +102,7 @@ class UserController extends Controller
         //     });
         // }
 
-        $users->orderBy('id', 'asc');
+        $users->orderBy('id', 'desc');
 
         $users = $users->take(3000)->get();
 
