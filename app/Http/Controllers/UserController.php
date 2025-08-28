@@ -40,7 +40,8 @@ use App\Services\User\Admin\UsersSearchService;
 
 class UserController extends Controller
 {
-    public function admin_search_index(Request $request) {
+    public function admin_search_index(Request $request)
+    {
         return (new UsersSearchService)->index($request);
     }
 
@@ -48,14 +49,15 @@ class UserController extends Controller
     public function get()
     {
         $user = User::with([
-            'user_profiles', 
-            'user_points', 
-            'ready_to_departure_dates', 
-            'user_profile_image', 
+            'user_profiles',
+            'user_points',
+            'ready_to_departure_dates',
+            'user_profile_image',
             'user_has_bonus' => function ($query) {
-            // $query->where('completed', false)
-            //     ->where('in_progress', false);
-        }])->find(Auth::user()->id);
+                // $query->where('completed', false)
+                //     ->where('in_progress', false);
+            }
+        ])->find(Auth::user()->id);
 
         return response()->json($user);
     }
@@ -117,14 +119,21 @@ class UserController extends Controller
      */
     public function show(string $id)
     {
-        $user = User::with(['user_profiles', 'password_requests' => function ($query) {
-            $query->where('active', true);
-        }, 'ready_to_departure_dates', 'user_profile_image', 'user_points' => function ($query) {
-            $query->latest()
-                ->offset(0)
-                ->limit(10)
-                ->get();
-        }])->find($id);
+        $user = User::with([
+            'roles',
+            'user_profiles',
+            'password_requests' => function ($query) {
+                $query->where('active', true);
+            },
+            'ready_to_departure_dates',
+            'user_profile_image',
+            'user_points' => function ($query) {
+                $query->latest()
+                    ->offset(0)
+                    ->limit(10)
+                    ->get();
+            }
+        ])->find($id);
 
         $user_points_records_count =  UserPoint::where('user_id', $id)->count();
 
@@ -268,13 +277,15 @@ class UserController extends Controller
         ]);
     }
 
-    public function create() {
+    public function create()
+    {
         return Inertia::render('Admin/Users/Create', [
             'roles' => Role::all()
         ]);
     }
 
-    public function store(UserStoreRequest $request) {
+    public function store(UserStoreRequest $request)
+    {
         return (new UserStoreService)($request->validated());
     }
 
@@ -354,7 +365,8 @@ class UserController extends Controller
         }
     }
 
-    public function promote_to_premium(int $user_id) {
+    public function promote_to_premium(int $user_id)
+    {
         return (new SyncUserProfileWithCRMAccountService)($user_id);
     }
 }

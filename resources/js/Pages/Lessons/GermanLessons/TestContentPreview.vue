@@ -1,11 +1,12 @@
 <script setup>
 
-import { ref, watch } from 'vue'
+import { ref, watch, defineComponent, onBeforeUnmount } from 'vue'
 import { AlertStore } from '@/Pinia/AlertStore'
 import Flex212 from '@/Templates/HTML/Data/Flex212.vue';
 import Spinner from '@/Components/Forms/Spinner.vue'
 import { useTestStore } from '@/Pinia/TestStore'
 import { timestamp } from '@vueuse/core';
+import DelayedAudio from './DelayedAudio.vue'
 
 const props = defineProps({
     test_name: {
@@ -36,6 +37,14 @@ test_store.init(props.questions, props.test_id)
 
 <template>
     <v-card title="Rozwiąż test">
+        <template v-slot:title>
+            <div class="tw-flex tw-justify-between">
+                <div>Rozwiąż test</div>
+                <div>
+                    <i class="fa-regular fa-circle-xmark hover:tw-text-red-900 hover:tw-cursor-pointer tw-text-2xl" @click="$emit('close-dialog')"></i>
+                </div>
+            </div>
+        </template>
         <v-card-text>
             <Flex212 title="Nazwa" :value="props.test_name"></Flex212>
 
@@ -63,16 +72,14 @@ test_store.init(props.questions, props.test_id)
                                         <v-card-text>
                                             <div class="tw-text-lg">{{ question.question }}</div>
                                             <div v-if="question.type.id == 5 && question.file[0]" class="tw-my-4">
-                                                <audio controls>
-                                                    <source :src="`/lessons/${question.file[0].path}`">
-                                                    Twoja przeglądarka nie wspiera plików audio.
-                                                </audio>
+                                                <DelayedAudio :src="`/lessons/${question.file[0].path}`"
+                                                    :delay-ms="1000" />
                                             </div>
                                             <v-radio-group
                                                 v-model="test_store.test.filter(item => item.id == question.id)[0].model">
                                                 <v-radio v-for="(answer, anwer_index) in question.closed_choices"
-                                                    :key="answer.id" :label="answer.choice"
-                                                    :value="answer.id"></v-radio>
+                                                    :key="answer.id" :label="answer.choice" :value="answer.id"
+                                                    class="tw-mt-4 md:tw-mt-0"></v-radio>
                                             </v-radio-group>
                                         </v-card-text>
                                     </v-card>
@@ -108,10 +115,9 @@ test_store.init(props.questions, props.test_id)
             </div>
         </v-card-text>
 
-        <v-card-actions v-if="props.is_admin">
+        <v-card-actions>
             <v-spacer></v-spacer>
-
-            <v-btn text="Spróbuj ponownie" @click="test_store.reset()" color="#9333ea"></v-btn>
+            <v-btn v-if="props.is_admin" text="Spróbuj ponownie" @click="test_store.reset()" color="#9333ea"></v-btn>
             <v-btn text="Zamknij" @click="$emit('close-dialog')" color="red"></v-btn>
         </v-card-actions>
     </v-card>

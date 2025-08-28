@@ -1,6 +1,7 @@
 <script setup>
 
 import UpdateCaretakerRecruiters from '@/Components/Dialogs/UpdateCaretakerRecruiters.vue';
+import MimicUserMenu from '@/Components/Admin/MimicUserMenu.vue';
 
 </script>
 
@@ -12,6 +13,8 @@ import UpdateCaretakerRecruiters from '@/Components/Dialogs/UpdateCaretakerRecru
             </v-btn>
         </template>
         <v-list>
+            <MimicUserMenu />
+
             <v-list-item link>
                 <v-list-item-title>Opiekunki</v-list-item-title>
                 <template v-slot:append>
@@ -20,9 +23,6 @@ import UpdateCaretakerRecruiters from '@/Components/Dialogs/UpdateCaretakerRecru
                 <v-menu :open-on-focus="false" activator="parent" open-on-hover submenu>
                     <v-list>
                         <UpdateCaretakerRecruiters />
-                        <!-- <v-list-item link>
-                            <v-list-item-title>Aktualizuj rekruterów</v-list-item-title>
-                        </v-list-item> -->
                         <v-list-item link>
                             <v-list-item-title>Aktualizuj punkty</v-list-item-title>
                         </v-list-item>

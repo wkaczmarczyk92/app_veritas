@@ -19,7 +19,7 @@
                         <template #widgets>
                             <Tooltip borderColor="#48CAE4" :config="{
                                 name: { hide: true },
-                                login_count: { label: 'ilość logowań', color: '#0077b6' },
+                                login_count: { label: '', color: '#0077b6' },
                             }" />
                         </template>
                     </Chart>

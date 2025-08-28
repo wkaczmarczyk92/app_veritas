@@ -62,14 +62,14 @@ const processing = ref(false)
 </script>
 
 <template>
-    <v-card class="tw-shadow-lg tw-rounded tw-p-10 tw-relative" :loading="processing">
+    <v-card class="tw-shadow-lg tw-rounded tw-p-10 tw-relative" :loading="processing" title="Zdjęcie profilowe użytkownika">
         <!-- <Processing v-if="processing" msg="Przetwarzanie..." /> -->
-        <template v-slot:title>
+        <!-- <template v-slot:title>
             <div class="tw-flex tw-flex-row tw-items-center tw-gap-2">
                 <i class="fa-solid fa-image tw-text-sky-600"></i>
-                <div>Zdjęcie profilowe użytkownika</div>
+                <div></div>
             </div>
-        </template>
+        </template> -->
         <v-card-text>
 
 

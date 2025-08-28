@@ -17,11 +17,14 @@ const oral_exam_dialog = ref(true)
 
 <template>
     <AdminHeaderOnUserLayout />
-    <v-dialog v-model="oral_exam_dialog" max-width="500" v-if="$page.props.user_test.test_passed && !$page.props.user_test.has_oral_exam && !$page.props.user_test.oral_exam_passed && !$page.props.user_test.is_month_passed && $page.url != '/test-niemieckiego'">
+    <v-dialog v-model="oral_exam_dialog" max-width="500"
+        v-if="$page.props.user_test.test_passed && !$page.props.user_test.has_oral_exam && !$page.props.user_test.oral_exam_passed && !$page.props.user_test.is_month_passed && $page.url != '/test-niemieckiego'">
         <template v-slot:default>
             <v-card title="Zapisz się na test ustny!">
                 <v-card-text>
-                    Zaliczyłeś/aś już test na stronie WWW. Teraz kolej na test ustny. Przejdź <a :href="route('user.german.test.show')" class="tw-text-blue-600 hover:tw-underline tw-font-bold">na tę stronę</a> i wybierz termin.
+                    Zaliczyłeś/aś już test na stronie WWW. Teraz kolej na test ustny. Przejdź <a
+                        :href="route('user.german.test.show')"
+                        class="tw-text-blue-600 hover:tw-underline tw-font-bold">na tę stronę</a> i wybierz termin.
                 </v-card-text>
 
                 <v-card-actions>
@@ -157,11 +160,12 @@ const oral_exam_dialog = ref(true)
                                 <template #content>
                                     <DropdownLink :href="route('user.german.lessons.index')"> Lekcje
                                     </DropdownLink>
-                                    <DropdownLink :href="route('user.german.test.show')"> Rozwiąż test
+                                    <DropdownLink :href="route('user.german.test.show')"> Rozwiąż test online
                                     </DropdownLink>
                                     <DropdownLink :href="route('user.german.lessons.become.mittel.program')"> Zasady
-                                        programu "Zostań Mittelem"
+                                        programu "Język szlifujesz na szteli zyskujesz"
                                     </DropdownLink>
+                                    <DropdownLink :href="route('user.oral.exam.rules')">Egzamin ustny - zasady</DropdownLink>
                                 </template>
                             </Dropdown>
                         </div>
@@ -205,7 +209,7 @@ const oral_exam_dialog = ref(true)
                     Użytkownicy
                 </ResponsiveNavLink> -->
                 <div
-                    class="dropdown-item tw-relative tw-block tw-w-full tw-pl-3 tw-pr-4 tw-py-2 tw-border-l-4 tw-border-transparent tw-text-left tw-text-base tw-font-medium tw-text-gray-600 hover:tw-text-gray-800 hover:tw-bg-gray-50 hover:tw-border-gray-300 focus:tw-outline-none focus:tw-text-gray-800 focus:tw-bg-gray-50 focus:tw-border-gray-300 tw-transition tw-duration-150 tw-ease-in-out">
+                    class="dropdown-item tw-relative tw-block tw-w-full tw-pl-3 tw-pr-4 tw-py-2 tw-border-l-4 tw-border-transparent tw-text-left tw-text-base tw-font-medium tw-text-gray-100 hover:tw-text-gray-800 hover:tw-bg-gray-50 hover:tw-border-gray-300 focus:tw-outline-none focus:tw-text-gray-800 focus:tw-bg-gray-50 focus:tw-border-gray-300 tw-transition tw-duration-150 tw-ease-in-out">
                     <Dropdown align="right" width="48">
                         <template #trigger>
                             Polecenia
@@ -232,8 +236,46 @@ const oral_exam_dialog = ref(true)
                         </template>
                     </Dropdown>
                 </div>
+                <div v-if="$page.props.test_user"
+                    class="dropdown-item tw-relative tw-block tw-w-full tw-pl-3 tw-pr-4 tw-py-2 tw-border-l-4 tw-border-transparent tw-text-left tw-text-base tw-font-medium tw-text-gray-100 hover:tw-text-gray-800 hover:tw-bg-gray-50 hover:tw-border-gray-300 focus:tw-outline-none focus:tw-text-gray-800 focus:tw-bg-gray-50 focus:tw-border-gray-300 tw-transition tw-duration-150 tw-ease-in-out">
+                    <Dropdown align="right" width="48">
+                        <template #trigger>
+                            Lekcje niemieckiego
+                            <span class="tw-inline-flex tw-rounded-md">
+                                <button type="button"
+                                    class="tw-inline-flex tw-items-center tw-px-3 tw-border tw-border-transparent tw-text-sm tw-leading-4 tw-font-medium tw-rounded-md tw-text-gray-500 tw-bg-gray-800 hover:tw-bg-gray-50 hover:tw-text-gray-700 focus:tw-outline-none tw-transition tw-ease-in-out tw-duration-150">
+                                    {{ $page.props.auth.user.name }}
+
+                                    <svg class="tw-ml-2 -tw-mr-0.5 tw-h-4 tw-w-4" xmlns="http://www.w3.org/2000/svg"
+                                        viewBox="0 0 20 20" fill="currentColor">
+                                        <path fill-rule="evenodd"
+                                            d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z"
+                                            clip-rule="evenodd" />
+                                    </svg>
+                                </button>
+                            </span>
+                        </template>
+
+                        <template #content>
+                            <!-- <DropdownLink :href="route('caretakerrecommendation.create')"> Poleć opiekunkę/a
+                            </DropdownLink>
+                            < :href="route('familyrecommendation.create')"> Poleć rodzinę
+                            </DropdownLink> -->
+
+                            <DropdownLink :href="route('user.german.lessons.index')"> Lekcje
+                            </DropdownLink>
+                            <DropdownLink :href="route('user.german.test.show')"> Rozwiąż test online
+                            </DropdownLink>
+                            <DropdownLink :href="route('user.german.lessons.become.mittel.program')"> Zasady
+                                programu "Język szlifujesz na szteli zyskujesz"
+                            </DropdownLink>
+                            <DropdownLink :href="route('user.oral.exam.rules')">Egzamin ustny - zasady
+                            </DropdownLink>
+                        </template>
+                    </Dropdown>
+                </div>
                 <div
-                    class="dropdown-item tw-relative tw-block tw-w-full tw-pl-3 tw-pr-4 tw-py-2 tw-border-l-4 tw-border-transparent tw-text-left tw-text-base tw-font-medium tw-text-gray-600 hover:tw-text-gray-800 hover:tw-bg-gray-50 hover:tw-border-gray-300 focus:tw-outline-none focus:tw-text-gray-800 focus:tw-bg-gray-50 focus:tw-border-gray-300 tw-transition tw-duration-150 tw-ease-in-out">
+                    class="dropdown-item tw-relative tw-block tw-w-full tw-pl-3 tw-pr-4 tw-py-2 tw-border-l-4 tw-border-transparent tw-text-left tw-text-base tw-font-medium tw-text-gray-100 hover:tw-text-gray-800 hover:tw-bg-gray-50 hover:tw-border-gray-300 focus:tw-outline-none focus:tw-text-gray-800 focus:tw-bg-gray-50 focus:tw-border-gray-300 tw-transition tw-duration-150 tw-ease-in-out">
                     <Dropdown align="right" width="48">
                         <template #trigger>
                             Profil

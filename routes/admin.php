@@ -37,6 +37,7 @@ use App\Http\Controllers\Settings\UpdateCaretakerDataController;
 
 use App\Http\Controllers\Admin\AuthMimicController;
 use App\Http\Controllers\Test\OralExamController;
+use App\Http\Controllers\Admin\User\SyncUserPointsController;
 
 Route::middleware(['auth', 'role:user|super-admin|god_mode|admin'])
     ->group(function () {
@@ -60,7 +61,7 @@ Route::middleware(['auth', 'role:user|super-admin|god_mode|admin'])
             });
     });
 
-Route::middleware(['auth', 'role:super-admin|god_mode'])->group(function () {
+Route::middleware(['auth', 'role:super-admin|god_mode|admin'])->group(function () {
     Route::controller(UpdateCaretakerDataController::class)
         ->prefix('ustawienia-zaawansowane')
         ->name('advance.settings.')
@@ -91,6 +92,9 @@ Route::middleware(['auth', 'role:super-admin|god_mode'])->group(function () {
 });
 
 Route::middleware(['auth', 'role:admin|super-admin|god_mode'])->group(function () {
+    Route::post('synchornizuj-punkty-uzytkownika/{user_id}', SyncUserPointsController::class)
+        ->name('sync.user.points');
+
     Route::controller(GermanTestController::class)
         ->prefix('testy-niemieckiego')
         ->name('german.tests.')

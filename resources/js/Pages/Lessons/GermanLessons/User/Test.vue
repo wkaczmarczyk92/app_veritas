@@ -8,6 +8,7 @@ import { useTestStore } from '@/Pinia/TestStore'
 import TestContent from '@/Pages/Lessons/GermanLessons/TestContent.vue'
 import { use_oral_exam_store } from '@/Pinia/OralExamStore';
 import CreateOralExam from '@/Components/Dialogs/CreateOralExam.vue';
+import { format } from '@/Components/Functions/DateFormat.vue';
 
 const props = defineProps({
     questions: {
@@ -16,6 +17,10 @@ const props = defineProps({
     },
     german_lesson: {
         type: Object,
+        requried: true
+    },
+    current_oral_exam: {
+        type: [Object, null],
         requried: true
     },
     can_take_test: {
@@ -42,6 +47,7 @@ const props = defineProps({
 })
 const oral_exam_store = use_oral_exam_store()
 oral_exam_store.set_user_settings(props.oral_exam_passed, props.has_any_oral_exam)
+oral_exam_store.current_oral_exam = props.current_oral_exam
 
 // const oral_exam_passed = ref(props.oral_exam_passed)
 // const has_any_oral_exam = ref(props.has_any_oral_exam)
@@ -95,6 +101,7 @@ try {
             <div class="tw-p-4 tw-mx-auto tw-max-w-8xl md:tw-max-w-5xl sm:tw-px-6 lg:tw-px-8" v-if="test_passed">
                 <v-alert color="success">Zdałeś/aś już test WWW.</v-alert>
                 <v-alert v-if="oral_exam_store.oral_exam_passed" color="success" class="tw-mt-4">Zdałeś/aś już test ustny.</v-alert>
+                <v-alert v-if="oral_exam_store.current_oral_exam" color="info" class="tw-mt-4">Termin egzazminu ustnego: {{ format(oral_exam_store.current_oral_exam.exam_at) }}, {{ oral_exam_store.current_oral_exam.time }}:00</v-alert>
                 <div class="tw-flex tw-justify-center tw-mt-10"
                     v-if="!oral_exam_store.oral_exam_passed && !oral_exam_store.has_any_oral_exam">
                     <CreateOralExam :by_user="true" @got_date="has_any_oral_exam=true" />
@@ -112,7 +119,7 @@ try {
                         <Transition name="fade" mode="out-in">
                             <div class="tw-flex tw-justify-center tw-mt-10"
                                 v-if="test_store.is_passed && !test_store.oral_exam_set">
-                                <CreateOralExam :by_user="true" />
+                                <CreateOralExam :by_user="true" @update="current_oral_exam = $event" />
                             </div>
                         </Transition>
                     </TestContent>

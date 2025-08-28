@@ -60,33 +60,46 @@ export const useUserStore = defineStore("userStore", {
 
                 this.user = response;
             }
+
+            return true;
         },
         async set_premium_account(id = null) {
-            if (confirm("Na pewno chcesz aktywować konto premium użytkownika?")) {
-                try_catch(async () => {
-                    let user_id = id ?? this.user?.id;
-
-                    if (!user_id) {
-                        throw new Error("Invalid USER ID");
-                    }
-
-                    let response = await axios.patch(
-                        route("user.promote.to.premium", {
-                            user_id: user_id,
-                        })
-                    );
-
-                    response = response.data;
-
-                    if (response.success) {
-                        this.user.user_profiles.crt_id_caretaker = response.user.user_profiles.crt_id_caretaker
-                        this.user.user_profiles.recruiter_first_name = response.user.user_profiles.recruiter_first_name
-                        this.user.user_profiles.recruiter_last_name = response.user.user_profiles.recruiter_last_name
-                    }
-
-                    this.alert_store.pushAlert(response);
-                }, this);
+            if (
+                !confirm("Na pewno chcesz aktywować konto premium użytkownika?")
+            ) {
+                return false;
             }
+
+            let response = await try_catch(async () => {
+                let user_id = id ?? this.user?.id;
+
+                if (!user_id) {
+                    throw new Error("Invalid USER ID");
+                }
+
+                let response = await axios.patch(
+                    route("user.promote.to.premium", {
+                        user_id: user_id,
+                    })
+                );
+
+                response = response.data;
+
+                if (response.success) {
+                    this.user.user_profiles.crt_id_caretaker =
+                        response.user.user_profiles.crt_id_caretaker;
+                    this.user.user_profiles.recruiter_first_name =
+                        response.user.user_profiles.recruiter_first_name;
+                    this.user.user_profiles.recruiter_last_name =
+                        response.user.user_profiles.recruiter_last_name;
+                }
+
+                this.alert_store.pushAlert(response);
+
+                return response.success;
+            }, this);
+
+            return response;
         },
         update(key = null) {},
         update_user_profile_image(user_profile_image) {

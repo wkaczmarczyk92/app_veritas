@@ -9,6 +9,8 @@ use App\Models\User;
 use App\Models\Test\OralExam;
 use App\Models\Test\TestResult;
 use Carbon\Carbon;
+use App\Models\Test\Test;
+use App\Helpers\TestUsersConfig;
 
 class HandleInertiaRequests extends Middleware
 {
@@ -35,10 +37,10 @@ class HandleInertiaRequests extends Middleware
     public function share(Request $request): array
     {
         $user = auth()->user();
-        $test_user = auth()->check() ? $user->pesel == 12312312322 : false;
+        $test_user = auth()->check() ? in_array($user->pesel, TestUsersConfig::get_test_users_pesel()) : false;
 
 
-        $tests = TestResult::where('user_id', auth()->id())->get();
+        $tests = TestResult::where('user_id', auth()->id())->where('test_id', Test::where('name', 'Test niemieckiego')->value('id'))->get();
         // dd($tests);
 
         $test_passed = $tests->contains('is_passed', true);
@@ -49,6 +51,7 @@ class HandleInertiaRequests extends Middleware
         // dd($is_month_passed);
 
         if (gettype($is_month_passed) == 'object') {
+            $is_month_passed = $is_month_passed->values();
             $first_date = Carbon::parse($is_month_passed[0]->created_at);
             // dd($first_date);
             $second_date = date('Y-m-d');
@@ -77,7 +80,8 @@ class HandleInertiaRequests extends Middleware
                 'oral_exam_passed' => $oral_exam_passed ?? false,
                 'has_oral_exam' => $has_oral_exam ?? false,
                 'is_month_passed' => $is_month_passed ?? false
-            ]
+            ],
+            'mimic_users' => User::with(['user_profiles'])->whereIn('pesel', TestUsersConfig::get_test_users_pesel())->get(),
         ]);
     }
 }

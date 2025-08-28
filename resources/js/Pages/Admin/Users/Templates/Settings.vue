@@ -20,6 +20,9 @@ const auth_mimic_store = use_auth_mimic_store();
                     @click="auth_mimic_store.login_as_user(user_store.user.id)">
                     Zaloguj się jako użytkownik
                 </v-btn>
+                <v-btn>
+                    Nalicz punkty od początku
+                </v-btn>
             </div>
         </v-card-text>
     </v-card>

@@ -16,6 +16,7 @@ use App\Http\Controllers\PayoutRequestController;
 use App\Http\Controllers\BOKRequestController;
 use App\Http\Controllers\CRMOfferDownloadController;
 use App\Http\Controllers\CaretakerRecommendationController;
+use App\Http\Controllers\Test\OralExamController;
 
 use App\Http\Controllers\UserProfileController;
 
@@ -38,8 +39,20 @@ use App\Http\Controllers\Test\GermanTestController;
 use App\Http\Controllers\Lessons\GermanLessonController;
 
 Route::middleware(['auth', 'role:user'])->group(function () {
+    Route::get('/moje-konto', [UserProfileController::class, 'show'])->name('userprofile.show');
+
+    Route::controller(PasswordController::class)->group(function () {
+        Route::name('password.')->group(function () {
+            Route::get('/zmien-haslo', 'edit')->name('edit');
+            Route::post('/zmien-haslo', 'update')->name('update');
+        });
+    });
+});
+
+Route::middleware(['auth', 'role:user', 'premium_user'])->group(function () {
     Route::controller(GermanLessonController::class)
         ->middleware(['seen_test_regulations', 'is_test_user'])
+        // ->middleware(['seen_test_regulations'])
         ->prefix('lekcje-niemieckiego')
         ->name('user.german.lessons.')
         ->group(function () {
@@ -47,10 +60,11 @@ Route::middleware(['auth', 'role:user'])->group(function () {
             Route::get('/lekcja/{id}', 'show')->name('show');
         });
 
-    Route::get('zasady-programy-zostan-mittelem', [GermanTestController::class, 'become_mittel_program'])->prefix('lekcje-niemieckiego')->name('user.german.lessons.become.mittel.program');
+    Route::get('egzamin-ustny', [OralExamController::class, 'rules'])->name('user.oral.exam.rules');
 
+    Route::get('zasady-programy-jezyk-szlifujesz-na-szteli-zyskujesz', [GermanTestController::class, 'become_mittel_program'])->prefix('lekcje-niemieckiego')->name('user.german.lessons.become.mittel.program');
+    Route::get('/', [HomePageController::class, 'index'])->name('/');
 
-    // Route::controller(GermanTestController::class)->middleware(['seen_test_regulations', 'is_test_user'])->prefix('test-niemieckiego')->name('user.german.test.')->group(function () {
     Route::controller(GermanTestController::class)->middleware(['seen_test_regulations'])->prefix('test-niemieckiego')->name('user.german.test.')->group(function () {
         Route::get('/', 'show')->name('show');
     });
@@ -63,8 +77,6 @@ Route::middleware(['auth', 'role:user'])->group(function () {
         Route::post('/bok-request', 'store')->name('bokrequest.store');
     });
 
-    Route::get('/', [HomePageController::class, 'index'])->name('/');
-
     Route::get('/pliki-do-pobrania', [DownloadFileController::class, 'files_to_download'])->name('download.files');
 
     Route::get('/polec-opiekunke', [CaretakerRecommendationController::class, 'create'])->name('caretakerrecommendation.create');
@@ -73,13 +85,6 @@ Route::middleware(['auth', 'role:user'])->group(function () {
         Route::name('familyrecommendation.')->group(function () {
             Route::get('/polec-rodzine', 'create')->name('create');
             Route::post('/familyrecommendation.store', 'store')->name('store');
-        });
-    });
-
-    Route::controller(PasswordController::class)->group(function () {
-        Route::name('password.')->group(function () {
-            Route::get('/zmien-haslo', 'edit')->name('edit');
-            Route::post('/zmien-haslo', 'update')->name('update');
         });
     });
 
@@ -96,8 +101,6 @@ Route::middleware(['auth', 'role:user'])->group(function () {
             Route::post('/offer.store', 'store')->name('store');
         });
     });
-
-    Route::get('/moje-konto', [UserProfileController::class, 'show'])->name('userprofile.show');
 
     Route::get('/kursy', CourseController::class)->name('courses');
     Route::get('/wazne-informacje', InfoController::class)->name('important.info');

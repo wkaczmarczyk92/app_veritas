@@ -30,6 +30,10 @@ class UserProfile extends Model
         'total_days'
     ];
 
+    protected $casts = [
+        'level' => 'integer',
+    ];
+
     protected $appends = ['full_name'];
 
     protected function getFullNameAttribute()

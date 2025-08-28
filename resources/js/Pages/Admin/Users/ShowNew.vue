@@ -16,13 +16,11 @@ import UserCaretakerRecommendations from '@/Pages/Admin/Parts/View/UserCaretaker
 import UserProfileImage from '@/Pages/Admin/Parts/View/UserProfileImage.vue';
 import PasswordChange from '@/Pages/Admin/Parts/View/PasswordChange.vue';
 import { use_auth_mimic_store } from '@/Pinia/Admin/AuthMimicStore';
-import Spinner from '@/Components/Forms/Spinner.vue';
-import { use_processing_store } from '@/Pinia/ProcessingStore';
 
 import AlertDanger from '@/Components/Functions/AlertDanger.vue';
 
 import Loader from '@/Components/Loader.vue';
-import Actions from './Templates/Actions.vue';
+import Actions from './Templates/Settings.vue';
 
 import { AlertStore } from '@/Pinia/AlertStore';
 import { useUserStore } from '@/Pinia/UserStore';
@@ -53,17 +51,13 @@ console.log('bopnus', props.user_bonus)
 const user_store = useUserStore()
 user_store.set_user(props.user);
 
-const processing_store = use_processing_store();
-
 const user = ref(props.user);
 const user_bonus = ref(props.user_bonus);
 const edit_user = ref(false);
 
 const userAlertStore = AlertStore();
 
-console.log('user store', user_store.user)
-
-const edit_user_init = () => {
+const toggle_user_edit = () => {
     edit_user.value = !edit_user.value;
 }
 
@@ -75,13 +69,13 @@ const forms_text = ref('<i class="mr-2 fa-solid fa-user-gear"></i> Pokaż dane u
 const toggle_view = () => {
     view.value.view_data = !view.value.view_data;
     view.value.text = view.value.view_data ? data_text.value : forms_text.value;
-    edited_user.value = false;
+    edit_user.value = false;
 }
 
 const show = ref(false);
 
 watch(view, (new_value, old_value) => {
-    edited_user.value = false;
+    edit_user.value = false;
 })
 
 const active_breadcrumb = ref('Dane użytkownika')
@@ -142,12 +136,6 @@ const bok_and_payout_request_tab = ref('payout_request_tab')
 
 const auth_mimic_store = use_auth_mimic_store()
 
-const test = () => {
-    console.log('test', user_store.user.roles.filter(item => item.name == 'god_mode').length > 0)
-}
-
-test()
-
 </script>
 
 <template>
@@ -167,37 +155,24 @@ test()
                     <!-- <div class="tw-text-2xl tw-font-bold tw-text-gray-800 lg:tw-text-4xl sm:tw-text-3xl username">
                         {{ `${user.user_profiles.first_name} ${user.user_profiles.last_name}` }}
                     </div> -->
-                    <Spinner v-if="processing_store.state" />
                     <v-card class="!tw-rounded-none">
-                        <v-toolbar color="#111827">
+                        <v-toolbar color="primary">
                             <template v-slot:title>
                                 <div class="tw-flex tw-flex-row tw-gap-2 tw-items-center tw-justify-between tw-pe-4">
                                     <div>{{ user.user_profiles.first_name + ' ' + user.user_profiles.last_name }}</div>
-                                    <div class="tw-flex tw-gap-2">
-                                        <div v-if="user.user_profiles.crt_id_caretaker">
-                                            <v-btn color="#2563eb" variant="flat" class="!tw-rounded-full">
-                                                Premium
-                                            </v-btn>
-                                        </div>
-                                        <div v-else>
-                                            <v-btn color="#ea580c" variant="flat" class="!tw-rounded-full">
-                                                Darmowe
-                                            </v-btn>
-                                        </div>
-                                        <v-btn v-if="$page.props.god_mode && !user_store.user.roles.filter(item => item.name == 'god_mode').length > 0" color="#ea580c" class=""
-                                            @click="auth_mimic_store.login_as_user(user_store.user.id)" variant="flat">
-                                            Zaloguj się jako użytkownik
-                                        </v-btn>
-                                    </div>
+                                    <v-btn v-if="$page.props.god_mode" color="#ea580c" class=""
+                                        @click="auth_mimic_store.login_as_user(user_store.user.id)" variant="flat">
+                                        Zaloguj się jako użytkownik
+                                    </v-btn>
                                 </div>
                             </template>
                         </v-toolbar>
                         <div class="d-flex flex-row">
-                            <v-tabs v-model="tab" color="#ea580c" direction="vertical">
+                            <v-tabs v-model="tab" color="#2563eb" direction="vertical">
                                 <v-tab value="user_data">Dane użytkownika</v-tab>
                                 <v-tab value="points">Historia punktów</v-tab>
                                 <v-tab value="change_password">Zmiana hasła</v-tab>
-                                <v-tab value="bok">BOK i wnioski o wypłatę</v-tab>
+                                <v-tab value="bok">Zgłoszenia do BOK-u i wnioski o wypłatę</v-tab>
                                 <v-tab value="contact_forms">Formularze kontaktowe</v-tab>
                                 <v-tab value="family_recommendations">Polecenia rodzin</v-tab>
                                 <v-tab value="caretaker_recommendations">Polecenia opiekunek</v-tab>
@@ -308,9 +283,9 @@ test()
                                             class="tw-grid tw-grid-cols-1 tw-gap-4 lg:tw-grid-cols-2 md:tw-gap-6 tw-p-4">
                                             <Transition name="slide-fade" mode="out-in">
                                                 <UserData v-if="!edit_user" :user="user"
-                                                    @edit="edit_user_init">
+                                                    @toggle-user="toggle_user_edit">
                                                 </UserData>
-                                                <UserEdit v-else v-model:user="user" @edit="edit_user_init">
+                                                <UserEdit v-else v-model:user="user" @toggle-user="toggle_user_edit">
                                                 </UserEdit>
                                             </Transition>
 

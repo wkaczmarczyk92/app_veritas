@@ -39,6 +39,16 @@ watch(
         }
     })
 
+// watch(
+//     () => oral_exam_store.oral_exam_signed_up,
+//     (value) => {
+//         console.log('222123')
+//         if (value) {
+//             console.log('qweqwe', oral_exam_store.current_oral_exam)
+//             emits('update', oral_exam_store.current_oral_exam)
+//         }
+//     })
+
 watch(
     () => oral_exam_store.exam_date.date,
     (value) => {
@@ -49,7 +59,7 @@ watch(
 
 const open = () => {
     if (oral_exam_store.selected_user_id === null && !props.by_user) {
-        alert_store.pushAlert('danger', 'Wybierz użytkonika którego chcesz umówić na termin.')
+        alert_store.pushAlert('danger', 'Wybierz użytkownika którego chcesz umówić na termin.')
         return;
     }
 
@@ -71,6 +81,8 @@ const get_tile_class = (hour) => {
 
     if (oral_exam_store.taken_time.includes(hour)) {
         classes += ' tw-bg-red-600 tw-text-white tw-font-bold'
+    } else if (checkHourIfToday(oral_exam_store.exam_date.date, hour)) {
+        classes += ' tw-bg-blue-600 tw-text-white tw-font-bold'
     } else {
         classes += ' hover:tw-bg-green-500 hover:tw-cursor-pointer hover:tw-text-white hover:tw-font-bold'
     }
@@ -84,14 +96,36 @@ const get_tile_class = (hour) => {
     return classes
 }
 
+const checkHourIfToday = (targetDate, targetHour) => {
+    const now = new Date();
+
+    // Sprawdzamy czy data jest taka sama jak dzisiaj (bez godzin)
+    const todayStr = now.toISOString().split('T')[0];
+    const targetStr = new Date(targetDate).toISOString().split('T')[0];
+
+    if (todayStr !== targetStr) {
+        // Jeśli data inna niż dzisiaj → nic nie robimy
+        return false;
+    }
+
+    // Tworzymy obiekt daty z dzisiejszą datą i podaną godziną
+    const checkDate = new Date(now.getFullYear(), now.getMonth(), now.getDate(), targetHour, 0, 0);
+
+    // Zwracamy true, jeśli godzina już minęła
+    return now >= checkDate;
+}
+
 </script>
 
 <template>
-    <v-btn :color="by_user ? '#9333ea' : '#2563eb'" size="x-large" @click="open()">
-        <span v-if="!by_user">Wybierz termin</span>
-        <span v-else>Wybierz termin egzaminu ustnego!</span>
-        
-    </v-btn>
+    <div class="tw-flex tw-flex-col tw-gap-4 tw-text-center">
+        <div class="tw-text-2xl">Zapisz się na egzamin ustny!</div>
+        <v-btn :color="by_user ? '#9333ea' : '#2563eb'" size="x-large" @click="open()"
+            class="!tw-whitespace-normal !tw-break-words !tw-text-center">
+            <span>Wybierz termin</span>
+            <!-- <span v-else class="">Wybierz termin egzaminu ustnego!</span> -->
+        </v-btn>
+    </div>
 
     <v-dialog v-model="oral_exam_store.open_dialog" max-width="700">
         <template v-slot:default="{ isActive }">
@@ -107,7 +141,7 @@ const get_tile_class = (hour) => {
                     <Transition mode="out-in" name="fade">
                         <div class="tw-grid tw-grid-cols-3 tw-gap-2 tw-mt-4" v-if="oral_exam_store.exam_date.date">
                             <div v-for="available_hour in oral_exam_store.available_hours"
-                                @click.prevent="!oral_exam_store.taken_time.includes(available_hour) ? oral_exam_store.exam_date.time = available_hour : null"
+                                @click.prevent="!oral_exam_store.taken_time.includes(available_hour) && !checkHourIfToday(oral_exam_store.exam_date.date, available_hour) ? oral_exam_store.exam_date.time = available_hour : null"
                                 :class="get_tile_class(available_hour)" class="">
                                 <div class="tw-p-6 tw-flex tw-flex-col tw-text-center tw-items-center">
                                     <div>
@@ -115,6 +149,9 @@ const get_tile_class = (hour) => {
                                     </div>
                                     <div v-if="oral_exam_store.taken_time.includes(available_hour)">
                                         ZAJĘTE
+                                    </div>
+                                    <div v-if="checkHourIfToday(oral_exam_store.exam_date.date, available_hour)">
+                                        PO TERMINIE
                                     </div>
                                 </div>
                             </div>

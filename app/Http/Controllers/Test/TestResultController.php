@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Helpers\Transaction;
 use App\Models\Test\TestResult;
+use App\Models\Test\OralExam;
 
 use Inertia\Inertia;
 
@@ -15,7 +16,10 @@ class TestResultController extends Controller
     {
         return Transaction::try(
             function () {
-                TestResult::where('user_id', 37831)->delete();
+                $test_ids = [37831, 48453, 37887];
+                TestResult::whereIn('user_id', $test_ids)->delete();
+                OralExam::whereIn('user_id', $test_ids)->delete();
+
             },
             'Dane zostały usunięte.'
         );

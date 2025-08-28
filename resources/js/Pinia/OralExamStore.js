@@ -30,7 +30,9 @@ export const use_oral_exam_store = defineStore('oral_exam_store', {
             taken_time: [],
             test_store: useTestStore(),
             has_any_oral_exam: false,
-            oral_exam_passed: false
+            oral_exam_passed: false,
+            oral_exam_signed_up: false,
+            current_oral_exam: null
         }
     },
     actions: {
@@ -79,6 +81,7 @@ export const use_oral_exam_store = defineStore('oral_exam_store', {
                     this.open_dialog = false
 
                     this.exams = response.oral_exams
+                    this.current_oral_exam = response.oral_exam
                     this.test_store.oral_exam_set = true
                     this.has_any_oral_exam = true
                 }

@@ -62,10 +62,12 @@ class CURLRequest
             'month' => $month,
             'isScandi' => false
         ], JSON_UNESCAPED_UNICODE);
+
         return $this->_responseJSON($this->curl->send());
     }
 
-    public function send_caretaker_that_applied_for_the_offer($arr, $user) {
+    public function send_caretaker_that_applied_for_the_offer($arr, $user)
+    {
         $this->curl = new CURL;
         $this->curl->url = 'https://local.grupa-veritas.pl/api/planer/addProposalFromCaretakersApp';
         $this->curl->content_type = 'json';
@@ -85,6 +87,22 @@ class CURLRequest
         ], JSON_UNESCAPED_UNICODE);
 
         // dd($this->curl->json_data);
+        return $this->_responseJSON($this->curl->send());
+    }
+
+    public function uber_gering($user)
+    {
+        $this->curl = new CURL;
+        $this->curl->url = 'https://local.grupa-veritas.pl/api/caretakers/profiles/addGeringPlusInfo';
+        $this->curl->content_type = 'json';
+        $this->curl->json_data = json_encode([
+            'caretakerId' => $user->user_profiles->crt_id_caretaker
+        ], JSON_UNESCAPED_UNICODE);
+
+        // dd($this->curl->json_data);
+
+        // dd($this->curl->send());
+
         return $this->_responseJSON($this->curl->send());
     }
 

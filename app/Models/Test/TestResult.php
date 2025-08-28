@@ -21,6 +21,16 @@ class TestResult extends Model
         'score'
     ];
 
+    protected $casts = [
+        'id' => 'integer',
+        'test_id' => 'integer',
+        'user_id' => 'integer',
+        'is_passed' => 'boolean',
+        'score' => 'string',
+        'created_at' => 'datetime',
+        'updated_at' => 'datetime',
+    ];
+
     public function test(): BelongsTo
     {
         return $this->belongsTo(Test::class);

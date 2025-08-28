@@ -1,12 +1,13 @@
 <script setup>
 
-import { ref, watch } from 'vue'
+import { ref, watch, defineComponent } from 'vue'
 import { AlertStore } from '@/Pinia/AlertStore'
 import Flex212 from '@/Templates/HTML/Data/Flex212.vue';
 import Spinner from '@/Components/Forms/Spinner.vue'
 import { useTestStore } from '@/Pinia/TestStore'
 import { timestamp } from '@vueuse/core';
 import DialogTestRules from './Templates/DialogTestRules.vue'
+import DelayedAudio from './DelayedAudio.vue'
 
 const props = defineProps({
     test_name: {
@@ -43,11 +44,11 @@ test_store.init(props.questions, props.test_id)
     <Transition mode="out-in" name="fade">
         <div v-if="!test_store.start">
             <v-card>
-                <v-card-text class="!tw-p-20">
+                <v-card-text class="!md:tw-p-20">
                     <div class="tw-flex tw-flex-col tw-justify-center tw-items-center">
-                        <div class="tw-text-2xl tw-mb-8">Czas na wykonanie testu: <span class="tw-font-bold">{{
-                            test_store.time_to_minutes(german_lesson.test_time, true) }} min</span>
+                        <div class="tw-text-lg md:tw-text-2xl">Czas na wykonanie testu:
                         </div>
+                        <div class=" tw-mb-8 tw-font-bold tw-text-2xl">{{ test_store.time_to_minutes(german_lesson.test_time, true) }} min</div>
                         <DialogTestRules />
                         <!-- <v-btn size="x-large" color="#ea580c"
                             @click="test_store.start_test(german_lesson.test_time)">Zasady testu</v-btn> -->
@@ -58,7 +59,7 @@ test_store.init(props.questions, props.test_id)
             </v-card>
         </div>
         <v-card v-else title="Rozwiąż test">
-            <v-card-text>
+            <v-card-text class="!tw-p-2">
                 <Flex212 v-if="is_admin" title="Nazwa" :value="props.test_name"></Flex212>
                 <Flex212 v-if="is_admin" title="Czas" :value="test_store.current_time"></Flex212>
                 <div class="tw-flex tw-flex-col tw-justify-center tw-items-center tw-my-6 tw-gap-4">
@@ -87,23 +88,21 @@ test_store.init(props.questions, props.test_id)
                                     </template>
                                 </v-stepper-header>
 
-                                <v-stepper-window>
+                                <v-stepper-window class="!tw-m-0">
                                     <v-stepper-window-item v-for="question in test_store.questions"
                                         :key="`${question.id}-content`" :value="question.id">
                                         <v-card color="">
-                                            <v-card-text>
+                                            <v-card-text >
                                                 <div class="tw-text-lg">{{ question.question }}</div>
                                                 <div v-if="question.type.id == 5 && question.file[0]" class="tw-my-4">
-                                                    <audio controls>
-                                                        <source :src="`/lessons/${question.file[0].path}`">
-                                                        Twoja przeglądarka nie wspiera plików audio.
-                                                    </audio>
+                                                    <DelayedAudio :src="`/lessons/${question.file[0].path}`"
+                                                    :delay-ms="1000" />
                                                 </div>
                                                 <v-radio-group
                                                     v-model="test_store.test.filter(item => item.id == question.id)[0].model">
                                                     <v-radio v-for="(answer, anwer_index) in question.closed_choices"
-                                                        :key="answer.id" :label="answer.choice"
-                                                        :value="answer.id"></v-radio>
+                                                        :key="answer.id" :label="answer.choice" :value="answer.id"
+                                                        class="tw-mt-4 md:tw-mt-0"></v-radio>
                                                 </v-radio-group>
                                             </v-card-text>
                                         </v-card>
@@ -136,8 +135,7 @@ test_store.init(props.questions, props.test_id)
                                 <div v-else class="tw-font-bold">Test niezaliczony</div>
                             </div>
                             <div v-if="test_store.test_time == 0" class="tw-mt-4 tw-text-lg">Skończył się czas</div>
-
-
+                            <div v-if="test_store.test_attempts >= 2" class="tw-mt-4 tw-text-lg">Sprobuj ponownie jutro!</div>
                         </div>
                     </Transition>
                 </div>
@@ -147,7 +145,7 @@ test_store.init(props.questions, props.test_id)
             <v-card-actions>
                 <v-spacer></v-spacer>
 
-                <v-btn v-if="is_admin || test_store.result == null" text="Spróbuj ponownie" @click="test_store.reset()"
+                <v-btn v-if="is_admin || (test_store.result != null && test_store.test_attempts < 2 && !test_store.is_passed)" text="Spróbuj ponownie" @click="test_store.reset()"
                     color="#9333ea"></v-btn>
                 <v-btn v-if="props.is_admin" text="Zamknij" @click="$emit('close-dialog')" color="red"></v-btn>
             </v-card-actions>

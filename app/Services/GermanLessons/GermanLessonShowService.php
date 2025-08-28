@@ -27,9 +27,33 @@ class GermanLessonShowService
             'test.questions.closed_choices',
         ])->find($id);
 
+        $is_user = auth()->user()->hasRole('user');
+
+        if ($is_user) {
+            if ($lesson->visibility_id != 3) {
+                return redirect()->route('user.german.lessons.index');
+            }
+
+            $previous_lesson = Lesson::where('order', '<', $lesson->order)
+                ->where('visibility_id', 3)
+                ->where('lessonable_type', 'App\Models\Courses\GermanLesson')
+                ->orderBy('order', 'desc')
+                ->first();
+
+            $next_lesson = Lesson::where('order', '>', $lesson->order)
+                ->where('visibility_id', 3)
+                ->where('lessonable_type', 'App\Models\Courses\GermanLesson')
+                ->where('order', '!=', 999)
+                ->orderBy('order', 'asc')
+                ->first();
+        }
+
         return Inertia::render($template, [
             'lesson' => $lesson,
-            'visibilities' => Visibility::whereIn('id', [1, 3])->get()
+            'visibilities' => Visibility::whereIn('id', [1, 3])->get(),
+            'previous_lesson' => $previous_lesson ?? null,
+            'next_lesson' => $next_lesson ?? null,
+            'is_last_lesson' => ($next_lesson ?? null) ? false : true,
         ]);
     }
 }

@@ -28,7 +28,7 @@ const props = defineProps({
 
 const emit = defineEmits([
     'update:user',
-    'toggle-user',
+    'edit',
 ]);
 
 const useAlertStore = AlertStore();
@@ -57,7 +57,7 @@ const submit = () => {
 
         if (response.data.success) {
             emit('update:user', user_data.value);
-            emit('toggle-user');
+            emit('edit');
             useAlertStore.pushAlert('success', 'Dane użytkownika zostały zaktualizowane.');
         }
 
@@ -71,75 +71,28 @@ const submit = () => {
         <template v-slot:title>
             <div class="tw-flex tw-flex-row tw-justify-between tw-items-center">
                 <div class="tw-flex tw-flex-row tw-items-center tw-gap-2">
-                    <i class="fa-solid fa-circle-user text-main"></i>
-                    <div> Edytuj dane użytkownika</div>
+                    <div>Edycja</div>
                 </div>
-                <p class="tw-text-red-600 tw-font-bold tw-underline hover:tw-text-red-900 hover:tw-cursor-pointer tw-text-sm"
-                    @click="$emit('toggle-user')">Zakończ edycję</p>
             </div>
         </template>
         <v-card-text>
-
-            <div class="tw-flex tw-flex-col sm:tw-flex-row tw-mt-6">
-                <div class="tw-grow">PESEL</div>
-                <div class="tw-grow tw-text-left sm:tw-text-right">
-                    <TextInput placeholder="Numer PESEL..."
-                        class="tw-text-left sm:tw-text-right tw-py-1 tw-w-full sm:tw-w-auto" type="tw-text"
-                        v-model="user_data.pesel">
-                    </TextInput>
-                    <InputError class="tw-mb-2" :message="errors.pesel ? errors.pesel[0] : ''" />
-                </div>
-            </div>
-            <div class="tw-flex tw-flex-col sm:tw-flex-row tw-mt-3 sm:tw-mt-1">
-                <div class="tw-grow">Imię</div>
-                <div class="tw-grow tw-text-left sm:tw-text-right">
-                    <TextInput placeholder="Imię..."
-                        class="tw-text-left sm:tw-text-right tw-py-1 tw-mt-1 tw-w-full sm:tw-w-auto" type="tw-text"
-                        v-model="user_data.user_profiles.first_name">
-                    </TextInput>
-                    <InputError class="tw-mb-2"
-                        :message="errors['user_profiles.first_name'] ? errors['user_profiles.first_name'][0] : ''" />
-                </div>
-            </div>
-            <div class="tw-flex tw-flex-col sm:tw-flex-row tw-mt-3 sm:tw-mt-1">
-                <div class="tw-grow">Nazwisko</div>
-                <div class="tw-grow tw-text-left sm:tw-text-right">
-                    <TextInput placeholder="Nazwisko..."
-                        class="tw-text-left sm:tw-text-right tw-py-1 tw-mt-1 tw-w-full sm:tw-w-auto" type="text"
-                        v-model="user_data.user_profiles.last_name">
-                    </TextInput>
-                    <InputError class="tw-mb-2"
-                        :message="errors['user_profiles.last_name'] ? errors['user_profiles.last_name'][0] : ''" />
-                </div>
-            </div>
-            <div class="tw-flex tw-flex-col sm:tw-flex-row tw-mt-3 sm:tw-mt-1">
-                <div class="tw-grow">E-mail</div>
-                <div class="tw-grow tw-text-left sm:tw-text-right">
-                    <TextInput placeholder="Adres e-mail..."
-                        class="tw-text-left sm:tw-text-right tw-py-1 tw-mt-1 tw-w-full sm:tw-w-auto" type="text"
-                        v-model="user_data.user_profiles.email">
-                    </TextInput>
-                    <InputError class="tw-mb-2"
-                        :message="errors['user_profiles.email'] ? errors['user_profiles.email'][0] : ''" />
-                </div>
-            </div>
-            <div class="tw-flex tw-flex-col sm:tw-flex-row tw-mt-3 sm:tw-mt-1">
-                <div class="tw-grow">Numer telefonu</div>
-                <div class="tw-grow tw-text-left sm:tw-text-right">
-                    <TextInput placeholder="Numer telefonu..."
-                        class="tw-text-left sm:tw-text-right tw-py-1 tw-mt-1 tw-w-full sm:tw-w-auto" type="text"
-                        v-model="user_data.user_profiles.phone_number">
-                    </TextInput>
-
-                    <InputError class="tw-mb-2"
-                        :message="errors['user_profiles.phone_number'] ? errors['user_profiles.phone_number'][0] : ''" />
-                </div>
+            <div class="tw-flex tw-flex-col tw-gap-2 tw-mt-6">
+                <v-text-field variant="outlined" v-model="user_data.pesel" label="Pesel"
+                    :error-messages="errors?.pesel"></v-text-field>
+                <v-text-field variant="outlined" v-model="user_data.user_profiles.first_name" label="Imię"
+                    :error-messages="errors['user_profiles.first_name']"></v-text-field>
+                <v-text-field variant="outlined" v-model="user_data.user_profiles.last_name" label="Nazwisko"
+                    :error-messages="errors['user_profiles.last_name']"></v-text-field>
+                <v-text-field variant="outlined" v-model="user_data.user_profiles.email" label="Adres e-mail"
+                    :error-messages="errors['user_profiles.email']"></v-text-field>
+                <v-text-field variant="outlined" v-model="user_data.user_profiles.phone_number" label="Numer telefonu"
+                    :error-messages="errors['user_profiles.phone_number']"></v-text-field>
             </div>
 
-            <h2 class="tw-font-semibold tw-text-xl tw-leading-tight tw-mt-14"><i
-                    class="fa-sharp fa-solid fa-calendar-circle-user"></i>
-                Dodatkowe informacje</h2>
-            <div class="tw-flex tw-flex-col sm:tw-flex-row tw-mt-6">
+            <h2 class="tw-font-semibold tw-text-xl tw-leading-tight tw-mt-14">
+                Dodatkowe informacje
+            </h2>
+            <div class="tw-flex tw-flex-col tw-mt-6">
                 <div class="tw-grow">Edytuj datę gotowości do wyjazdu</div>
                 <div class="tw-grow tw-text-left sm:tw-text-right">
                     <VueDatePicker class="tw-right-dp tw-mt-2 sm:tw-mt-0"
@@ -153,9 +106,14 @@ const submit = () => {
             </div>
         </v-card-text>
         <v-card-actions>
-            <v-btn :disabled="disabled" @click="submit()" variant="tonal" color="#16a34a">
-                Aktualizuj dane
-            </v-btn>
+            <div class="tw-flex tw-w-full tw-gap-4 tw-justify-center tw-items-center">
+                <v-btn :disabled="disabled" @click="submit()" variant="flat" color="#16a34a">
+                    Aktualizuj
+                </v-btn>
+                <v-btn :disabled="disabled" @click="$emit('edit')" variant="flat" color="#dc2626">
+                    Anuluj
+                </v-btn>
+            </div>
         </v-card-actions>
     </v-card>
 </template>

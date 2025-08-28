@@ -46,7 +46,8 @@ class GermanTestCheckResultService
 
                 if (!auth()->user()->hasAnyRole(['admin', 'super-admin', 'god_mode'])) {
                     TestResult::create([
-                        'test_id' => Test::where('name', 'Test niemieckiego')->value('id'),
+                        'test_id' => $request->test_id ?? Test::where('name', 'Test niemieckiego')->value('id'),
+                        // 'test_id' => Test::where('name', 'Test niemieckiego')->value('id'),
                         'user_id' => auth()->id(),
                         'is_passed' => $this->percent_needed_to_pass_test <= $good_answers_percent,
                         'score' => number_format((float)$good_answers_percent, 0)

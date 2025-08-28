@@ -9,6 +9,7 @@ use App\Services\GermanTests\GermanTestCheckResultService;
 use App\Services\GermanTests\GermanTestDestroyService;
 use App\Services\GermanTests\GermanTestGetQuestionsService;
 use App\Models\Courses\GermanLesson;
+use App\Models\Test\Test;
 
 use Inertia\Inertia;
 
@@ -73,25 +74,32 @@ class GermanTestController extends Controller
 
         $is_admin = auth()->user()->hasAnyRole(['admin', 'super-admin', 'god_mode']);
         $user = auth()->user();
-        $user->load('test_results');
+        $user->load([
+            'test_results' => function ($query) {
+                $query->where('test_id', Test::where('name', 'Test niemieckiego')->value('id'));
+            }
+        ]);
 
         $view = $is_admin ? 'Lessons/GermanLessons/Test' : 'Lessons/GermanLessons/User/Test';
-        $test_attempts = TestResult::where('user_id', auth()->id())->whereDate('created_at', date('Y-m-d'))->count();
-        $can_take_test = $is_admin || $test_attempts < 2;
+        $test_attempts = TestResult::where('user_id', auth()->id())->whereDate('created_at', date('Y-m-d'))->where('test_id', Test::where('name', 'Test niemieckiego')->value('id'))->count();
         $test_passed = $user->test_results->contains('is_passed', true);
+        $can_take_test = $is_admin || ($test_attempts < 2 && !$test_passed);
         $oral_exam_passed = OralExam::where('is_passed', true)->where('user_id', auth()->id())->count();
         $has_any_oral_exam = OralExam::whereNull('is_passed')->where('user_id', auth()->id())->count();
-        // dd($oral_exam_passed);
+        $current_oral_exam = OralExam::where('user_id', auth()->id())->whereNull('is_passed')->first();
 
-        return Inertia::render($view, [
+        $arr = [
             'questions' => $questions,
             'german_lesson' => $german_lesson,
             'can_take_test' => $can_take_test,
             'test_attempts' => $test_attempts,
             'test_passed' => $test_passed,
             'oral_exam_passed' => (bool)$oral_exam_passed,
-            'has_any_oral_exam' => (bool)$has_any_oral_exam
-        ]);
+            'has_any_oral_exam' => (bool)$has_any_oral_exam,
+            'current_oral_exam' => $current_oral_exam,
+        ];
+
+        return Inertia::render($view, $arr);
     }
 
     public function become_mittel_program() {

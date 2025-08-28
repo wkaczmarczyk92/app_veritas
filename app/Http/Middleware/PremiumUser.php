@@ -5,9 +5,10 @@ namespace App\Http\Middleware;
 use Closure;
 use Illuminate\Http\Request;
 use Symfony\Component\HttpFoundation\Response;
-use App\Helpers\TestUsersConfig;
 
-class IsTestUser
+use Illuminate\Support\Facades\Auth;
+
+class PremiumUser
 {
     /**
      * Handle an incoming request.
@@ -16,9 +17,11 @@ class IsTestUser
      */
     public function handle(Request $request, Closure $next): Response
     {
-        // if (auth()->user()->pesel != 12312312322) {
-        if (!in_array(auth()->user()->pesel, TestUsersConfig::get_test_users_pesel())) {
-            abort(404);
+        $user = Auth::user();
+        $user->load('user_profiles');
+
+        if ($user->user_profiles == null || $user->user_profiles->crt_id_caretaker === null) {
+            return redirect()->route('home.index_free_account');
         }
 
         return $next($request);

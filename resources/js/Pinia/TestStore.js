@@ -38,7 +38,7 @@ export const useTestStore = defineStore("test_store", {
             seconds = Number(seconds) <= 9 ? `0${seconds}` : seconds;
 
             if (!back) {
-                console.log('back')
+                // console.log('back')
                 this.current_time = `${minutes}:${seconds}`;
             } else {
                 console.log('not back')
@@ -139,8 +139,6 @@ export const useTestStore = defineStore("test_store", {
                 response = response.data
 
                 this.set_questions(response.questions) 
-
-                
             } catch (error) {
                 console.log(error)
                 this.alert_store.exception()

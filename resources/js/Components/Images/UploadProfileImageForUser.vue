@@ -82,6 +82,9 @@ const set_processing = () => {
     }, 1000);
 }
 
+const open_file_picker = () => {
+    file_input.value?.click()
+}
 
 </script>
 
@@ -89,16 +92,12 @@ const set_processing = () => {
     <div>
         <input @change="handle_file_change" type="file" id="image" ref="file_input" accept="image/*" name="image"
             class="tw-my-8 tw-appearance-none tw-border tw-rounded-md tw-w-full tw-text-gray-700 tw-leading-tight focus:tw-outline-none focus:tw-shadow-outline tw-hidden">
-        <div class="label-wrapper inline-block max-w-max">
-            <label for="image" :class="processing ? 'pointer-events-none' : ''">
-                <div
-                    class="tw-bg-blue-800 tw-text-gray-100 tw-px-6 tw-py-4 tw-rounded-md hover:tw-bg-blue-600 hover:tw-cursor-pointer">
-                    <i class="fa-duotone fa-camera-retro tw-mr-2"></i>
-                    <span v-if="processing">Przetwarzanie{{ dots }}</span>
-                    <span v-else>Wybierz zdjęcie z dysku</span>
 
-                </div>
-            </label>
+        <div class="label-wrapper inline-block max-w-max">
+            <v-btn color="#1e40af" @click="open_file_picker">
+                <span v-if="processing">Przetwarzanie{{ dots }}</span>
+                <span v-else>Wybierz zdjęcie z dysku</span>
+            </v-btn>
         </div>
     </div>
 </template>

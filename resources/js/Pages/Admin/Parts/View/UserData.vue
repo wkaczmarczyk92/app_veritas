@@ -2,6 +2,7 @@
 
 import { computed, ref } from 'vue';
 import axios from 'axios';
+import Link from '@/Components/Redirects/Link.vue';
 
 const props = defineProps({
     user: {
@@ -11,7 +12,7 @@ const props = defineProps({
 });
 
 const emit = defineEmits([
-    'toggle-user',
+    'edit',
     // 'update-user-profile-image'
 ]);
 
@@ -46,12 +47,12 @@ const accept_user_image = async () => {
     <v-card class="tw-shadow-lg tw-rounded tw-p-10">
         <template v-slot:title>
             <div class="tw-flex tw-flex-row tw-justify-between tw-items-center">
-                <div class="tw-flex tw-flex-row tw-items-center tw-gap-2">
-                    <i class="fa-solid fa-circle-user text-main"></i>
+                <div class="tw-flex tw-flex-row tw-items-center tw-gap-2 tw-font-bold tw-text-lg">
+                    <!-- <i class="fa-solid fa-circle-user text-main"></i> -->
                     <div>Dane użytkownika</div>
                 </div>
                 <p class="tw-text-blue-600 tw-font-bold tw-underline hover:tw-text-blue-900 hover:tw-cursor-pointer tw-text-sm"
-                    @click="$emit('toggle-user')">Edytuj dane</p>
+                    @click="$emit('edit')">Edytuj dane</p>
             </div>
         </template>
         <v-card-text>
@@ -73,17 +74,15 @@ const accept_user_image = async () => {
                 <div class="tw-grow tw-text-right">{{ user.user_profiles.phone_number ?? '-' }}</div>
             </div>
             <div class="tw-flex tw-flex-row tw-mt-6" v-if="user.user_profiles.crt_id_caretaker">
-                <div class="tw-grow">Przejdź do profilu w CRM</div>
-                <div class="tw-grow tw-text-right">
-                    <a :href="`https://local.grupa-veritas.pl/#/opiekunki/${user.user_profiles.crt_id_caretaker}`">
-                        <i class="fa-solid fa-globe tw-text-2xl tw-text-indigo-600 hover:tw-text-indigo-800"></i>
-                    </a>
+                <div class="tw-grow">
+                    <Link :href="`https://local.grupa-veritas.pl/#/opiekunki/${user.user_profiles.crt_id_caretaker}`" text="Przejdź do profilu CRM" blank />
                 </div>
             </div>
 
-            <h2 class="tw-font-semibold tw-text-xl tw-leading-tight tw-mt-14"><i
-                    class="fa-sharp fa-solid fa-calendar-circle-user"></i>
-                Dodatkowe informacje</h2>
+            <h2 class="tw-font-semibold tw-text-xl tw-leading-tight tw-mt-14">
+                <!-- <i class="fa-sharp fa-solid fa-calendar-circle-user"></i> -->
+                Dodatkowe informacje
+            </h2>
             <div class="tw-flex tw-flex-row tw-mt-6">
                 <div class="tw-grow">Data gotowości do wyjazdu</div>
                 <div class="tw-grow tw-text-right">{{ departure_date_display }}</div>

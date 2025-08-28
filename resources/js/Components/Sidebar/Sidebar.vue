@@ -377,7 +377,7 @@ console.log('page', page.props)
                                 <i class="fas fa-wrench"></i>
                             </template>
                             <template v-slot:title>
-                                Prerwa techniczna
+                                Przerwa techniczna
                             </template>
                         </SidebarItem>
                         <SidebarItem v-if="$page.props.god_mode" class=""

@@ -32,8 +32,8 @@ watch(dialog, (value) => {
 
 <template>
     <v-dialog max-width="800" v-model="dialog">
-        <template v-slot:activator="{ props: activatorProps }">
-            <v-btn v-bind="activatorProps" color="surface-variant" text="Rozwiąż test" variant="outlined"></v-btn>
+        <template v-slot:activator>
+            <v-btn v-bind="activatorProps" color="#2563eb" :text="`Rozwiąż test z lekcji ${lesson.order}`" variant="flat" @click="dialog=true"></v-btn>
         </template>
 
         <template v-slot:default="{ isActive }">
