@@ -30,6 +30,10 @@ defineProps({
             </div>
         </template> -->
         <v-card-text>
+            <p class="tw-font-bold  hover:tw-text-blue-900 hover:tw-cursor-pointer tw-text-sm">
+                Poziom - <span :class="levelColor(user.user_profiles.level)"><b>{{
+                    level(levels,
+                        user.user_profiles.level).toUpperCase() }}</b></span></p>
             <div class="tw-flex tw-flex-row tw-mt-6">
                 <div class="tw-grow tw-border-b tw-border-gray-500">Aktualna ilość punktów</div>
                 <div class="tw-grow tw-text-right tw-border-b tw-border-gray-500">{{
@@ -49,7 +53,8 @@ defineProps({
 
             <h2 class="tw-font-semibold tw-text-xl tw-leading-tight tw-mt-14">Rekruter</h2>
             <div class="tw-flex tw-flex-row tw-mt-6">
-                <div class="tw-grow">{{ user.user_profiles.recruiter_first_name ?? '-' }} {{ user.user_profiles.recruiter_last_name ?? '-' }}</div>
+                <div class="tw-grow">{{ user.user_profiles.recruiter_first_name ?? '-' }} {{
+                    user.user_profiles.recruiter_last_name ?? '-' }}</div>
                 <div class="tw-grow tw-text-right"></div>
             </div>
         </v-card-text>
